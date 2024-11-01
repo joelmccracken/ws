@@ -5,15 +5,20 @@
 
 # ensure macos bash used: (export PATH="/bin:$PATH"; ./ws -v)
 # (ensures that any other bash processes will use builtin too)
-set -euo pipefail
+# set -euo pipefail
 
 WS_VERBOSE=false
 WS_LOG_LEVEL=error
 WORKSTATION_NAME_ARG=
 WORKSTATION_NAME=
-WS_COMMAND=
+WS_COMMAND=help # show help if nothing provided
 WORKSTATION_CONFIG_DIR="$HOME/workstation/hosts/current"
 WORKSTATION_SETTINGS_FILE="${WORKSTATION_CONFIG_DIR}/settings.shx"
+
+WS_COMMAND_ARGUMENTS=( "$@" ) # save a copy
+# echo "hello:" "$@" ${#WS_COMMAND_ARGUMENTS}
+# echo WS_COMMAND_ARGUMENTS is "${WS_COMMAND_ARGUMENTS[@]}"
+
 
 export WORKSTATION_DIR="$HOME/workstation"
 export WORKSTATION_EMACS_CONFIG_DIR=~/.config/emacs
@@ -46,6 +51,7 @@ print_usage() {
     echo "   bootstrap             : run the bootstrap process"
     echo "     flags:  "
     echo "       -n NAME | --name NAME : workstation name to use"
+    echo "   doctor                : run checks on local setup"
     echo "   help                  : display this message"
 }
 
@@ -57,36 +63,46 @@ print_workstation_names() {
 }
 
 process_cli_args() {
-  for i in "$@"; do
-    case $i in
+  local args=("${WS_COMMAND_ARGUMENTS[@]}")
+  local i;
+  for ((i=0;i < ${#args[@]}; i++)); do
+    # echo "what is going on? ${args[@]}"
+    echo "iter:$i ; current:${args[i]} ; max:${#args[@]}"
+    local current="${args[i]}"
+
+    case "$current" in
       -v|--verbose)
         WS_VERBOSE=true
-        shift;
         ;;
       -n|--name)
-        WORKSTATION_NAME_ARG="$2";
-        shift; shift;
+        WORKSTATION_NAME_ARG="${args[(i + 1)] }";
+        ((i++))
         ;;
       -h|--help|help)
         usage_and_quit 0;
         ;;
       -*|--*)
-        echo "Unknown option $i"
-        exit 1
+        echo "Unknown option ${args[i]}";
+        exit 1;
         ;;
       bootstrap)
-        WS_COMMAND="$1";
-        WORKSTATION_NAME="$2";
-        shift; shift;
+        WS_COMMAND="$current";
+        # echo "debug: $((i+1)) ${#args[@]} ${args[(i + 1)] }"
+        if (( (i+1) < ${#args[@]} )); then
+          WORKSTATION_NAME_ARG="${args[(i + 1)] }";
+          ((i++));
+          # echo NOW "${args[i]}"
+        fi;
         ;;
       doctor)
-        WS_COMMAND="$1"
+        WS_COMMAND="$current";
+        ;;
+      *)
+        echo UNKNOWN CASE;
+        ;;
     esac
   done
-
-  if [[ "$WS_VERBOSE" == "true" ]]; then
-     set -x;
-  fi
+  return 0
 }
 
 bootstrap_command_setup() {
@@ -115,7 +131,6 @@ bootstrap_command_setup() {
   fi
 }
 
-
 props_ws_settings_file_check() {
    if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
       echo "settings file exists";
@@ -123,43 +138,27 @@ props_ws_settings_file_check() {
    fi
 }
 
-
-boostrap_command() {
+bootstrap_command() {
   echo BOOTSTRAP HERE:
 }
 
-load_external_plugins() {
-  local $PLUGINS_DIR="$1"
-  # plugins as a concept
-  # standard way of naming things
-  # keep known plugins in array
-  # note builtin vs external plugins
-  #
-  # bootstrap plugin knows how to set vairous needed things from startup
-  # and find additional plugins, do overall setup.
-  #
-  # doctor plugin can iterate over other plugins, find anything it needs to check
-  #
-  #
-  #
-  # secrets.wsplugin.sh
-  # __ws_plugin_secrets_subcmd_version documents the ws tool version it should work for
-  #      ws may refuse to load plugins for wrong versions?
-  #
-  # __ws_plugin_secrets_subcmd_proc process arguments
-  #      any additional behavior the same way
-  #      - save note about where its loaded from, use in case there is another
-  #        plugin
-  #
-  # __ws_plugin_secrets_subcmd_help provides help text
-  #      maybe output info in specific format so that ws parses it, but or maybe not
-  #
-  # __ws_plugin_secrets_proc execute various secrets, etc
+ws_check_workstation_dir()
+{
+  if [ -d "$WORKSTATION_DIR" ]; then
+    echo "WORKSTATION_DIR exists"
+  else
+    error "WORKSTATION_DIR does not exist"
+  fi
 }
 
+doctor_command() {
+  echo "doctor!";
+  ws_check_workstation_dir
+}
 
-load_external_plugins "~/workstation2/plugins"
-
+help_command() {
+  usage_and_quit 0;
+}
 
 load_config() {
   echo "some config example "
@@ -175,17 +174,25 @@ load_config() {
   # have various config directives (just commands) that set flags etc. Defaults? idk
 }
 
-process_cli_args "$@"
+# process_cli_args "$@"
 
-case "$WS_COMMAND" in
-  bootstrap) bootstrap_command;;
-  doctor) doctor_command;;
-  *) error "unknown command $WS_COMMAND; how did we get here?"
-esac
+ws_main() {
+  process_cli_args "${WS_COMMAND_ARGUMENTS[@]}"
 
+  case "$WS_COMMAND" in
+    bootstrap) bootstrap_command;;
+    doctor) doctor_command;;
+    "help") help_command;;
+    *) error "unknown command $WS_COMMAND; how did we get here?"
+  esac
+}
 
+# echo I AM HEREJ HELLO "${BASH_SOURCE[0]}" and "${0}"
+# if being run directly, run main
 
-
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  ws_main
+fi
 
 # # Script should be passed a single argument, which is name of this workstation.
 
