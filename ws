@@ -7,13 +7,15 @@
 # (ensures that any other bash processes will use builtin too)
 # set -euo pipefail
 
+
+__ret=
 WS_VERBOSE=false
 WS_LOG_LEVEL=error
 WORKSTATION_NAME_ARG=
 WORKSTATION_NAME=
 WS_COMMAND=help # show help if nothing provided
 WORKSTATION_CONFIG_DIR="$HOME/workstation/hosts/current"
-WORKSTATION_SETTINGS_FILE="${WORKSTATION_CONFIG_DIR}/settings.shx"
+WORKSTATION_SETTINGS_FILE="${WORKSTATION_CONFIG_DIR}/settings.sh"
 
 WS_COMMAND_ARGUMENTS=( "$@" ) # save a copy
 # echo "hello:" "$@" ${#WS_COMMAND_ARGUMENTS}
@@ -32,8 +34,41 @@ function info() {
     echo "INFO ========= $(date) $@"
 }
 
+log_level_num() {
+  msg_lvl="$1"
+  case "$msg_lvl" in
+    emerg)  lvl_num=1;;
+    alert)  lvl_num=2;;
+    crit)   lvl_num=3;;
+    error)  lvl_num=4;;
+    warn)   lvl_num=5;;
+    notice) lvl_num=6;;
+    info)   lvl_num=7;;
+    debug)  lvl_num=8;;
+    *) lvl_num=8;; # default at debug, something is wrong
+  esac;
+  __ret="$lvl_num";
+}
+
+log() {
+  this_lvl="$1"
+  shift;
+  log_level_num "$WS_LOG_LEVEL"
+  global_lvl_num="$__ret";
+
+  log_level_num "$this_lvl"
+  this_lvl_num="$__ret";
+  if (( this_lvl_num <= global_lvl_num )); then
+    echo "$this_lvl $(date): $@" 1>&2
+  fi
+}
+
 function error() {
-    echo "ERROR ========= $(date) $@" 1>&2
+  log error "$@"
+}
+
+function debug() {
+  log debug "$@"
 }
 
 usage_and_quit() {
@@ -67,12 +102,13 @@ process_cli_args() {
   local i;
   for ((i=0;i < ${#args[@]}; i++)); do
     # echo "what is going on? ${args[@]}"
-    echo "iter:$i ; current:${args[i]} ; max:${#args[@]}"
+    debug "iter:$i ; current:${args[i]} ; max:${#args[@]}"
     local current="${args[i]}"
 
     case "$current" in
       -v|--verbose)
         WS_VERBOSE=true
+        WS_LOG_LEVEL=info
         ;;
       -n|--name)
         WORKSTATION_NAME_ARG="${args[(i + 1)] }";
@@ -132,7 +168,7 @@ bootstrap_command_setup() {
 }
 
 props_ws_settings_file_check() {
-   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
+    if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
       echo "settings file exists";
       echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
    fi
@@ -140,14 +176,17 @@ props_ws_settings_file_check() {
 
 bootstrap_command() {
   echo BOOTSTRAP HERE:
+  props_ws_check_workstation_dir
 }
 
-ws_check_workstation_dir()
+
+props_ws_check_workstation_dir()
 {
   if [ -d "$WORKSTATION_DIR" ]; then
     echo "WORKSTATION_DIR exists"
   else
-    error "WORKSTATION_DIR does not exist"
+    error "$WORKSTATION_DIR (WORKSTATION_DIR) is absent" 1>&2
+
   fi
 }
 

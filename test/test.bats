@@ -1,6 +1,7 @@
 setup (){
     load 'test_helper/bats-support/load'
     load 'test_helper/bats-assert/load'
+    load 'test_helper/helper'
 
     # get the containing directory of this file
     # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
@@ -53,8 +54,5 @@ setup (){
     process_cli_args
     assert_equal "$WS_COMMAND" "doctor"
 }
-
-
-
 
 # export WS_COMMAND_ARGUMENTS=(bootstrap glamdring); source ws; process_cli_args; echo $?
