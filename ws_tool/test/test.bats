@@ -18,39 +18,39 @@ setup (){
 }
 
 @test "process_cli_args parse verbose flag" {
-    export WS_COMMAND_ARGUMENTS=(-v bootstrap)
+    WS_COMMAND_ARGUMENTS=(-v bootstrap)
     process_cli_args
     assert_equal "$WS_VERBOSE" true
 }
 
 @test "process_cli_args parse verbose flag (long)" {
-    export WS_COMMAND_ARGUMENTS=(--verbose bootstrap)
+    WS_COMMAND_ARGUMENTS=(--verbose bootstrap)
     process_cli_args
     assert_equal "$WS_VERBOSE" true
 }
 
 @test "process_cli_args parse bootstrap subcommand" {
-    export WS_COMMAND_ARGUMENTS=(bootstrap)
+    WS_COMMAND_ARGUMENTS=(bootstrap)
     process_cli_args
     assert_equal "$WS_COMMAND" "bootstrap"
 }
 
 @test "process_cli_args parse bootstrap subcommand with workstation name pos param" {
-    export WS_COMMAND_ARGUMENTS=(bootstrap glamdring)
+    WS_COMMAND_ARGUMENTS=(bootstrap glamdring)
     process_cli_args
     assert_equal "$WS_COMMAND" "bootstrap"
     assert_equal "$WORKSTATION_NAME_ARG" "glamdring"
 }
 
 @test "process_cli_args parse bootstrap subcommand with workstation name flag" {
-    export WS_COMMAND_ARGUMENTS=(--name aeglos bootstrap )
+    WS_COMMAND_ARGUMENTS=(--name aeglos bootstrap )
     process_cli_args
     assert_equal "$WS_COMMAND" "bootstrap"
     assert_equal "$WORKSTATION_NAME_ARG" "aeglos"
 }
 
 @test "process_cli_args parse bootstrap command doctor" {
-    export WS_COMMAND_ARGUMENTS=(doctor)
+    WS_COMMAND_ARGUMENTS=(doctor)
     process_cli_args
     assert_equal "$WS_COMMAND" "doctor"
 }

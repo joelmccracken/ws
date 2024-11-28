@@ -1,0 +1,10 @@
+#+title: Readme
+
+
+setting up
+- download ws_install.sh and run, optionally setting env vars to customize
+  - sets up repo
+  - makes various default files etc, esp settings.sh
+  - maybe use a different dir as source?
+- customize ws_profile/settings.sh (where should this go?)
+   can run gen

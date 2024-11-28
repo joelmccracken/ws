@@ -7,69 +7,18 @@
 # (ensures that any other bash processes will use builtin too)
 # set -euo pipefail
 
-
-__ret=
-WS_VERBOSE=false
-WS_LOG_LEVEL=error
-WORKSTATION_NAME_ARG=
-WORKSTATION_NAME=
-WS_COMMAND=help # show help if nothing provided
-WORKSTATION_CONFIG_DIR="$HOME/workstation/hosts/current"
-WORKSTATION_SETTINGS_FILE="${WORKSTATION_CONFIG_DIR}/settings.sh"
-
-WS_COMMAND_ARGUMENTS=( "$@" ) # save a copy
-# echo "hello:" "$@" ${#WS_COMMAND_ARGUMENTS}
-# echo WS_COMMAND_ARGUMENTS is "${WS_COMMAND_ARGUMENTS[@]}"
-
-
-export WORKSTATION_DIR="$HOME/workstation"
-export WORKSTATION_EMACS_CONFIG_DIR=~/.config/emacs
-export WORKSTATION_GIT_ORIGIN='git@github.com:joelmccracken/workstation.git'
-export WORKSTATION_GIT_ORIGIN_PUB='https://github.com/joelmccracken/workstation.git'
-export WORKSTATION_HOST_CURRENT_SETTINGS_DIR=$WORKSTATION_DIR/hosts/current
-
 WS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-function info() {
-    echo "INFO ========= $(date) $@"
-}
+. "${WS_SCRIPT_DIR}/lib/settings.sh"
+. "${WS_SCRIPT_DIR}/lib/logging.sh"
+. "${WS_SCRIPT_DIR}/lib/doctor.sh"
 
-log_level_num() {
-  msg_lvl="$1"
-  case "$msg_lvl" in
-    emerg)  lvl_num=1;;
-    alert)  lvl_num=2;;
-    crit)   lvl_num=3;;
-    error)  lvl_num=4;;
-    warn)   lvl_num=5;;
-    notice) lvl_num=6;;
-    info)   lvl_num=7;;
-    debug)  lvl_num=8;;
-    *) lvl_num=8;; # default at debug, something is wrong
-  esac;
-  __ret="$lvl_num";
-}
+__ret= # hack to use return values
+WS_COMMAND=help # show help if nothing provided
+WS_COMMAND_ARGUMENTS=( "$@" ) # save a copy
 
-log() {
-  this_lvl="$1"
-  shift;
-  log_level_num "$WS_LOG_LEVEL"
-  global_lvl_num="$__ret";
-
-  log_level_num "$this_lvl"
-  this_lvl_num="$__ret";
-  if (( this_lvl_num <= global_lvl_num )); then
-    echo "$this_lvl $(date): $@" 1>&2
-  fi
-}
-
-function error() {
-  log error "$@"
-}
-
-function debug() {
-  log debug "$@"
-}
+# echo "hello:" "$@" ${#WS_COMMAND_ARGUMENTS}
+# echo WS_COMMAND_ARGUMENTS is "${WS_COMMAND_ARGUMENTS[@]}"
 
 usage_and_quit() {
     print_usage
@@ -101,7 +50,6 @@ process_cli_args() {
   local args=("${WS_COMMAND_ARGUMENTS[@]}")
   local i;
   for ((i=0;i < ${#args[@]}; i++)); do
-    # echo "what is going on? ${args[@]}"
     debug "iter:$i ; current:${args[i]} ; max:${#args[@]}"
     local current="${args[i]}"
 
@@ -167,32 +115,9 @@ bootstrap_command_setup() {
   fi
 }
 
-props_ws_settings_file_check() {
-    if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-      echo "settings file exists";
-      echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
-   fi
-}
-
 bootstrap_command() {
   echo BOOTSTRAP HERE:
   props_ws_check_workstation_dir
-}
-
-
-props_ws_check_workstation_dir()
-{
-  if [ -d "$WORKSTATION_DIR" ]; then
-    echo "WORKSTATION_DIR exists"
-  else
-    error "$WORKSTATION_DIR (WORKSTATION_DIR) is absent" 1>&2
-
-  fi
-}
-
-doctor_command() {
-  echo "doctor!";
-  ws_check_workstation_dir
 }
 
 help_command() {

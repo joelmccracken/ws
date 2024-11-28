@@ -20,4 +20,3 @@ setup (){
     run ws_install.sh
     assert [ -f "${TMPDIR}/workstation/ws" ]
 }
-
