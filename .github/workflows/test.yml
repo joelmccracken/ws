@@ -30,8 +30,7 @@ jobs:
         - ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
-
+    - uses: actions/checkout@v4
     - name: Run a one-line script
       env:
         BW_CLIENTID: ${{ secrets.BW_CLIENTID }}

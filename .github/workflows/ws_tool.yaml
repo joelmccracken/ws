@@ -1,0 +1,28 @@
+name: WS Tool
+
+on:
+  pull_request:
+  push:
+    branches: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os:
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+        - macos-13 # x86
+        - macos-latest # aarch
+        - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bats-core/bats-action@2.0.0
+        with:
+          support-path: /usr/lib/bats/bats-support
+          assert-path: /usr/lib/bats/bats-assert
+      - run: bats --recursive ws_tool/test
