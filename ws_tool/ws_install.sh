@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-: "${TO_WORKSTATION_DIR:=$HOME/workstation}"
-: "${WORKSTATION_VERSION:=refs/heads/master}"
+: "${TO_WORKSTATION_DIR:=$HOME/.config/workstation/}"
+: "${WORKSTATION_VERSION:=refs/heads/workcomp}"
 
 TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
 
@@ -12,9 +12,12 @@ mkdir -p "$TO_WORKSTATION_DIR"
 cd "$TO_WORKSTATION_DIR"
 # mv "$TMPDIR" workstation-*/* workstation-*/.* . 2>&1 > /dev/null
 
-for f in ${TMPDIR}/workstation-*/* ${TMPDIR}/workstation-*/.*; do
-    mv "$f" . ;
-done
+
+
+mv "${TMPDIR}"/workstation-* "$TO_WORKSTATION_DIR/src"
+# for f in ${TMPDIR}/workstation-*/* ${TMPDIR}/workstation-*/.*; do
+#     mv "$f" . ;
+# done
 
 # TODO handle fixing dir into repo support
 # git init .

@@ -10,7 +10,7 @@ setup (){
     PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
     # make executables in src/ visible to PATH
     PATH="$PROJECT_ROOT:/bin/:$PATH"
-    source "$PROJECT_ROOT/lib/logging.sh"
+    source "$PROJECT_ROOT/lib/logging.bash"
 }
 
 @test "trying logging code" {
@@ -20,19 +20,19 @@ setup (){
 }
 
 @test "logs by log level" {
-    WS_LOG_LEVEL=debug
+    WORKSTATION_LOG_LEVEL=debug
     run debug "hello world" 2>&1
     assert_output --partial 'hello world'
 }
 
 @test "skips logs when out of log level" {
-    WS_LOG_LEVEL=error
+    WORKSTATION_LOG_LEVEL=error
     run debug "hello world" 2>&1
     refute_output --partial 'hello world'
 }
 
 @test "skips logs when out of log levelf" {
-    WS_LOG_LEVEL=error
+    WORKSTATION_LOG_LEVEL=error
     run debug "hello world" 2>&1
     refute_output --partial 'hello world'
 }

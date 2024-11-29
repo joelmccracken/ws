@@ -17,7 +17,7 @@ log_level_num() {
 log() {
   this_lvl="$1"
   shift;
-  log_level_num "$WS_LOG_LEVEL"
+  log_level_num "$WORKSTATION_LOG_LEVEL"
   global_lvl_num="$__ret";
 
   log_level_num "$this_lvl"

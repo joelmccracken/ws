@@ -9,9 +9,9 @@
 
 WS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-. "${WS_SCRIPT_DIR}/lib/settings.sh"
-. "${WS_SCRIPT_DIR}/lib/logging.sh"
-. "${WS_SCRIPT_DIR}/lib/doctor.sh"
+. "${WS_SCRIPT_DIR}/lib/settings.bash"
+. "${WS_SCRIPT_DIR}/lib/logging.bash"
+. "${WS_SCRIPT_DIR}/lib/bootstrap_doctor.bash"
 
 __ret= # hack to use return values
 WS_COMMAND=help # show help if nothing provided
@@ -55,8 +55,8 @@ process_cli_args() {
 
     case "$current" in
       -v|--verbose)
-        WS_VERBOSE=true
-        WS_LOG_LEVEL=info
+        WORKSTATION_VERBOSE=true
+        WORKSTATION_LOG_LEVEL=info
         ;;
       -n|--name)
         WORKSTATION_NAME_ARG="${args[(i + 1)] }";
@@ -87,37 +87,6 @@ process_cli_args() {
     esac
   done
   return 0
-}
-
-bootstrap_command_setup() {
-  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-      info "settings file exists, loading it";
-      source "$WORKSTATION_SETTINGS_FILE";
-
-      if [ -z "$WORKSTATION_NAME" ]; then
-          echo "settings file loaded, but WORKSTATION_NAME not set."
-      fi
-
-      if [[ -z "$WORKSTATION_NAME" && -z "$WORKSTATION_NAME_ARG" ]]; then
-          echo "workstation name unset in settings file and not provided as argument."
-          echo "must provide -n or --name with workstation name."
-          print_workstation_names
-          usage_and_quit 1
-      fi
-  else
-     echo "settings file does not exist"
-     if [[ -z "$WORKSTATION_NAME" && -z "$WORKSTATION_NAME_ARG" ]]; then
-          echo "workstation name is unset."
-          echo "must provide -n or --name with workstation name."
-          print_workstation_names
-          usage_and_quit 1
-      fi
-  fi
-}
-
-bootstrap_command() {
-  echo BOOTSTRAP HERE:
-  props_ws_check_workstation_dir
 }
 
 help_command() {

@@ -20,13 +20,13 @@ setup (){
 @test "process_cli_args parse verbose flag" {
     WS_COMMAND_ARGUMENTS=(-v bootstrap)
     process_cli_args
-    assert_equal "$WS_VERBOSE" true
+    assert_equal "$WORKSTATION_VERBOSE" true
 }
 
 @test "process_cli_args parse verbose flag (long)" {
     WS_COMMAND_ARGUMENTS=(--verbose bootstrap)
     process_cli_args
-    assert_equal "$WS_VERBOSE" true
+    assert_equal "$WORKSTATION_VERBOSE" true
 }
 
 @test "process_cli_args parse bootstrap subcommand" {
