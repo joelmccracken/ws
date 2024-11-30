@@ -26,4 +26,4 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - run: ws_tool/test/bats/bin/bats --recursive ws_tool/test
+      - run: ws_tool/test/bats/bin/bats ws_tool/test
