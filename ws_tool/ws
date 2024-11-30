@@ -73,7 +73,8 @@ process_cli_args() {
         WS_COMMAND="$current";
         # echo "debug: $((i+1)) ${#args[@]} ${args[(i + 1)] }"
         if (( (i+1) < ${#args[@]} )); then
-          WORKSTATION_NAME_ARG="${args[((i + 1))] }";
+          # local j=$((i + 1));
+          WORKSTATION_NAME_ARG="${args[i+1]}";
           ((i++));
           # echo NOW "${args[i]}"
         fi;
