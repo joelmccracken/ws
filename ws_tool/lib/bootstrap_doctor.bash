@@ -22,10 +22,16 @@ prop_ws_settings_file_fix() {
 prop_ws_check_workstation_dir() {
   if [ -d "$WORKSTATION_DIR" ]; then
     echo "WORKSTATION_DIR exists"
-    return 0
+    if [ -x "$WORKSTATION_DIR/ws_tool/ws" ]; then
+      echo "WORKSTATION_DIR contains ws executable"
+      return 0
+    else
+      echo "$WORKSTATION_DIR does not contain the ws tool" 1>&2
+      return 2
+    fi
   else
-    error "$WORKSTATION_DIR (WORKSTATION_DIR) is absent" 1>&2
-    error "(is workstation installed to a custom location? set WORKSTATION_DIR=path/to/workstation)" 1>&2
+    echo "$WORKSTATION_DIR (WORKSTATION_DIR) is absent" 1>&2
+    echo "(is workstation installed to a custom location? set WORKSTATION_DIR=path/to/workstation)" 1>&2
     return 1
   fi
 }
@@ -34,7 +40,6 @@ prop_ws_check_workstation_dir_fix() {
   if ! prop_ws_check_workstation_dir > /dev/null 2>&1; then
     # TODO this is basically a copy/paste of ws_install.sh
     # somehow figure out another way to do this?
-    : "${WORKSTATION_VERSION:=refs/heads/master}"
     TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
 
     # installer of ws tool/project
@@ -42,18 +47,16 @@ prop_ws_check_workstation_dir_fix() {
     curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
     mkdir -p "$WORKSTATION_DIR"
-    cd "$WORKSTATION_DIR"
-
-    mv "${TMPDIR}"/workstation-* "$WORKSTATION_DIR/src"
+    mv "${TMPDIR}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
   fi
 }
 
 prop_ws_check_workstation_repo() {
-  if [ -d "$WORKSTATION_DIR/src/.git" ]; then
+  if [ -d "$WORKSTATION_DIR/.git" ]; then
     echo "WORKSTATION_DIR git directory exists"
     return 0
   else
-    error "$WORKSTATION_DIR/src/.git directory is absent" 1>&2
+    echo "$WORKSTATION_DIR/.git directory is absent" 1>&2
     return 1
   fi
 }
@@ -61,13 +64,10 @@ prop_ws_check_workstation_repo() {
 prop_ws_check_workstation_repo_fix() {
   cd "$WORKSTATION_DIR"
   git init .
-  git remote add origin $REPO
+  git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN"
   git fetch
-  git reset --mixed origin/master
+  git reset --mixed "origin/$WORKSTATION_VERSION"
 }
-
-
-
 
 doctor_command() {
   echo "doctor!";

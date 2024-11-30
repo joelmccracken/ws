@@ -18,11 +18,12 @@ jobs:
         - macos-13 # x86
         - macos-latest # aarch
         - ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: bats-core/bats-action@2.0.0
         with:
-          support-path: /usr/lib/bats/bats-support
-          assert-path: /usr/lib/bats/bats-assert
-      - run: bats --recursive ws_tool/test
+          submodules: recursive
+      - run: ws_tool/test/bats/bin/bats --recursive ws_tool/test

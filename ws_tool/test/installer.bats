@@ -15,8 +15,9 @@ setup (){
 }
 
 @test "runs ws_install" {
-    TMPDIR=$(mktemp -d "/tmp/ws-testdir-XXXXXX")
-    export TO_WORKSTATION_DIR="${TMPDIR}/workstation"
+    export WORKSTATION_DIR="$(mktemp -d "/tmp/ws-dir-XXXXXX")"
+    export WORKSTATION_VERSION=workcomp
+    # export TO_WORKSTATION_DIR="${TMPDIR}/workstation"
     run ws_install.sh
-    assert [ -f "${TMPDIR}/workstation/ws" ]
+    assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
 }
