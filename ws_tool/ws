@@ -59,7 +59,7 @@ process_cli_args() {
         WORKSTATION_LOG_LEVEL=info
         ;;
       -n|--name)
-        WORKSTATION_NAME_ARG="${args[(i + 1)] }";
+        WORKSTATION_NAME_ARG="${args[((i + 1))] }";
         ((i++))
         ;;
       -h|--help|help)
@@ -73,7 +73,7 @@ process_cli_args() {
         WS_COMMAND="$current";
         # echo "debug: $((i+1)) ${#args[@]} ${args[(i + 1)] }"
         if (( (i+1) < ${#args[@]} )); then
-          WORKSTATION_NAME_ARG="${args[(i + 1)] }";
+          WORKSTATION_NAME_ARG="${args[((i + 1))] }";
           ((i++));
           # echo NOW "${args[i]}"
         fi;
