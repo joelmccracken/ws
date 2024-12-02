@@ -60,7 +60,7 @@ process_cli_args() {
         ;;
       -n|--name)
         WORKSTATION_NAME_ARG="${args[i+1]}";
-        ((i++))
+        (( i+=1 ));
         ;;
       -h|--help|help)
         usage_and_quit 0;
@@ -75,7 +75,7 @@ process_cli_args() {
         if (( (i+1) < ${#args[@]} )); then
           # local j=$((i + 1));
           WORKSTATION_NAME_ARG="${args[i+1]}";
-          (( i++ ));
+          (( i+=1 ));
           # echo NOW "${args[i]}"
         fi;
         ;;
