@@ -59,7 +59,7 @@ process_cli_args() {
         WORKSTATION_LOG_LEVEL=info
         ;;
       -n|--name)
-        WORKSTATION_NAME_ARG="${args[((i + 1))] }";
+        WORKSTATION_NAME_ARG="${args[i+1]}";
         ((i++))
         ;;
       -h|--help|help)
@@ -75,7 +75,7 @@ process_cli_args() {
         if (( (i+1) < ${#args[@]} )); then
           # local j=$((i + 1));
           WORKSTATION_NAME_ARG="${args[i+1]}";
-          ((i++));
+          (( i++ ));
           # echo NOW "${args[i]}"
         fi;
         ;;
