@@ -26,17 +26,23 @@ usage_and_quit() {
 }
 
 print_usage() {
-    echo "ws usage:"
-    echo " global flags:"
-    echo "   -v      | --verbose   : be verbose (i.e. set -x)"
-    echo "   -h      | --help      : display this message"
+    echo "Workstation configuration tool."
     echo
-    echo " commands:"
-    echo "   bootstrap             : run the bootstrap process"
-    echo "     flags:  "
-    echo "       -n NAME | --name NAME : workstation name to use"
-    echo "   doctor                : run checks on local setup"
-    echo "   help                  : display this message"
+    echo "Usage:"
+    echo "  ws [options] bootstrap"
+    echo "  ws [options] doctor"
+    echo
+    echo "Subcommands:"
+    echo "  bootstrap     : run the bootstrap process"
+    echo "  doctor        : Run checks on local setup"
+    echo "  help          : display this message"
+    echo
+    echo "Options:"
+    echo "-h --help                : Display this message and exit"
+    echo "-v -verbose              : Be verbose"
+    echo "-n NAME, --name NAME     : Specify the name of this workstation."
+    echo "-s PATH, --settings PATH : Path to settings file to use."
+    echo "-c PATH, --config PATH   : Path to configuration file."
 }
 
 print_workstation_names() {
@@ -71,13 +77,6 @@ process_cli_args() {
         ;;
       bootstrap)
         WS_COMMAND="$current";
-        # echo "debug: $((i+1)) ${#args[@]} ${args[(i + 1)] }"
-        if (( (i+1) < ${#args[@]} )); then
-          # local j=$((i + 1));
-          WORKSTATION_NAME_ARG="${args[i+1]}";
-          (( i+=1 ));
-          # echo NOW "${args[i]}"
-        fi;
         ;;
       doctor)
         WS_COMMAND="$current";
@@ -87,6 +86,10 @@ process_cli_args() {
         ;;
     esac
   done
+
+  [ -z "$WORKSTATION_NAME_ARG" ] || WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
+  # : "${WORKSTATION_NAME:=}"
+
   return 0
 }
 
@@ -94,24 +97,15 @@ help_command() {
   usage_and_quit 0;
 }
 
-load_config() {
-  echo "some config example "
-  # thinking about configs
-  # set workstation dir?
-  # what kind of config would be needed?
-  # workstaiton dir could be
-  # ~/.config/ws/config.sh
-  # or ~/workstation
-  # or ~/.workstation
-  # or even ~/.ws
-  # perhaps?
-  # have various config directives (just commands) that set flags etc. Defaults? idk
-}
-
-# process_cli_args "$@"
-
 ws_main() {
+  . "$WORKSTATION_CONFIG_FILE"
+  . "$WORKSTATION_SETTINGS_FILE"
+
   process_cli_args "${WS_COMMAND_ARGUMENTS[@]}"
+
+  if [ "$WORKSTATION_VERBOSE" = "true" ]; then
+    set -x
+  fi
 
   case "$WS_COMMAND" in
     bootstrap) bootstrap_command;;
@@ -121,24 +115,10 @@ ws_main() {
   esac
 }
 
-# echo I AM HEREJ HELLO "${BASH_SOURCE[0]}" and "${0}"
 # if being run directly, run main
-
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   ws_main
 fi
-
-# # Script should be passed a single argument, which is name of this workstation.
-
-# # When using script to set up a workstation, the "name" of the workstation should
-# # be provided as the first argument. This is used to pick which settings should be
-# # applied to this machine.
-# if [ -z "${1+x}" ]; then
-#     echo WORKSTATION_NAME must be provided as first argument
-#     exit 2
-# else
-#     export WORKSTATION_NAME="$1"
-# fi
 
 # # This argument generally should not be used by the user, but it is needed for
 # # the CI process.

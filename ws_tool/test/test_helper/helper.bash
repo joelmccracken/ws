@@ -8,10 +8,10 @@ _setup_common() {
    # get the containing directory of this file
    # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
    # as those will point to the bats executable's location or the preprocessed file respectively
-   PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/../" >/dev/null 2>&1 && pwd )"
+   PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/../../" >/dev/null 2>&1 && pwd )"
    # echo "$PROJECT_ROOT" >&3
    # make executables in src/ visible to PATH
-   PATH="$PROJECT_ROOT:/bin/:$PATH"
+   PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
 }
 
 retfunc() {
@@ -27,4 +27,9 @@ retfunc() {
     done
     # declare -p __ret
     eval "$orig_sets"
+}
+
+
+dump_output() {
+    echo "$output" 1>&3
 }

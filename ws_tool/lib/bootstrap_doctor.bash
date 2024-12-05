@@ -37,18 +37,16 @@ prop_ws_check_workstation_dir() {
 }
 
 prop_ws_check_workstation_dir_fix() {
-  if ! prop_ws_check_workstation_dir > /dev/null 2>&1; then
-    # TODO this is basically a copy/paste of ws_install.sh
-    # somehow figure out another way to do this?
-    TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
+  # TODO this is basically a copy/paste of ws_install.sh
+  # somehow figure out another way to do this?
+  TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
 
-    # installer of ws tool/project
-    cd "$TMPDIR"
-    curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
+  # installer of ws tool/project
+  cd "$TMPDIR"
+  curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
-    mkdir -p "$WORKSTATION_DIR"
-    mv "${TMPDIR}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
-  fi
+  mkdir -p "$WORKSTATION_DIR"
+  mv "${TMPDIR}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
 }
 
 prop_ws_check_workstation_repo() {
@@ -102,6 +100,48 @@ bootstrap_command_setup() {
 }
 
 bootstrap_command() {
-  echo BOOTSTRAP HERE:
+  echo "bootstrapping '$WORKSTATION_NAME'"
+
+
+
+  ensure_props "${bootstrap_props[@]}"
+}
+
+bootstrap_props=(
   prop_ws_check_workstation_dir
+  prop_ws_check_workstation_repo
+)
+
+ensure_props () {
+  local props=("$@")
+  local prop_results
+  local i
+  for ((i=0;i < ${#props[@]}; i++)); do
+    local current="${props[i]}"
+    echo "checking: $current..."
+    "$current"
+    prop_result="$?"
+    if (( prop_result == 0 )); then
+       echo "checking: $current ... OK"
+    else
+       echo "checking: $current ... FAIL"
+       echo "fixing: $current ..."
+       "${current}_fix"
+       fix_result="$?"
+       if (( prop_result == 0 )); then
+          echo "fixing: $current .... OK"
+          "$current"
+          if (( prop_result == 0 )); then
+             echo "checking: $current .... OK"
+          else
+             echo "checking: $current .... FAIL"
+             echo "prop $current still failing after running fix, aborting"
+          fi
+       else
+          echo "fixing: $current .... FAIL"
+          echo "error while fixing $current, aborting"
+          exit 88
+       fi
+    fi
+  done
 }

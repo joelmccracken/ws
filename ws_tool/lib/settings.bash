@@ -1,6 +1,6 @@
 WORKSTATION_NAME_ARG=
-WORKSTATION_NAME=
 
+: "${WORKSTATION_NAME:=}"
 : "${WORKSTATION_VERBOSE:=false}"
 : "${WORKSTATION_LOG_LEVEL:=error}"
 : "${WORKSTATION_CONFIG_DIR:=$HOME/.config/workstation}"
@@ -10,6 +10,7 @@ WORKSTATION_NAME=
 : "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/workstation.git"}"
 : "${WORKSTATION_VERSION:=master}"
 
+export WORKSTATION_NAME # META:workstation_setting
 export WORKSTATION_VERBOSE # META:workstation_setting
 export WORKSTATION_LOG_LEVEL # META:workstation_setting
 export WORKSTATION_DIR # META:workstation_setting

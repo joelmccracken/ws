@@ -8,3 +8,12 @@ setting up
   - maybe use a different dir as source?
 - customize ws_profile/settings.sh (where should this go?)
    can run gen
+
+
+setup steps
+configure any env vars if want installed elsewhere
+curl ws_install, run it w bash
+execute ws bootstrap ()
+- at this point, where should configurations be?
+implement a -i or -q for interactive/quiet? (-i default?)
+where should the settings and config file be located?
