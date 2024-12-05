@@ -68,6 +68,14 @@ process_cli_args() {
         WORKSTATION_NAME_ARG="${args[i+1]}";
         (( i+=1 ));
         ;;
+      -c|--config)
+        WORKSTATION_CONFIG_ARG="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      -s|--settings)
+        WORKSTATION_SETTINGS_ARG="${args[i+1]}";
+        (( i+=1 ));
+        ;;
       -h|--help|help)
         usage_and_quit 0;
         ;;
@@ -87,7 +95,7 @@ process_cli_args() {
     esac
   done
 
-  [ -z "$WORKSTATION_NAME_ARG" ] || WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
+  [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG" :
   return 0
 }
 
@@ -100,6 +108,14 @@ ws_main() {
   . "$WORKSTATION_SETTINGS_FILE"
 
   process_cli_args "${WS_COMMAND_ARGUMENTS[@]}"
+
+  if [ -n "$WORKSTATION_SETTINGS_ARG" ]; then
+    . "$WORKSTATION_SETTINGS_FILE"
+  fi
+
+  if [ -n "$WORKSTATION_CONFIG_ARG" ]; then
+    . "$WORKSTATION_CONFIG_ARG"
+  fi
 
   if [ "$WORKSTATION_VERBOSE" = "true" ]; then
     set -x
