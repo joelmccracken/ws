@@ -88,8 +88,6 @@ process_cli_args() {
   done
 
   [ -z "$WORKSTATION_NAME_ARG" ] || WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
-  # : "${WORKSTATION_NAME:=}"
-
   return 0
 }
 
