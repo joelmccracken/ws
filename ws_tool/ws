@@ -95,7 +95,8 @@ process_cli_args() {
     esac
   done
 
-  [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG" :
+ [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
+
   return 0
 }
 
@@ -109,17 +110,13 @@ ws_main() {
 
   process_cli_args "${WS_COMMAND_ARGUMENTS[@]}"
 
-  if [ -n "$WORKSTATION_SETTINGS_ARG" ]; then
-    . "$WORKSTATION_SETTINGS_FILE"
-  fi
-
-  if [ -n "$WORKSTATION_CONFIG_ARG" ]; then
-    . "$WORKSTATION_CONFIG_ARG"
-  fi
-
   if [ "$WORKSTATION_VERBOSE" = "true" ]; then
     set -x
   fi
+
+  [ -n "$WORKSTATION_SETTINGS_ARG" ] && . "$WORKSTATION_SETTINGS_ARG"
+
+  [ -n "$WORKSTATION_CONFIG_ARG" ] && . "$WORKSTATION_CONFIG_ARG"
 
   case "$WS_COMMAND" in
     bootstrap) bootstrap_command;;

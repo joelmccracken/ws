@@ -50,7 +50,7 @@ setup (){
     assert_equal "$WS_COMMAND" "doctor"
 }
 
-@test "process_cli_args parses the workstation name overriding current" {
+@test "process_cli_args parses the workstation name overriding env var" {
     export WORKSTATION_NAME=goofy
     WS_COMMAND_ARGUMENTS=(-n foofy)
     process_cli_args
