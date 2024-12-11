@@ -2,7 +2,7 @@
 setup (){
     load 'test_helper/helper'
     _setup_common
-    source "$PROJECT_ROOT/lib/logging.bash"
+    . "$PROJECT_ROOT/ws_tool/lib/logging.bash"
 }
 
 @test "trying logging code" {
@@ -28,5 +28,3 @@ setup (){
     run debug "hello world" 2>&1
     refute_output --partial 'hello world'
 }
-
-# export WS_COMMAND_ARGUMENTS=(bootstrap glamdring); source ws; process_cli_args; echo $?

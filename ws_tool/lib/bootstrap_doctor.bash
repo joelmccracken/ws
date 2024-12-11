@@ -76,7 +76,7 @@ doctor_command() {
 bootstrap_command_setup() {
   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
       info "settings file exists, loading it";
-      source "$WORKSTATION_SETTINGS_FILE";
+      . "$WORKSTATION_SETTINGS_FILE";
 
       if [ -z "$WORKSTATION_NAME" ]; then
           echo "settings file loaded, but WORKSTATION_NAME not set."
@@ -128,9 +128,10 @@ ensure_props () {
        echo "fixing: $current ..."
        "${current}_fix"
        fix_result="$?"
-       if (( prop_result == 0 )); then
+       if (( fix_result == 0 )); then
           echo "fixing: $current .... OK"
           "$current"
+          prop_result="$?"
           if (( prop_result == 0 )); then
              echo "checking: $current .... OK"
           else

@@ -1,7 +1,7 @@
 setup (){
     load 'test_helper/helper'
     _setup_common
-    source "$PROJECT_ROOT/ws_tool/ws"
+    . "$PROJECT_ROOT/ws_tool/ws"
 }
 
 @test "supports help flag" {

@@ -30,35 +30,35 @@ EOF
 EOF
     export WORKSTATION_NAME=workstation_a
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
-    dump_output
+
     assert_success
 }
 
-# @test "the install script and then run ws bootstrap fresh dirs" {
-#     export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
-#     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/src"
-#     export WORKSTATION_VERSION=workcomp
+@test "the install script and then run ws bootstrap fresh dirs" {
+    export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
+    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/src"
+    export WORKSTATION_VERSION=workcomp
 
-#     cd "$(mktemp -d "/tmp/ws-installer-dl-dir-XXXXXX")"
+    cd "$(mktemp -d "/tmp/ws-installer-dl-dir-XXXXXX")"
 
-#     do_ws_install() {
-#         bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
-#     }
-#     run do_ws_install
+    do_ws_install() {
+        bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
+    }
+    run do_ws_install
 
-#     assert_success
-#     assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
+    assert_success
+    assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
 
-#     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
-#     export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
-#     export WORKSTATION_DIR="$WORKSTATION_DIR"
-# EOF
+    cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
+    export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
+    export WORKSTATION_DIR="$WORKSTATION_DIR"
+EOF
 
-#     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/config.sh"
-#     workstation_names=(workstation-a workstation-b)
-# EOF
+    cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/config.sh"
+    workstation_names=(workstation-a workstation-b)
+EOF
 
-#     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
+    run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
 
-#     assert_success
-# }
+    assert_success
+}
