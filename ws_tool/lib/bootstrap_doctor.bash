@@ -114,7 +114,7 @@ bootstrap_props=(
 
 ensure_props () {
   local props=("$@")
-  local prop_results
+  local prop_result fix_result
   local i
   for ((i=0;i < ${#props[@]}; i++)); do
     local current="${props[i]}"
