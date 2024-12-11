@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 setup (){
-    load 'test_helper/bats-support/load'
-    load 'test_helper/bats-assert/load'
     load 'test_helper/helper'
-
-    # get the containing directory of this file
-    # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
-    # as those will point to the bats executable's location or the preprocessed file respectively
-    PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/.." >/dev/null 2>&1 && pwd )"
-    # make executables in src/ visible to PATH
-    PATH="$PROJECT_ROOT:/bin/:$PATH"
-    . "$PROJECT_ROOT/lib/tools.bash"
+    _setup_common
     ws_reset_settings
 }
 
@@ -41,7 +32,7 @@ setup (){
     WORKSTATION_CONFIG_DIR="/tmp/workstation-dir-$RANDOM"
     WORKSTATION_REPO_GIT_ORIGIN='git@github.com:some-other-user/workstation.git'
     MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
-    . "$PROJECT_ROOT/lib/settings.bash"
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
     assert [ "$WORKSTATION_CONFIG_DIR" = "$WORKSTATION_CONFIG_DIR" ]
     assert [ "$WORKSTATION_CONFIG_FILE" = "$WORKSTATION_CONFIG_DIR/config.sh" ]

@@ -9,7 +9,7 @@ _setup_common() {
    # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
    # as those will point to the bats executable's location or the preprocessed file respectively
    PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/../../" >/dev/null 2>&1 && pwd )"
-   # echo "$PROJECT_ROOT" >&3
+   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
    # make executables in src/ visible to PATH
    PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
 }
@@ -29,7 +29,29 @@ retfunc() {
     eval "$orig_sets"
 }
 
-
 dump_output() {
     echo "$output" 1>&3
+}
+
+ws_get_all_settings() {
+   all_settings=()
+   while read line; do
+        if [[ "$line" == export*'META:workstation_setting'* ]]; then
+            without_export="${line/#export /}"
+            var_name="${without_export/%# META:workstation_setting/}"
+            all_settings+=("$var_name")
+        fi
+   done < "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+   __r=(${all_settings[@]})
+}
+
+ws_unset_settings() {
+    ws_get_all_settings
+    all_settings=("${__r[@]}")
+    unset "${all_settings[@]}"
+}
+
+ws_reset_settings () {
+    ws_unset_settings
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 }

@@ -4,9 +4,6 @@ setup (){
     source "$PROJECT_ROOT/ws_tool/ws"
 }
 
-
-
-
 @test "supports help flag" {
     run ws -h
     assert_output --partial 'Usage:'
