@@ -11,6 +11,7 @@ WS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
 
 . "${WS_SCRIPT_DIR}/lib/settings.bash"
 . "${WS_SCRIPT_DIR}/lib/logging.bash"
+. "${WS_SCRIPT_DIR}/lib/properties.bash"
 . "${WS_SCRIPT_DIR}/lib/bootstrap_doctor.bash"
 
 __ret= # hack to use return values
@@ -43,13 +44,7 @@ print_usage() {
     echo "-n NAME, --name NAME     : Specify the name of this workstation."
     echo "-s PATH, --settings PATH : Path to settings file to use."
     echo "-c PATH, --config PATH   : Path to configuration file."
-}
-
-print_workstation_names() {
-    echo "Possible workstation names are:"
-    echo "  - glamdring     (primary laptop)"
-    echo "  - belthronding  (cloud VM)"
-    echo "  - aeglos        (work computer)"
+    echo "-i, --interactive        : Interactive mode."
 }
 
 process_cli_args() {
@@ -79,6 +74,9 @@ process_cli_args() {
       -h|--help|help)
         usage_and_quit 0;
         ;;
+      -i|--interactive)
+        WORKSTATION_INTERACTIVE=true;
+        ;;
       -*|--*)
         echo "Unknown option ${args[i]}";
         exit 1;
@@ -90,12 +88,13 @@ process_cli_args() {
         WS_COMMAND="$current";
         ;;
       *)
-        echo UNKNOWN CASE;
+        error "unknown option or subcommand '$current'";
+        exit 10;
         ;;
     esac
   done
 
- [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
+  [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
 
   return 0
 }

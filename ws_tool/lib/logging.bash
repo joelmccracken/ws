@@ -22,8 +22,9 @@ log() {
 
   log_level_num "$this_lvl"
   this_lvl_num="$__ret";
+  msg="$this_lvl $(date): $@"
   if (( this_lvl_num <= global_lvl_num )); then
-    echo "$this_lvl $(date): $@" 1>&2
+    echo "$msg" 1>&2
   fi
 }
 

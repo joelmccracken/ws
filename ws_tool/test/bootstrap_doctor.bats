@@ -3,6 +3,7 @@
 setup (){
     load 'test_helper/helper'
     _setup_common
+    . "$PROJECT_ROOT/ws_tool/lib/properties.bash"
     . "$PROJECT_ROOT/ws_tool/lib/bootstrap_doctor.bash"
 }
 

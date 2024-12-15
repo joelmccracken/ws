@@ -9,6 +9,7 @@ WORKSTATION_NAME_ARG=
 : "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/src"}"
 : "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/workstation.git"}"
 : "${WORKSTATION_VERSION:=master}"
+: "${WORKSTATION_INTERACTIVE:=false}"
 
 export WORKSTATION_NAME # META:workstation_setting
 export WORKSTATION_VERBOSE # META:workstation_setting
