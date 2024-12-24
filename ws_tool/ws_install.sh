@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 : "${WORKSTATION_DIR:=$HOME/.config/workstation/workstation_source}"
-: "${WORKSTATION_VERSION:=master}"
+: "${WORKSTATION_VERSION:=workcomp}"
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 # installer of ws tool/project
