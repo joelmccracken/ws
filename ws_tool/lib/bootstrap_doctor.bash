@@ -47,14 +47,14 @@ ensure_props () {
     local current="$1"
     shift
     echo "checking: $current..."
-    __ret=
+    REPLY=
     "$current"
     prop_result="$?"
     if (( prop_result == 0 )); then
        echo "checking: $current ... OK"
-       if [ "$__ret" = "additional_props" ]; then
-         additional_props=("${__ret[@]:1}")
-         __ret= # unset to prevent any confusion on next run
+       if [ "$REPLY" = "additional_props" ]; then
+         additional_props=("${REPLY[@]:1}")
+         REPLY= # unset to prevent any confusion on next run
          echo  "$current defines additional properties, checking (${additional_props[@]})"
          set "${additional_props[@]}" "$@"
        fi

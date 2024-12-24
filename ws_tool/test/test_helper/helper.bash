@@ -25,7 +25,7 @@ retfunc() {
     set | while read i; do
         printf "VAR:%s" "$i";
     done
-    # declare -p __ret
+    # declare -p REPLY
     eval "$orig_sets"
 }
 
@@ -42,12 +42,12 @@ ws_get_all_settings() {
             all_settings+=("$var_name")
         fi
    done < "$PROJECT_ROOT/ws_tool/lib/settings.bash"
-   __r=(${all_settings[@]})
+   REPLY=(${all_settings[@]})
 }
 
 ws_unset_settings() {
     ws_get_all_settings
-    all_settings=("${__r[@]}")
+    all_settings=("${REPLY[@]}")
     unset "${all_settings[@]}"
 }
 

@@ -53,7 +53,7 @@ prop_a() {
     prop_exec_hist+=("a")
     echo "in prop_a"
     echo "a" >> "$props_test_tmp_file"
-    __ret=(additional_props prop_b prop_c)
+    REPLY=(additional_props prop_b prop_c)
     return 0
 }
 

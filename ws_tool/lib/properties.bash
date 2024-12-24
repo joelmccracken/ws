@@ -18,16 +18,16 @@
 # as fix did not work
 #
 # propery functions can define that they depend upon other properties by
-# setting the __ret global to an array where the first argument is
+# setting the REPLY global to an array where the first argument is
 # "additional_props" and subsequent arguments are those properties. for example,
 # say above property foo should have other props bar and baz, then the following
 # value would be appropriate:
-#   __ret=(additional_props prop_bar prop_baz)
+#   REPLY=(additional_props prop_bar prop_baz)
 # after prop foo returns with a zero exit code, these props are handled next.
 # By default, prop_foo would not be checked again after the other props are fulfilled, but
 # you could make it do this by for example
 #   prop_foo() {
-#    __ret=(additional_props prop_bar prop_baz prop_foo)
+#    REPLY=(additional_props prop_bar prop_baz prop_foo)
 #   }
 # Note that prop_foo is included at the end of the additional properties list.
 # Of course, you wouldn't want this exact example, otherwise it would imply
@@ -68,11 +68,11 @@ prop_ws_check_has_git_fix() {
 prop_ws_check_initial_tooling_setup()
 {
     if is_mac; then
-        __ret=(additional_props prop_ws_check_mac_initial_setup)
+        REPLY=(additional_props prop_ws_check_mac_initial_setup)
         return 0
     else
         if is_linux; then
-            __ret=(additional_props prop_ws_check_linux_initial_setup)
+            REPLY=(additional_props prop_ws_check_linux_initial_setup)
             return 0
         else
             error "unable to determine workstation system type (mac, linux)"

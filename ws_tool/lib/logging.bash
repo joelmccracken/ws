@@ -11,17 +11,17 @@ log_level_num() {
     debug)  lvl_num=8;;
     *) lvl_num=8;; # default at debug, something is wrong
   esac;
-  __ret="$lvl_num";
+  REPLY="$lvl_num";
 }
 
 log() {
   this_lvl="$1"
   shift;
   log_level_num "$WORKSTATION_LOG_LEVEL"
-  global_lvl_num="$__ret";
+  global_lvl_num="$REPLY";
 
   log_level_num "$this_lvl"
-  this_lvl_num="$__ret";
+  this_lvl_num="$REPLY";
   msg="$this_lvl $(date): $@"
   if (( this_lvl_num <= global_lvl_num )); then
     echo "$msg" 1>&2

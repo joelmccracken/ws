@@ -8,7 +8,7 @@ setup (){
 @test "trying logging code" {
     export BATS_VERBOSE_RUN=true
     run retfunc log_level_num error
-    assert_output --partial 'VAR:__ret=4'
+    assert_output --partial 'VAR:REPLY=4'
 }
 
 @test "logs by log level" {
