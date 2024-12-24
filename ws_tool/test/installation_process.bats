@@ -6,7 +6,7 @@ setup (){
 }
 
 @test "the install script and then run ws bootstrap from this project checkout" {
-    export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
+    export WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
@@ -40,12 +40,11 @@ EOF
 }
 
 @test "the install script from curl/github and then run ws bootstrap" {
-    export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
+    export WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
-    cd "$(mktemp -d "/tmp/ws-installer-dl-dir-XXXXXX")"
-
+    cd "$(_mktemp "ws-installer-dl-dir")"
     do_ws_install() {
         bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
     }

@@ -9,7 +9,7 @@ setup (){
 
 @test "prop_ws_check_workstation_dir" {
     ws_unset_settings
-    WORKSTATION_DIR="/tmp/workstation-dir-$RANDOM"
+    WORKSTATION_DIR="$(_mktemp "ws-dir")"
     WORKSTATION_VERSION=workcomp
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
@@ -25,7 +25,7 @@ setup (){
 
 @test "prop_ws_check_workstation_repo" {
     ws_unset_settings
-    WORKSTATION_DIR="/tmp/workstation-dir-$RANDOM"
+    WORKSTATION_DIR="$(_mktemp "ws-dir")"
     WORKSTATION_VERSION=workcomp
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
@@ -44,9 +44,7 @@ setup (){
     assert_success
 }
 
-
 props_test_tmp_file=
-
 declare -a prop_exec_hist
 
 prop_a() {
@@ -79,7 +77,7 @@ prop_f() {
 }
 
 @test "ensure props handles additional props correctly" {
-    props_test_tmp_file="/tmp/workstation-props-order-test-$RANDOM"
+    props_test_tmp_file="$(_mktemp "props-test-tmp")/file"
     echo "iv" >> "$props_test_tmp_file"
 
     prop_exec_hist=(iv)
@@ -89,7 +87,7 @@ prop_f() {
     # tested two ways, just keweping for now bc I have a feeling i'll want to see this in the future
     assert_equal "${prop_exec_hist[*]}" "iv a b c f"
 
-    assert_equal "$(cat "$props_test_tmp_file")"  "$(cat <<-EOF
+    assert_equal "$(cat "${props_test_tmp_file}")"  "$(cat <<-EOF
 iv
 a
 b
@@ -97,23 +95,4 @@ c
 f
 EOF
                  )"
-
-    # need to figur eout some other way to communicate... can I share a file?
-    # WORKSTATION_DIR="/tmp/workstation-dir-$RANDOM"
-    # WORKSTATION_VERSION=workcomp
-    # . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
-
-    # # set up the workstation dir, but wont set up git, just project source
-    # run prop_ws_check_workstation_dir_fix
-    # assert_success
-
-    # run prop_ws_check_workstation_repo
-    # assert_failure
-
-    # # WORKSTATION_REPO_GIT_ORIGIN=https://github.com/joelmccracken/workstation.git
-    # run prop_ws_check_workstation_repo_fix
-    # assert_success
-
-    # run prop_ws_check_workstation_repo
-    # assert_success
 }

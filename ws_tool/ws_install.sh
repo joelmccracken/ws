@@ -3,11 +3,10 @@
 : "${WORKSTATION_DIR:=$HOME/.config/workstation/workstation_source}"
 : "${WORKSTATION_VERSION:=master}"
 
-TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
-
+TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 # installer of ws tool/project
-cd "$TMPDIR"
+cd "$TMPINST"
 curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
 mkdir -p "$WORKSTATION_DIR"
-mv "${TMPDIR}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
+mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"

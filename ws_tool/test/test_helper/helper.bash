@@ -58,3 +58,7 @@ ws_reset_settings () {
     ws_unset_settings
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 }
+
+_mktemp() {
+    mktemp -d "${TMPDIR:-/tmp}/${1}.XXXXXXXXX"
+}

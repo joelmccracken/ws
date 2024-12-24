@@ -111,14 +111,13 @@ prop_ws_check_workstation_dir() {
 prop_ws_check_workstation_dir_fix() {
   # TODO this is basically a copy/paste of ws_install.sh
   # somehow figure out another way to do this?
-  TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")
-
+  TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
   # installer of ws tool/project
-  cd "$TMPDIR"
+  cd "$TMPINST"
   curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
   mkdir -p "$WORKSTATION_DIR"
-  mv "${TMPDIR}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
+  mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
 }
 
 prop_ws_check_workstation_repo() {
