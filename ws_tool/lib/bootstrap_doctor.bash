@@ -32,7 +32,7 @@ bootstrap_command() {
 
 bootstrap_props=(
   prop_ws_check_workstation_dir
-  prop_ws_check_has_git
+  prop_ws_check_initial_tooling_setup
   prop_ws_check_workstation_repo
 )
 

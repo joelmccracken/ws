@@ -71,11 +71,12 @@ prop_ws_check_initial_tooling_setup()
     REPLY=(additional_props \
       prop_ws_check_mac_cli_tools\
       prop_ws_check_mac_homebrew_installed\
+      prop_ws_check_mac_git_installed\
       )
     return 0
   else
     if is_linux; then
-      REPLY=(additional_props prop_ws_check_linux_initial_setup)
+      REPLY=(additional_props prop_ws_check_linux_git_installed)
       return 0
     else
       # TODO linux is assumed to be debian based
@@ -113,6 +114,30 @@ prop_ws_check_mac_homebrew_installed() {
 
 prop_ws_check_mac_homebrew_installed_fix() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+prop_ws_check_mac_git_installed() {
+  if which git > /dev/null; then
+    echo "git is detected"
+  else
+    echo "no git is detected"
+  fi
+}
+
+prop_ws_check_mac_git_installed_fix() {
+  brew install git
+}
+
+prop_ws_check_linux_git_installed() {
+  if which git > /dev/null; then
+    echo "git is detected"
+  else
+    echo "no git is detected"
+  fi
+}
+
+prop_ws_check_linux_git_installed_fix() {
+  sudo bash -c 'apt-get update && apt-get install git'
 }
 
 prop_ws_check_workstation_dir() {
