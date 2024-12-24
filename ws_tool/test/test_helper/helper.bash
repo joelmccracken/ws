@@ -3,6 +3,7 @@ _setup_common() {
    load 'test_helper/bats-support/load'
    load 'test_helper/bats-assert/load'
 
+   ws_unset_settings
    # get the containing directory of this file
    # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
    # as those will point to the bats executable's location or the preprocessed file respectively
@@ -10,6 +11,7 @@ _setup_common() {
    # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
    # make executables in src/ visible to PATH
    PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
+   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
 }
 
 retfunc() {
