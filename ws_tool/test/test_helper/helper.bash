@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 _setup_common() {
    # BATS_LIB_PATH="test_helper/bats-support:/opt/homebrew/lib:/opt/homebrew/Cellar/bats-support/0.3.0/lib:$BATS_LIB_PATH"
    load 'test_helper/bats-support/load'
@@ -43,12 +41,13 @@ ws_get_all_settings() {
             all_settings+=("$var_name")
         fi
    done < "$PROJECT_ROOT/ws_tool/lib/settings.bash"
-   REPLY=(${all_settings[@]})
+   read -ra REPLY <<< "${all_settings[@]}"
 }
 
 ws_unset_settings() {
+    REPLY=()
     ws_get_all_settings
-    all_settings=("${REPLY[@]}")
+    read -ra all_settings <<< "${REPLY[@]}"
     unset "${all_settings[@]}"
 }
 
