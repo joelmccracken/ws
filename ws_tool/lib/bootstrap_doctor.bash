@@ -43,17 +43,16 @@ ensure_props () {
   local current
 
   while (($#)); do
-    local current="$1"
+    local current="$1" prop_result
     shift
-    echo "xchecking: $current..."
-    REPLY=
-    "$current" || { prop_result="$?"; :; }
-    echo " prop result is $prop_result";
+    echo "checking: $current..."
+    REPLY=()
+    { "$current"; prop_result="$?"; : ; }
     if (( prop_result == 0 )); then
        echo "checking: $current ... OK"
-       if [ "$REPLY" = "additional_props" ]; then
+       if (( ${#REPLY[@]} > 1 )) && [[ "${REPLY[0]}" == "additional_props" ]]; then
          additional_props=("${REPLY[@]:1}")
-         REPLY= # unset to prevent any confusion on next run
+         REPLY=() # unset to prevent any confusion on next run
          echo  "$current defines additional properties, checking (${additional_props[@]})"
          set "${additional_props[@]}" "$@"
        fi
