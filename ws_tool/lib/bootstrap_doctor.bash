@@ -47,7 +47,8 @@ ensure_props () {
     shift
     echo "checking: $current..."
     REPLY=()
-    { "$current"; prop_result="$?"; : ; }
+    prop_result=0
+    "$current" || { prop_result="$?"; : ; }
     if (( prop_result == 0 )); then
        echo "checking: $current ... OK"
        if (( ${#REPLY[@]} > 1 )) && [[ "${REPLY[0]}" == "additional_props" ]]; then
