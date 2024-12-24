@@ -34,61 +34,85 @@
 # that foo would be checked again and again, ad infinitum.
 
 prop_ws_settings_file_check() {
-   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]]; then
-      echo "settings file exists";
-   else
-      echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
-   fi
+  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]]; then
+    echo "settings file exists";
+  else
+    echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
+  fi
 }
 
 prop_ws_settings_file_fix() {
-   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-      echo "settings file exists";
-   else
-      echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
-   fi
+  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
+    echo "settings file exists";
+  else
+    echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
+  fi
 }
 
 prop_ws_check_has_git() {
-    if which git > /dev/null; then
-        echo "git is detected"
-    else
-        echo "no git is detected"
-    fi
+  if which git > /dev/null; then
+    echo "git is detected"
+  else
+    echo "no git is detected"
+  fi
 }
 
 prop_ws_check_has_git_fix() {
-    if is_mac; then
-        echo "git is detected"
-    else
-        echo "no git is detected"
-    fi
+  if is_mac; then
+    echo "git is detected"
+  else
+    echo "no git is detected"
+  fi
 }
 
 prop_ws_check_initial_tooling_setup()
 {
-    if is_mac; then
-        REPLY=(additional_props prop_ws_check_mac_initial_setup)
-        return 0
+  if is_mac; then
+    REPLY=(additional_props \
+      prop_ws_check_mac_cli_tools\
+      prop_ws_check_mac_homebrew_installed\
+      )
+    return 0
+  else
+    if is_linux; then
+      REPLY=(additional_props prop_ws_check_linux_initial_setup)
+      return 0
     else
-        if is_linux; then
-            REPLY=(additional_props prop_ws_check_linux_initial_setup)
-            return 0
-        else
-            error "unable to determine workstation system type (mac, linux)"
-            return 1
-        fi
+      # TODO linux is assumed to be debian based
+      error "unable to determine workstation system type (mac, linux)"
+      return 1
     fi
+  fi
 }
 
 # check to ensure that xcode cli tools are installed
 # this command will tell without itself trying to install them
-prop_ws_check_mac_initial_setup () {
-    pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+prop_ws_check_mac_cli_tools () {
+  if pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
+    echo "cli tools package is installed";
+    return 0
+  else
+    echo "cli tools package not installed" 1>&2
+    return 1
+  fi
 }
 
-prop_ws_check_mac_initial_setup_fix () {
-    sudo bash -c '(xcodebuild -license accept; xcode-select --install) || exit 0'
+prop_ws_check_mac_cli_tools_fix () {
+  sudo bash -c '(xcodebuild -license accept; xcode-select --install) || exit 0'
+}
+
+prop_ws_check_mac_homebrew_installed() {
+  if which brew > /dev/null; then
+    echo "homebrew is installed"
+    return 0
+  else
+    echo "homebrew is not installed" 1>&2;
+    return 1
+  fi
+}
+
+prop_ws_check_mac_homebrew_installed_fix() {
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
 prop_ws_check_workstation_dir() {
