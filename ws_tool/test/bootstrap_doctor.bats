@@ -82,7 +82,7 @@ prop_f() {
 
     prop_exec_hist=(iv)
     ws_unset_settings
-    ensure_props prop_a prop_f
+    run_props prop_a prop_f
 
     # tested two ways, just keweping for now bc I have a feeling i'll want to see this in the future
     assert_equal "${prop_exec_hist[*]}" "iv a b c f"

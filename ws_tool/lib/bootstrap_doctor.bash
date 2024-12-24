@@ -6,8 +6,7 @@ set -euo pipefail
 # decide to keep these in the same file.
 doctor_command() {
   echo "doctor!";
-  prop_ws_check_workstation_dir
-  prop_ws_settings_file_check
+  run_props --check-only "${bootstrap_props[@]}"
 }
 
 bootstrap_command_setup() {
@@ -25,7 +24,7 @@ bootstrap_command_setup() {
 bootstrap_command() {
   echo "bootstrapping base properties"
 
-  ensure_props "${bootstrap_props[@]}"
+  run_props "${bootstrap_props[@]}"
 
   echo "bootstrapping workstation properties for ${WORKSTATION_NAME}"
 }
@@ -36,11 +35,18 @@ bootstrap_props=(
   prop_ws_check_workstation_repo
 )
 
-ensure_props () {
+run_props () {
+  local check_only=
+  if [[ "$1" == "--check-only" ]]; then
+    check_only=true;
+    shift;
+  fi
+
   local initial_props=("$@")
   local props=("${initial_props[@]}")
   local prop_result fix_result
   local current
+  local failed_props=()
 
   while (($#)); do
     local current="$1" prop_result
@@ -58,25 +64,29 @@ ensure_props () {
          set "${additional_props[@]}" "$@"
        fi
     else
-       echo "checking: $current ... FAIL"
-       echo "fixing: $current ..."
-       interact "${current}_fix"
-       fix_result="$?"
-       if (( fix_result == 0 )); then
+      echo "checking: $current ... FAIL"
+      if [[ -n "$check_only" ]]; then
+        failed_props+=("$current")
+      else
+        echo "fixing: $current ..."
+        interact "${current}_fix"
+        fix_result="$?"
+        if (( fix_result == 0 )); then
           echo "fixing: $current .... OK"
           "$current"
           prop_result="$?"
           if (( prop_result == 0 )); then
-             echo "checking: $current .... OK"
+            echo "checking: $current .... OK"
           else
-             echo "checking: $current .... FAIL"
-             echo "prop $current still failing after running fix, aborting"
+            echo "checking: $current .... FAIL"
+            echo "prop $current still failing after running fix, aborting"
           fi
-       else
+        else
           echo "fixing: $current .... FAIL"
           echo "error while fixing $current, aborting"
           exit 88
-       fi
+        fi
+      fi
     fi
   done
 }
