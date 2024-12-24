@@ -97,7 +97,7 @@ interact() {
   fi
 
   while [ "$has_continue" != "1" ]; do
-    read -e -n 1 -p "About to run '$1', continue? (c/q/!/p/?):" response
+    read -r -e -n 1 -p "About to run '$1', continue? (c/q/!/p/?):" response
     case "$response" in
       c) has_continue=1;;
       q) echo "quitting..."; exit 0;;

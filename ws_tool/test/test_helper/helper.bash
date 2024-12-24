@@ -18,11 +18,12 @@ retfunc() {
     # use set -o posix
     # plus saving and restoring sets
     # to make set print vars (and not functions)
-    local orig_sets=$(set +o)
+    local orig_sets
+    orig_sets=$(set +o)
     set -o posix
     "$@";
 
-    set | while read i; do
+    set | while read -r i; do
         printf "VAR:%s" "$i";
     done
     # declare -p REPLY
@@ -35,7 +36,7 @@ dump_output() {
 
 ws_get_all_settings() {
    all_settings=()
-   while read line; do
+   while read -r line; do
         if [[ "$line" == export*'META:workstation_setting'* ]]; then
             without_export="${line/#export /}"
             var_name="${without_export/%# META:workstation_setting/}"

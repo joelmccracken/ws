@@ -40,7 +40,7 @@ function assert_input() {
   local label=$1
   local expected=$2
   local actual
-  read actual
+  read -r actual
 
   if [[ "$expected" == "$actual" ]]; then
     echo "$label is correct"
@@ -62,7 +62,7 @@ else
 fi
 
 $EMACS_PATH -Q --batch --eval '(progn (princ emacs-version) (terpri))' | {
-  read actual
+  read -r actual
   if [[ "$actual" == "27.1" || "$actual" == "27.2" || "$actual" == "28.1" || "$actual" == "28.2" ]]; then
     echo "emacs version is correct"
   else
@@ -72,7 +72,7 @@ $EMACS_PATH -Q --batch --eval '(progn (princ emacs-version) (terpri))' | {
 }
 
 $EMACS_PATH -l "$emacs_init" --batch --eval '(progn (princ doom-version) (terpri))' | {
-  read actual;
+  read -r actual;
   if [[ "$actual" == "21.12.0-alpha" || "$actual" == "3.0.0-dev" || "$actual" == "3.0.0-pre" ]]; then
     echo "doom version is correct"
   else
