@@ -18,7 +18,12 @@ setup (){
 
     # below we use the stuff from this project checkout however to test it
     # HACK get the tool to actually run code from current local checkout
-    export WORKSTATION_DIR="${PROJECT_ROOT}"
+    { cd "$PROJECT_ROOT";
+      git ls-files | while read -r gitfile; do
+          cp -r "$gitfile" "$WORKSTATION_DIR/$gitfile"
+      done;
+    }
+    # export WORKSTATION_DIR="${PROJECT_ROOT}"
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
     export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
