@@ -37,5 +37,5 @@ function debug() {
 }
 
 function info() {
-    log info "$@"
+  log info "$@"
 }
