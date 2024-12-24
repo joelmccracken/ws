@@ -16,13 +16,14 @@ ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
 . "${ws_script_dir}/lib/properties.bash"
 . "${ws_script_dir}/lib/bootstrap_doctor.bash"
 
-REPLY= # global "out" var, hack to use return values
+REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
 declare -a ws_command_arguments
 workstation_bootstrap_initial_config_dir=
 workstation_name_arg=
 workstation_settings_arg=
 workstation_config_arg=
+workstation_interactive=
 
 usage_and_quit() {
     print_usage
