@@ -40,16 +40,15 @@ ensure_props () {
   local initial_props=("$@")
   local props=("${initial_props[@]}")
   local prop_result fix_result
-  local i
   local current
 
   while (($#)); do
     local current="$1"
     shift
-    echo "checking: $current..."
+    echo "xchecking: $current..."
     REPLY=
     "$current"
-    prop_result="$?"
+    echo " prop result is $prop_result";
     if (( prop_result == 0 )); then
        echo "checking: $current ... OK"
        if [ "$REPLY" = "additional_props" ]; then

@@ -34,7 +34,7 @@ EOF
     assert_success
 }
 
-@test "the install script and then run ws bootstrap fresh dirs" {
+@test "the install script from curl/github and then run ws bootstrap" {
     export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
@@ -55,9 +55,9 @@ EOF
 EOF
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/config.sh"
-    workstation_names=(workstation-a workstation-b)
+    workstation_names=(workstation_a workstation_b)
 EOF
-
+    export WORKSTATION_NAME=workstation_b
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
 
     assert_success
