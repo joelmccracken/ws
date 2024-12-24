@@ -43,3 +43,77 @@ setup (){
     run prop_ws_check_workstation_repo
     assert_success
 }
+
+
+props_test_tmp_file=
+
+declare -a prop_exec_hist
+
+prop_a() {
+    prop_exec_hist+=("a")
+    echo "in prop_a"
+    echo "a" >> "$props_test_tmp_file"
+    __ret=(additional_props prop_b prop_c)
+    return 0
+}
+
+prop_b() {
+    prop_exec_hist+=("b")
+    echo "in prop_b"
+    echo "b" >> "$props_test_tmp_file"
+    return 0
+}
+
+prop_c() {
+    prop_exec_hist+=("c")
+    echo "in prop_c"
+    echo "c" >> "$props_test_tmp_file"
+    return 0
+}
+
+prop_f() {
+    prop_exec_hist+=("f")
+    echo "f" >> "$props_test_tmp_file"
+    echo "in prop_f"
+    return 0
+}
+
+@test "ensure props handles additional props correctly" {
+    props_test_tmp_file="/tmp/workstation-props-order-test-$RANDOM"
+    echo "iv" >> "$props_test_tmp_file"
+
+    prop_exec_hist=(iv)
+    ws_unset_settings
+    ensure_props prop_a prop_f
+
+    # tested two ways, just keweping for now bc I have a feeling i'll want to see this in the future
+    assert_equal "${prop_exec_hist[*]}" "iv a b c f"
+
+    assert_equal "$(cat "$props_test_tmp_file")"  "$(cat <<-EOF
+iv
+a
+b
+c
+f
+EOF
+                 )"
+
+    # need to figur eout some other way to communicate... can I share a file?
+    # WORKSTATION_DIR="/tmp/workstation-dir-$RANDOM"
+    # WORKSTATION_VERSION=workcomp
+    # . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    # # set up the workstation dir, but wont set up git, just project source
+    # run prop_ws_check_workstation_dir_fix
+    # assert_success
+
+    # run prop_ws_check_workstation_repo
+    # assert_failure
+
+    # # WORKSTATION_REPO_GIT_ORIGIN=https://github.com/joelmccracken/workstation.git
+    # run prop_ws_check_workstation_repo_fix
+    # assert_success
+
+    # run prop_ws_check_workstation_repo
+    # assert_success
+}

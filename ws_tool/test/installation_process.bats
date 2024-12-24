@@ -7,7 +7,7 @@ setup (){
 
 @test "the install script and then run ws bootstrap from this project checkout" {
     export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
-    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/src"
+    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
     run ws_install.sh
@@ -36,7 +36,7 @@ EOF
 
 @test "the install script and then run ws bootstrap fresh dirs" {
     export WORKSTATION_CONFIG_DIR="$(mktemp -d "/tmp/ws-config-dir-XXXXXX")"
-    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/src"
+    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
     cd "$(mktemp -d "/tmp/ws-installer-dl-dir-XXXXXX")"

@@ -7,23 +7,40 @@
 # (ensures that any other bash processes will use builtin too)
 # set -euo pipefail
 
-WS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-. "${WS_SCRIPT_DIR}/lib/settings.bash"
-. "${WS_SCRIPT_DIR}/lib/logging.bash"
-. "${WS_SCRIPT_DIR}/lib/properties.bash"
-. "${WS_SCRIPT_DIR}/lib/bootstrap_doctor.bash"
+# set -x
+
+. "${ws_script_dir}/lib/settings.bash"
+. "${ws_script_dir}/lib/logging.bash"
+. "${ws_script_dir}/lib/properties.bash"
+. "${ws_script_dir}/lib/bootstrap_doctor.bash"
 
 __ret= # hack to use return values
-WS_COMMAND=help # show help if nothing provided
-WS_COMMAND_ARGUMENTS=( "$@" ) # save a copy
-
-# echo "hello:" "$@" ${#WS_COMMAND_ARGUMENTS}
-# echo WS_COMMAND_ARGUMENTS is "${WS_COMMAND_ARGUMENTS[@]}"
+ws_command=help # show help if nothing provided
+declare -a ws_command_arguments
+workstation_bootstrap_initial_config_dir=
+workstation_name_arg=
+workstation_settings_arg=
+workstation_config_arg=
 
 usage_and_quit() {
     print_usage
     exit "$1"
+}
+
+load_if_exists() {
+  if [ -f "$1" ]; then
+    . "$1"
+  fi
+}
+
+load_expected() {
+  if [ -f "$1" ]; then
+    . "$1"
+  else
+    error "ws: init: expected to load file $1, but no file found"
+  fi
 }
 
 print_usage() {
@@ -45,12 +62,20 @@ print_usage() {
     echo "-s PATH, --settings PATH : Path to settings file to use."
     echo "-c PATH, --config PATH   : Path to configuration file."
     echo "-i, --interactive        : Interactive mode."
+    echo "-b, --bootstrap-initial-config-dir:  Initial configuration directory."
+    echo "       When first setting up a new workstation, admin can download"
+    echo "       their user workstation configuration data, point ws at it,"
+    echo "       and have ws move it into the target space during bootstrap."
 }
 
 process_cli_args() {
-  local args=("${WS_COMMAND_ARGUMENTS[@]}")
+  local args=("${ws_command_arguments[@]}")
   local i;
-  for ((i=0;i < ${#args[@]}; i++)); do
+  # i starts at 1 to skip past the first entry (static string "args")
+  # this prevents array from being empty
+  # I believe this is a consequences of set -u, but I don't know enough of the
+  # tradeoffs to decide to do it differently
+  for ((i=1;i < ${#args[@]}; i++)); do
     debug "iter:$i ; current:${args[i]} ; max:${#args[@]}"
     local current="${args[i]}"
 
@@ -60,32 +85,36 @@ process_cli_args() {
         WORKSTATION_LOG_LEVEL=info
         ;;
       -n|--name)
-        WORKSTATION_NAME_ARG="${args[i+1]}";
+        workstation_name_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       -c|--config)
-        WORKSTATION_CONFIG_ARG="${args[i+1]}";
+        workstation_config_arg="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      -b|--bootstrap-initial-config-dir)
+        workstation_bootstrap_initial_config_dir_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       -s|--settings)
-        WORKSTATION_SETTINGS_ARG="${args[i+1]}";
+        workstation_settings_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       -h|--help|help)
         usage_and_quit 0;
         ;;
       -i|--interactive)
-        WORKSTATION_INTERACTIVE=true;
+        workstation_interactive=true;
         ;;
       -*|--*)
         echo "Unknown option ${args[i]}";
         exit 1;
         ;;
       bootstrap)
-        WS_COMMAND="$current";
+        ws_command="$current";
         ;;
       doctor)
-        WS_COMMAND="$current";
+        ws_command="$current";
         ;;
       *)
         error "unknown option or subcommand '$current'";
@@ -93,8 +122,6 @@ process_cli_args() {
         ;;
     esac
   done
-
-  [ -n "$WORKSTATION_NAME_ARG" ] && WORKSTATION_NAME="$WORKSTATION_NAME_ARG"
 
   return 0
 }
@@ -104,334 +131,33 @@ help_command() {
 }
 
 ws_main() {
-  . "$WORKSTATION_CONFIG_FILE"
-  . "$WORKSTATION_SETTINGS_FILE"
+  ws_command_arguments=(args "$@") # save a copy
+  # TODO should load these after processing args, as args can specify these paths
+  # well i guess it does below; I need to think about this. what would the proper behavior be etc
+  # like, if there was a file in the expected default location, _and_ a file is specified on the CLI,
+  # as I have the code at this instant it would run both. Fine. but is that correct?
+  # I guess i could document it either way. but what woudl be the "expected" behavior??
+  load_if_exists "$WORKSTATION_CONFIG_FILE"
+  load_if_exists "$WORKSTATION_SETTINGS_FILE"
 
-  process_cli_args "${WS_COMMAND_ARGUMENTS[@]}"
+  process_cli_args
+  [ -n "$workstation_name_arg" ] && WORKSTATION_NAME="$workstation_name_arg"
 
   if [ "$WORKSTATION_VERBOSE" = "true" ]; then
     set -x
   fi
 
-  [ -n "$WORKSTATION_SETTINGS_ARG" ] && . "$WORKSTATION_SETTINGS_ARG"
+  [ -n "$workstation_settings_arg" ] && load_expected "$workstation_settings_arg"
+  [ -n "$workstation_config_arg" ] && load_expected "$workstation_config_arg"
 
-  [ -n "$WORKSTATION_CONFIG_ARG" ] && . "$WORKSTATION_CONFIG_ARG"
-
-  case "$WS_COMMAND" in
+  case "$ws_command" in
     bootstrap) bootstrap_command;;
     doctor) doctor_command;;
     "help") help_command;;
-    *) error "unknown command $WS_COMMAND; how did we get here?"
+    *) error "unknown command $ws_command; how did we get here?"
   esac
 }
 
 # if being run directly, run main
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  ws_main
-fi
+(return 0 2>/dev/null) || ws_main "$@"
 
-# # This argument generally should not be used by the user, but it is needed for
-# # the CI process.
-# # When the CI process starts, we start out with a check out of the code for this
-# # commit in a directory on the CI machine. However, this is not how workstation runs:
-# # - part of the job of workstation is getting its own code from the server
-# # - workstation expects the code to be in a specific directory, that is, ~/workstation
-# # Because of this (and possibly other reasons that escape me now), even though the
-# # source code of the current commit is checked out on the CI machine already,
-# # the CI process re-downloads the code (via this script). The specific SHA to get
-# # is passed via the argument below. However, if actually being used by a user,
-# # generally user will always want to use the most up to date content of the master
-# # branch, so this can be ignored.
-# # I think probably this sha should just be passed in as an environment variable
-# # instead of a CLI argument, as that seems a bit less confusing to me.
-# if [ -z "${2+x}" ]; then
-#     export WORKSTATION_BOOTSTRAP_COMMIT=origin/master
-# else
-#     export WORKSTATION_BOOTSTRAP_COMMIT="$2"
-# fi
-# # [[file:../../workstation.org::workstation_foundation][workstation_foundation]]
-
-# export WORKSTATION_DIR="$HOME/workstation"
-# export WORKSTATION_EMACS_CONFIG_DIR=~/.config/emacs
-# export WORKSTATION_GIT_ORIGIN='git@github.com:joelmccracken/workstation.git'
-# export WORKSTATION_GIT_ORIGIN_PUB='https://github.com/joelmccracken/workstation.git'
-# export WORKSTATION_HOST_CURRENT_SETTINGS_DIR=$WORKSTATION_DIR/hosts/current
-
-# sourceIfExists () {
-#     if [ -f "$1" ]; then
-#         source "$1"
-#     fi
-# }
-
-# if [ -z "${WORKSTATION_NAME+x}" ] ; then
-#     sourceIfExists "$WORKSTATION_HOST_CURRENT_SETTINGS_DIR/settings.sh"
-# fi
-
-
-# if [ -z "${WORKSTATION_NAME+x}" ] ; then
-#     echo WARNING: no environment variable WORKSTATION_NAME provided.
-#     echo This variable should be exported by a script at:
-#     echo $WORKSTATION_DIR/hosts/current/settings.sh
-#     echo see workstation.org for more information
-# else
-#     export WORKSTATION_HOST_SETTINGS_SRC_DIR=$WORKSTATION_DIR/hosts/$WORKSTATION_NAME
-# fi
-# # workstation_foundation ends here
-# # These are the various versions of things that should be installed. Keeping them
-# # in one place like this make them easier to keep track of.
-# # [[file:../../../workstation.org::workstation_setup_versions][workstation_setup_versions]]
-# export WORKSTATION_NIX_PM_VERSION=nix-2.11.1
-# export WORKSTATION_NIX_DARWIN_VERSION=f6648ca0698d1611d7eadfa72b122252b833f86c
-# export WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
-# # workstation_setup_versions ends here
-# # hereafter, we use many helper functions. Here they are defined up front,
-# # as some of them are used throughout the other code.
-
-# # [[file:workstation.org::is_mac_function][is_mac_function]]
-# function is_mac() {
-#     [[ "$(uname)" == 'Darwin' ]]
-# }
-# # is_mac_function ends here
-
-# # [[file:workstation.org::is_linux_function][is_linux_function]]
-# function is_linux() {
-#     [[ "$(uname)" == 'Linux' ]]
-# }
-# # is_linux_function ends here
-
-# # [[file:workstation.org::info_function][info_function]]
-# function info() {
-#     echo "INFO ========= $(date) $@"
-# }
-# # info_function ends here
-
-# # [[file:workstation.org::polite_git_checkout_function][polite_git_checkout_function]]
-# function polite-git-checkout () {
-#     DIR=$1
-#     REPO=$2
-#     ORIGIN=$3
-
-#     cd $DIR
-#     git init
-#     git remote add origin $REPO
-#     git fetch
-
-#     # wont work (it will have already been deleted from the index)
-#     git reset --mixed origin/master
-#     # This formulation of the checkout command seems to work most reliably
-#     git status -s | grep -E '^ D' | sed -E 's/^ D //' | xargs -n 1 -- git checkout
-#     # fixing; used public to start, but want to be able to push
-#     git remote set-url origin $ORIGIN
-# }
-# # polite_git_checkout_function ends here
-
-# # [[file:workstation.org::mv_dated_backup_function][mv_dated_backup_function]]
-# function mv_dated_backup() {
-#     local THEDIR="$1"
-#     if test -e "$THEDIR"; then
-#         mv "$THEDIR" "${THEDIR}-$(date +"%s")"
-#     fi
-# }
-# # mv_dated_backup_function ends here
-
-# # [[file:workstation.org::is_git_repo_cloned_at_function][is_git_repo_cloned_at_function]]
-# function is_git_repo_cloned_at(){
-#     cd $1 && [[ "$(git remote get-url origin)" == "$2" ]]
-# }
-# # is_git_repo_cloned_at_function ends here
-
-# # [[file:workstation.org::clone_repo_and_checkout_at_function][clone_repo_and_checkout_at_function]]
-# function clone_repo_and_checkout_at() {
-#     mv_dated_backup $1
-#     info cloning repo into $1
-#     git clone $2 $1
-#     cd $1
-#     info checking out commit $3
-#     git checkout $3
-#     info setting origin
-#     git remote set-url origin $4
-# }
-# # clone_repo_and_checkout_at_function ends here
-
-# # [[file:workstation.org::xcode_setup_function][xcode_setup_function]]
-# function xcode_setup() {
-#     # this will accept the license that xcode requires from the command line
-#     # and also install xcode if required.
-#     sudo bash -c '(xcodebuild -license accept; xcode-select --install) || exit 0'
-# }
-# # xcode_setup_function ends here
-
-# # [[file:workstation.org::is_brew_installed_function][is_brew_installed_function]]
-# function is_brew_installed() {
-#     which brew > /dev/null
-# }
-# # is_brew_installed_function ends here
-
-# # [[file:workstation.org::homebrew_setup_function][homebrew_setup_function]]
-# function homebrew_setup() {
-#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# }
-# # homebrew_setup_function ends here
-
-# # [[file:workstation.org::update_apt_install_git_function][update_apt_install_git_function]]
-# function update_apt_install_git() {
-#     sudo bash -c 'apt-get update && apt-get install git'
-# }
-# # update_apt_install_git_function ends here
-
-# # [[file:workstation.org::*Bootstraping Script][is_git_repo_cloned_at_function]]
-# function is_git_repo_cloned_at(){
-#     cd $1 && [[ "$(git remote get-url origin)" == "$2" ]]
-# }
-# # is_git_repo_cloned_at_function ends here
-
-# # [[file:workstation.org::*Bootstraping Script][clone_repo_and_checkout_at_function]]
-# function clone_repo_and_checkout_at() {
-#     mv_dated_backup $1
-#     info cloning repo into $1
-#     git clone $2 $1
-#     cd $1
-#     info checking out commit $3
-#     git checkout $3
-#     info setting origin
-#     git remote set-url origin $4
-# }
-# # clone_repo_and_checkout_at_function ends here
-# info starting workstation bootstrap
-# is_mac && {
-#     info ensuring xcode is installed
-#     xcode_setup
-#     info finished ensuring xcode is installed
-
-#     info ensuring brew is installed
-#     if ! is_brew_installed; then
-#         homebrew_setup
-#     fi
-#     info finished ensuring brew is installed
-
-#     info installing git
-#     brew install git
-#     info finished installing git
-
-# }
-# is_linux && {
-#     info updating apt, installing git
-#     update_apt_install_git
-#     info finished updating apt, installing git
-# }
-# is_git_repo_cloned_at $WORKSTATION_DIR $WORKSTATION_GIT_ORIGIN || {
-#     clone_repo_and_checkout_at $WORKSTATION_DIR $WORKSTATION_GIT_ORIGIN_PUB \
-#         $WORKSTATION_BOOTSTRAP_COMMIT $WORKSTATION_GIT_ORIGIN
-# }
-# # at this point, this is hardly necessary; however, the gitignore file is handy
-# # i may explore getting rid of this repo entirely and just having a fresh
-# # repo without any origin in ~
-# info ensuring dotfiles repo is checked out
-
-# DOTFILES_ORIGIN='git@github.com:joelmccracken/dotfiles.git'
-
-# is_git_repo_cloned_at ~ "$DOTFILES_ORIGIN" ||
-#     polite-git-checkout ~ 'https://github.com/joelmccracken/dotfiles.git' \
-#         "$DOTFILES_ORIGIN"
-
-# info finished ensuring dotfiles repo is checked out
-# # each workstaion host I use has different settings needs.
-# # For example, my remote cloud hosted server has a different setup than
-# # my mac laptop, which has a different set up from my work computer.
-# # the way I have these settings specified is by having a directory in my home
-# # directory which has all of the needed files I would need for such differences.
-# # there are different directories for each host I maintain, but on a given host,
-# # one of those directories are symlinked into 'current' host, which other things
-# # can then refer to
-
-# export WORKSTATION_HOST_SETTINGS_SRC_DIR=$WORKSTATION_DIR/hosts/$WORKSTATION_NAME
-
-# info setting current host settings directory...
-# info workstation host settings directory: $WORKSTATION_HOST_SETTINGS_SRC_DIR
-
-# if [ -d $WORKSTATION_HOST_SETTINGS_SRC_DIR ]; then
-#     info setting current host directory to $WORKSTATION_HOST_SETTINGS_SRC_DIR;
-#     ln -s $WORKSTATION_HOST_SETTINGS_SRC_DIR $WORKSTATION_HOST_CURRENT_SETTINGS_DIR;
-# else
-#     echo ERROR $WORKSTATION_HOST_SETTINGS_SRC_DIR does not exist, must exit
-#     exit 5
-# fi
-
-# info ensuring nix is installed
-# ~/workstation/lib/shell/setup/ensure_nix_installed.sh
-
-# info finished ensuring nix is installed
-
-# info setting up nix.conf
-# ~/workstation/lib/shell/setup/install_system_nix_conf.sh
-
-# info restarting nix daemon
-# ~/workstation/lib/shell/setup/restart_nix_daemon.sh
-# info nix daemon restarted
-
-# NIX_DAEMON_PATH='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-# set +u
-# source "$NIX_DAEMON_PATH";
-# set -u
-
-# is_mac && {
-#     info installing darwin-nix
-#     ~/workstation/lib/shell/setup/install_nix_darwin.sh
-#     info finished installing darwin-nix
-# }
-
-
-# ~/workstation/lib/shell/setup/install_home_manager.sh
-
-# ~/workstation/lib/shell/setup/home-manager-flake-switch.sh
-
-# set +u
-# # evaluating this with set -u will cause an unbound variable error
-# source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
-# set -u
-
-# ~/workstation/lib/shell/setup/install_doom_emacs_no_nix.sh
-# info linking dotfiles that should be symlinked
-# bash ~/workstation/lib/shell/setup/link-dotfiles.sh -f -c
-# info finished linking dotfiles
-# info "building the 'ws' script"
-# ~/workstation/lib/shell/setup/build_ws_tool.sh
-
-# info "running the 'ws install' process"
-# ~/workstation/lib/shell/setup/ws_install.sh
-# info "'ws install' process completed"
-
-# info linking dotfiles that should be symlinked
-# bash ~/workstation/lib/shell/setup/link-dotfiles.sh -f -c
-# info finished linking dotfiles
-# bash ~/workstation/lib/shell/setup/initial_bitwarden_sync.sh
-
-# cat <<-EOF
-# Success! However, there are some remaining manual set up steps required.
-# # [[file:workstation.org::manual-setup-instructions][manual-setup-instructions]]
-# There are unfortunately a number of things need to install and set up
-# manually:
-# - lastpass firefox extension
-# - vimium-ff etension
-# - dropbox
-# - icloud
-# - slack
-# - spotify
-# - install haskell language server in ~/bin (or somwewhere else?) for hls
-
-# These are the settings I use for slack:
-# - accessibility then at bottom changbe up arrow to move focus to last message
-# - advanced
-#   - when in markdown block backticks, enter should do a newline
-#   - format messages with markup
-
-# mac settings
-# - enable screen sharing, _not_ remote management
-# - enable remote login
-# - configure hammerspoon
-#   - open it
-#   - enable accessability settings
-#   - launch at login
-# # manual-setup-instructions ends here
-# EOF
-# # Bootstraping Script:1 ends here

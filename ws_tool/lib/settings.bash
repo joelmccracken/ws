@@ -1,4 +1,3 @@
-WORKSTATION_NAME_ARG=
 
 : "${WORKSTATION_NAME:=}"
 : "${WORKSTATION_VERBOSE:=false}"
@@ -6,10 +5,9 @@ WORKSTATION_NAME_ARG=
 : "${WORKSTATION_CONFIG_DIR:=$HOME/.config/workstation}"
 : "${WORKSTATION_CONFIG_FILE:=${WORKSTATION_CONFIG_DIR}/config.sh}"
 : "${WORKSTATION_SETTINGS_FILE:=${WORKSTATION_CONFIG_DIR}/settings.sh}"
-: "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/src"}"
+: "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/workstation_source"}"
 : "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/workstation.git"}"
 : "${WORKSTATION_VERSION:=master}"
-: "${WORKSTATION_INTERACTIVE:=false}"
 
 export WORKSTATION_NAME # META:workstation_setting
 export WORKSTATION_VERBOSE # META:workstation_setting

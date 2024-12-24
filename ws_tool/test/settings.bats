@@ -21,7 +21,7 @@ setup (){
     assert_regex "$WORKSTATION_CONFIG_DIR" .*/.config/workstation
     assert_regex "$WORKSTATION_CONFIG_FILE" .*/.config/workstation/config.sh
     assert_regex "$WORKSTATION_SETTINGS_FILE" .*/.config/workstation/settings.sh
-    assert_regex "$WORKSTATION_DIR" .*/.config/workstation/src
+    assert_regex "$WORKSTATION_DIR" .*/.config/workstation/workstation_source
     assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = 'https://github.com/joelmccracken/workstation.git' ]
     assert [ "$WORKSTATION_VERBOSE" = false ]
     assert [ "$WORKSTATION_LOG_LEVEL" = error ]
@@ -37,7 +37,7 @@ setup (){
     assert [ "$WORKSTATION_CONFIG_DIR" = "$WORKSTATION_CONFIG_DIR" ]
     assert [ "$WORKSTATION_CONFIG_FILE" = "$WORKSTATION_CONFIG_DIR/config.sh" ]
     assert [ "$WORKSTATION_SETTINGS_FILE" = "$WORKSTATION_CONFIG_DIR/settings.sh" ]
-    assert [ "$WORKSTATION_DIR" = "$WORKSTATION_CONFIG_DIR/src" ]
+    assert [ "$WORKSTATION_DIR" = "$WORKSTATION_CONFIG_DIR/workstation_source" ]
     assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = "$MY_WORKSTATION_REPO_GIT_ORIGIN" ]
     assert [ "$WORKSTATION_VERBOSE" = false ]
     assert [ "$WORKSTATION_LOG_LEVEL" = error ]

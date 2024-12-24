@@ -1,7 +1,40 @@
 #!/usr/bin/env bash
 
+. "$WORKSTATION_DIR/ws_tool/lib/lib.bash"
+
+
+# writing properties
+# for a given property foo, define function
+# prop_foo
+# that determines if property is fulfilled.
+# return code 0 indicates its fulfilled,
+# nonzero code indicates property is notfulfilled.
+# if propery is not fulfilled,
+# prop_foo_fix is executed to
+# try to fix/fulfill the property.
+# after prop_foo_fix completes, if it has zero exit code,
+# assume it worked. run original prop function again to ensure
+# if prop does not pass now, exit prop checking and fulfilling cycle
+# as fix did not work
+#
+# propery functions can define that they depend upon other properties by
+# setting the __ret global to an array where the first argument is
+# "additional_props" and subsequent arguments are those properties. for example,
+# say above property foo should have other props bar and baz, then the following
+# value would be appropriate:
+#   __ret=(additional_props prop_bar prop_baz)
+# after prop foo returns with a zero exit code, these props are handled next.
+# By default, prop_foo would not be checked again after the other props are fulfilled, but
+# you could make it do this by for example
+#   prop_foo() {
+#    __ret=(additional_props prop_bar prop_baz prop_foo)
+#   }
+# Note that prop_foo is included at the end of the additional properties list.
+# Of course, you wouldn't want this exact example, otherwise it would imply
+# that foo would be checked again and again, ad infinitum.
+
 prop_ws_settings_file_check() {
-   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
+   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]]; then
       echo "settings file exists";
    else
       echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
@@ -14,6 +47,48 @@ prop_ws_settings_file_fix() {
    else
       echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
    fi
+}
+
+prop_ws_check_has_git() {
+    if which git > /dev/null; then
+        echo "git is detected"
+    else
+        echo "no git is detected"
+    fi
+}
+
+prop_ws_check_has_git_fix() {
+    if is_mac; then
+        echo "git is detected"
+    else
+        echo "no git is detected"
+    fi
+}
+
+prop_ws_check_initial_tooling_setup()
+{
+    if is_mac; then
+        __ret=(additional_props prop_ws_check_mac_initial_setup)
+        return 0
+    else
+        if is_linux; then
+            __ret=(additional_props prop_ws_check_linux_initial_setup)
+            return 0
+        else
+            error "unable to determine workstation system type (mac, linux)"
+            return 1
+        fi
+    fi
+}
+
+# check to ensure that xcode cli tools are installed
+# this command will tell without itself trying to install them
+prop_ws_check_mac_initial_setup () {
+    pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+}
+
+prop_ws_check_mac_initial_setup_fix () {
+    sudo bash -c '(xcodebuild -license accept; xcode-select --install) || exit 0'
 }
 
 prop_ws_check_workstation_dir() {

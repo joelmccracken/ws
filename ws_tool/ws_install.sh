@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-: "${WORKSTATION_DIR:=$HOME/.config/workstation/src}"
+: "${WORKSTATION_DIR:=$HOME/.config/workstation/workstation_source}"
 : "${WORKSTATION_VERSION:=master}"
 
 TMPDIR=$(mktemp -d "/tmp/ws-install-XXXXXX")

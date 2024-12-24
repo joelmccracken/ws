@@ -10,6 +10,12 @@ setting up
    can run gen
 
 
+
+e.g. download ws_install and run
+download personal workstation configuration, or put in place in some other way
+run e.g. workstation bootstrap
+
+
 setup steps
 configure any env vars if want installed elsewhere
 curl ws_install, run it w bash

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 # bootstrapping and doctoring is closely related enough for now
 # decide to keep these in the same file.
-
-
 doctor_command() {
   echo "doctor!";
   prop_ws_check_workstation_dir
@@ -12,27 +12,13 @@ doctor_command() {
 
 bootstrap_command_setup() {
   if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-      info "settings file exists, loading it";
+      info "found settings file, loading";
       . "$WORKSTATION_SETTINGS_FILE";
+  fi
 
-      if [ -z "$WORKSTATION_NAME" ]; then
-          echo "settings file loaded, but WORKSTATION_NAME not set."
-      fi
-
-      if [[ -z "$WORKSTATION_NAME" && -z "$WORKSTATION_NAME_ARG" ]]; then
-          echo "workstation name unset in settings file and not provided as argument."
-          echo "must provide -n or --name with workstation name."
-          print_workstation_names
-          usage_and_quit 1
-      fi
-  else
-     echo "settings file does not exist"
-     if [[ -z "$WORKSTATION_NAME" && -z "$WORKSTATION_NAME_ARG" ]]; then
-          echo "workstation name is unset."
-          echo "must provide -n or --name with workstation name."
-          print_workstation_names
-          usage_and_quit 1
-      fi
+  if [[ -z "$WORKSTATION_NAME" ]]; then
+    error "ws: bootstrap: unable to determine workstation name. Provide it as an argument or env var"
+    exit 1
   fi
 }
 
@@ -51,16 +37,27 @@ bootstrap_props=(
 )
 
 ensure_props () {
-  local props=("$@")
+  local initial_props=("$@")
+  local props=("${initial_props[@]}")
   local prop_result fix_result
   local i
-  for ((i=0;i < ${#props[@]}; i++)); do
-    local current="${props[i]}"
+  local current
+
+  while (($#)); do
+    local current="$1"
+    shift
     echo "checking: $current..."
+    __ret=
     "$current"
     prop_result="$?"
     if (( prop_result == 0 )); then
        echo "checking: $current ... OK"
+       if [ "$__ret" = "additional_props" ]; then
+         additional_props=("${__ret[@]:1}")
+         __ret= # unset to prevent any confusion on next run
+         echo  "$current defines additional properties, checking (${additional_props[@]})"
+         set "${additional_props[@]}" "$@"
+       fi
     else
        echo "checking: $current ... FAIL"
        echo "fixing: $current ..."
@@ -90,7 +87,7 @@ ensure_props () {
 interact() {
   local has_continue=0 the_command="$1"
 
-  if [ "$WORKSTATION_INTERACTIVE" != "true" ]; then
+  if [ "$workstation_interactive" != "true" ]; then
     "$the_command";
     return 0;
   fi
