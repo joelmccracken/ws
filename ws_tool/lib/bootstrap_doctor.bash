@@ -69,12 +69,12 @@ run_props () {
         failed_props+=("$current")
       else
         echo "fixing: $current ..."
-        interact "${current}_fix"
-        fix_result="$?"
+        fix_result=0
+        interact "${current}_fix" || { fix_result="$?"; : ; }
         if (( fix_result == 0 )); then
           echo "fixing: $current .... OK"
-          "$current"
-          prop_result="$?"
+          prop_result=0
+          "${current}" || { prop_result="$?"; : ; }
           if (( prop_result == 0 )); then
             echo "checking: $current .... OK"
           else
