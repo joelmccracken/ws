@@ -107,7 +107,7 @@ process_cli_args() {
       -i|--interactive)
         workstation_interactive=true;
         ;;
-      -*|--*)
+      --*|-*)
         echo "Unknown option ${args[i]}";
         exit 1;
         ;;
