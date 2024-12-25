@@ -70,13 +70,10 @@ print_usage() {
 }
 
 process_cli_args() {
-  local args=("${ws_command_arguments[@]}")
-  local i;
-  # i starts at 1 to skip past the first entry (static string "args")
-  # this prevents array from being empty
-  # I believe this is a consequences of set -u, but I don't know enough of the
-  # tradeoffs to decide to do it differently
-  for ((i=1;i < ${#args[@]}; i++)); do
+  ws_command_arguments=("$@")
+  local args=("$@")
+  local i;                      #
+  for ((i=0;i < ${#args[@]}; i++)); do
     debug "iter:$i ; current:${args[i]} ; max:${#args[@]}"
     local current="${args[i]}"
 
@@ -107,10 +104,6 @@ process_cli_args() {
       -i|--interactive)
         workstation_interactive=true;
         ;;
-      --*|-*)
-        echo "Unknown option ${args[i]}";
-        exit 1;
-        ;;
       bootstrap)
         ws_command="$current";
         ;;
@@ -118,7 +111,7 @@ process_cli_args() {
         ws_command="$current";
         ;;
       *)
-        error "unknown option or subcommand '$current'";
+        error "ws: argument parsing: unknown argument '$current'";
         exit 10;
         ;;
     esac
@@ -132,7 +125,6 @@ help_command() {
 }
 
 ws_main() {
-  ws_command_arguments=(args "$@") # save a copy
   # TODO should load these after processing args, as args can specify these paths
   # well i guess it does below; I need to think about this. what would the proper behavior be etc
   # like, if there was a file in the expected default location, _and_ a file is specified on the CLI,
@@ -141,7 +133,7 @@ ws_main() {
   load_if_exists "$WORKSTATION_CONFIG_FILE"
   load_if_exists "$WORKSTATION_SETTINGS_FILE"
 
-  process_cli_args
+  process_cli_args "$@"
   [ -n "$workstation_name_arg" ] && WORKSTATION_NAME="$workstation_name_arg"
 
   if [ "$WORKSTATION_VERBOSE" = "true" ]; then
