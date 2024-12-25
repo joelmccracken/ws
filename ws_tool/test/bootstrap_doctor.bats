@@ -86,13 +86,6 @@ prop_f() {
 
     # tested two ways, just keweping for now bc I have a feeling i'll want to see this in the future
     assert_equal "${prop_exec_hist[*]}" "iv a b c f"
-
-    assert_equal "$(cat "${props_test_tmp_file}")"  "$(cat <<-EOF
-iv
-a
-b
-c
-f
-EOF
-                 )"
+    declare -a 'content=($(cat "${props_test_tmp_file}"))'
+    assert_equal "${content[*]}" "iv a b c f"
 }
