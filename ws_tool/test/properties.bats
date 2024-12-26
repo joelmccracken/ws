@@ -40,3 +40,29 @@ setup (){
     run prop_ws_check_workstation_repo
     assert_success
 }
+
+@test "prop_ws_dotfiles_git_track" {
+    ws_unset_settings
+    FAKE_HOME="$(_mktemp "ws-fake-home")"
+    WORKSTATION_VERSION=workcomp
+
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    wrap() {
+        (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track)
+    }
+    run wrap
+    assert_failure
+
+    wrap() {
+        (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track_fix)
+    }
+    run wrap
+    assert_success
+
+    wrap() {
+        (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track)
+    }
+    run wrap
+    assert_success
+}

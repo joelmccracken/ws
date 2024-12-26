@@ -170,3 +170,21 @@ prop_ws_check_workstation_repo_fix() {
   git fetch
   git reset --mixed "origin/$WORKSTATION_VERSION"
 }
+
+: "${WORKSTATION_DOTFILES_TRACK_GIT_DIR:=".git-dotfiles"}"
+prop_ws_dotfiles_git_track() {
+  if [ -d "$HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR" ]; then
+    echo "git directory at $HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR exists"
+    return 0
+  else
+    echo "git directory at $HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR not found" 1>&2
+    return 1
+  fi
+}
+
+prop_ws_dotfiles_git_track_fix() {
+  export GIT_DIR="$WORKSTATION_DOTFILES_TRACK_GIT_DIR"
+  cd "$HOME"
+  git init
+  return 0
+}
