@@ -48,7 +48,7 @@ workstation_descriptions_angrist="work computer"
 # Oh yeah, be sure to ignore the settings.current.sh file. you do _not_ want to commit it.
 #   $ echo "settings.current.sh" >> .gitignore
 
-[ -f "${WORKSTATION_CONFIG_DIR}/settings.current.sh"] && . "settings.current.sh"
+[ -f "${WORKSTATION_CONFIG_DIR}/settings.current.sh" ] && . "settings.current.sh"
 
 # Oh, you may wish to add the following to your shell profile file:
 # export WORKSTATION_CONFIG_DIR=/path/to/specific/location
