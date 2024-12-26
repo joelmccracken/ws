@@ -10,11 +10,6 @@ doctor_command() {
 }
 
 bootstrap_command_setup() {
-  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-      info "found settings file, loading";
-      . "$WORKSTATION_SETTINGS_FILE";
-  fi
-
   if [[ -z "$WORKSTATION_NAME" ]]; then
     error "ws: bootstrap: unable to determine workstation name. Provide it as an argument or env var"
     exit 1

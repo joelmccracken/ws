@@ -1,10 +1,11 @@
+ws_config_dir_default () {
+    echo "$HOME/.config/workstation"
+}
 
 : "${WORKSTATION_NAME:=}"
 : "${WORKSTATION_VERBOSE:=false}"
 : "${WORKSTATION_LOG_LEVEL:=error}"
-: "${WORKSTATION_CONFIG_DIR:=$HOME/.config/workstation}"
-: "${WORKSTATION_CONFIG_FILE:=${WORKSTATION_CONFIG_DIR}/config.sh}"
-: "${WORKSTATION_SETTINGS_FILE:=${WORKSTATION_CONFIG_DIR}/settings.sh}"
+: "${WORKSTATION_CONFIG_DIR:="$(ws_config_dir_default)"}"
 : "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/workstation_source"}"
 : "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/workstation.git"}"
 : "${WORKSTATION_VERSION:=master}"
@@ -14,8 +15,6 @@ export WORKSTATION_VERBOSE # META:workstation_setting
 export WORKSTATION_LOG_LEVEL # META:workstation_setting
 export WORKSTATION_DIR # META:workstation_setting
 export WORKSTATION_CONFIG_DIR # META:workstation_setting
-export WORKSTATION_CONFIG_FILE # META:workstation_setting
-export WORKSTATION_SETTINGS_FILE # META:workstation_setting
 export WORKSTATION_REPO_GIT_ORIGIN # META:workstation_setting
 export WORKSTATION_VERSION # META:workstation_setting
 

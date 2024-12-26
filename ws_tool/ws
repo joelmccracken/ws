@@ -19,7 +19,7 @@ ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
 REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
 declare -a ws_command_arguments
-workstation_bootstrap_initial_config_dir=
+workstation_bootstrap_initial_config_dir_arg=
 workstation_name_arg=
 workstation_settings_arg=
 workstation_config_arg=
@@ -45,28 +45,26 @@ load_expected() {
 }
 
 print_usage() {
-    echo "Workstation configuration tool."
-    echo
-    echo "Usage:"
-    echo "  ws [options] bootstrap"
-    echo "  ws [options] doctor"
-    echo
-    echo "Subcommands:"
-    echo "  bootstrap     : run the bootstrap process"
-    echo "  doctor        : Run checks on local setup"
-    echo "  help          : display this message"
-    echo
-    echo "Options:"
-    echo "-h --help                : Display this message and exit"
-    echo "-v -verbose              : Be verbose"
-    echo "-n NAME, --name NAME     : Specify the name of this workstation."
-    echo "-s PATH, --settings PATH : Path to settings file to use."
-    echo "-c PATH, --config PATH   : Path to configuration file."
-    echo "-i, --interactive        : Interactive mode."
-    echo "-b, --bootstrap-initial-config-dir:  Initial configuration directory."
-    echo "       When first setting up a new workstation, admin can download"
-    echo "       their user workstation configuration data, point ws at it,"
-    echo "       and have ws move it into the target space during bootstrap."
+  echo "Workstation configuration tool."
+  echo
+  echo "Usage:"
+  echo "  ws [options] bootstrap"
+  echo "  ws [options] doctor"
+  echo
+  echo "Subcommands:"
+  echo "  bootstrap     : run the bootstrap process"
+  echo "  doctor        : Run checks on local setup"
+  echo "  help          : display this message"
+  echo
+  echo "Options:"
+  echo "-h --help                : Display this message and exit"
+  echo "-v -verbose              : Be verbose"
+  echo "-n NAME, --name NAME     : Specify the name of this workstation."
+  echo "-i, --interactive        : Interactive mode."
+  echo "-c, --initial-config-dir : Initial configuration directory."
+  echo "       If user already has a workstation configuration, "
+  echo "       specifies location for tool to use it."
+  echo "       Installs this configuration at default configuration location."
 }
 
 process_cli_args() {
@@ -86,16 +84,8 @@ process_cli_args() {
         workstation_name_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
-      -c|--config)
-        workstation_config_arg="${args[i+1]}";
-        (( i+=1 ));
-        ;;
-      -b|--bootstrap-initial-config-dir)
+      -c|--initial-config-dir)
         workstation_bootstrap_initial_config_dir_arg="${args[i+1]}";
-        (( i+=1 ));
-        ;;
-      -s|--settings)
-        workstation_settings_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       -h|--help|help)
@@ -125,14 +115,6 @@ help_command() {
 }
 
 ws_main() {
-  # TODO should load these after processing args, as args can specify these paths
-  # well i guess it does below; I need to think about this. what would the proper behavior be etc
-  # like, if there was a file in the expected default location, _and_ a file is specified on the CLI,
-  # as I have the code at this instant it would run both. Fine. but is that correct?
-  # I guess i could document it either way. but what woudl be the "expected" behavior??
-  load_if_exists "$WORKSTATION_CONFIG_FILE"
-  load_if_exists "$WORKSTATION_SETTINGS_FILE"
-
   process_cli_args "$@"
   [ -n "$workstation_name_arg" ] && WORKSTATION_NAME="$workstation_name_arg"
 
@@ -140,8 +122,15 @@ ws_main() {
     set -x
   fi
 
-  [ -n "$workstation_settings_arg" ] && load_expected "$workstation_settings_arg"
-  [ -n "$workstation_config_arg" ] && load_expected "$workstation_config_arg"
+  if [[ -n "$workstation_bootstrap_initial_config_dir_arg" ]]; then
+    load_expected "$workstation_bootstrap_initial_config_dir_arg/settings.sh"
+    load_expected "$workstation_bootstrap_initial_config_dir_arg/config.sh"
+  fi
+
+  if [[ -d "$(ws_config_dir_default)" ]]; then
+    load_expected "$workstation_bootstrap_initial_config_dir_arg/settings.sh"
+    load_expected "$workstation_bootstrap_initial_config_dir_arg/config.sh"
+  fi
 
   case "$ws_command" in
     bootstrap) bootstrap_command;;

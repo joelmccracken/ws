@@ -51,5 +51,5 @@ workstation_descriptions_aeglos="work computer"
 [ -f "${WORKSTATION_CONFIG_DIR}/settings.current.sh"] && . "settings.current.sh"
 
 # Oh, you may wish to add the following to your shell profile file:
-# export WORKSTATION_SETTINGS_FILE=/path/to/this/file
+# export WORKSTATION_CONFIG_DIR=/path/to/specific/location
 # export PATH="${WORKSTATION_DIR}/ws_tool:$PATH"

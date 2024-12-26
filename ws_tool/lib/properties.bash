@@ -33,22 +33,6 @@
 # Of course, you wouldn't want this exact example, otherwise it would imply
 # that foo would be checked again and again, ad infinitum.
 
-prop_ws_settings_file_check() {
-  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]]; then
-    echo "settings file exists";
-  else
-    echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
-  fi
-}
-
-prop_ws_settings_file_fix() {
-  if [[ -f "$WORKSTATION_SETTINGS_FILE" ]] ; then
-    echo "settings file exists";
-  else
-    echo "no settings file found (expected at $WORKSTATION_SETTINGS_FILE)" 2>&1
-  fi
-}
-
 prop_ws_check_has_git() {
   if which git > /dev/null; then
     echo "git is detected"
