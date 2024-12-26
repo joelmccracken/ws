@@ -66,3 +66,71 @@ setup (){
     run wrap
     assert_success
 }
+
+@test "prop_ws_config_exists default config" {
+    ws_unset_settings
+    WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+    WORKSTATION_VERSION=workcomp
+    WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    # valid scenario requires copying from where the workstation source is
+    # installed; set this up.
+    run prop_ws_check_workstation_dir_fix
+
+    run prop_ws_config_exists
+    assert_failure
+
+    run prop_ws_config_exists_fix
+    assert_success
+
+    run prop_ws_config_exists
+    assert_success
+
+    for f in settings.sh config.sh settings.default.sh; do
+        assert [ -f "${WORKSTATION_CONFIG_DIR}/$f" ]
+    done
+}
+
+@test "prop_ws_config_exists using custom config" {
+    ws_unset_settings
+    WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+    WORKSTATION_VERSION=workcomp
+    WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    # valid scenario requires copying from where the workstation source is
+    # installed; set this up.
+    run prop_ws_check_workstation_dir_fix
+
+    run prop_ws_config_exists
+    assert_failure
+
+    workstation_initial_config_dir_arg="${WORKSTATION_DIR}/ws_tool/my_config"
+
+    run prop_ws_config_exists_fix
+    assert_success
+
+    run prop_ws_config_exists
+    assert_success
+
+    cd "$workstation_initial_config_dir_arg"
+    for f in *; do
+      # utter insanity
+      assert [ "$(cat $f)" == "$(cat "$WORKSTATION_CONFIG_DIR/$f")" ]
+    done
+}
+
+@test "prop_ws_config_exists config already in place" {
+    ws_unset_settings
+    WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+
+    touch "${WORKSTATION_CONFIG_DIR}/settings.sh"
+    touch "${WORKSTATION_CONFIG_DIR}/config.sh"
+
+    run prop_ws_config_exists
+    assert_success
+
+}

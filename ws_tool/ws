@@ -19,10 +19,8 @@ ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
 REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
 declare -a ws_command_arguments
-workstation_bootstrap_initial_config_dir_arg=
+workstation_initial_config_dir_arg=
 workstation_name_arg=
-workstation_settings_arg=
-workstation_config_arg=
 workstation_interactive=
 
 usage_and_quit() {
@@ -85,7 +83,7 @@ process_cli_args() {
         (( i+=1 ));
         ;;
       -c|--initial-config-dir)
-        workstation_bootstrap_initial_config_dir_arg="${args[i+1]}";
+        workstation_initial_config_dir_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       -h|--help|help)
@@ -122,14 +120,14 @@ ws_main() {
     set -x
   fi
 
-  if [[ -n "$workstation_bootstrap_initial_config_dir_arg" ]]; then
-    load_expected "$workstation_bootstrap_initial_config_dir_arg/settings.sh"
-    load_expected "$workstation_bootstrap_initial_config_dir_arg/config.sh"
+  if [[ -n "$workstation_initial_config_dir_arg" ]]; then
+    load_expected "$workstation_initial_config_dir_arg/settings.sh"
+    load_expected "$workstation_initial_config_dir_arg/config.sh"
   fi
 
   if [[ -d "$(ws_config_dir_default)" ]]; then
-    load_expected "$workstation_bootstrap_initial_config_dir_arg/settings.sh"
-    load_expected "$workstation_bootstrap_initial_config_dir_arg/config.sh"
+    load_expected "$(ws_config_dir_default)/settings.sh"
+    load_expected "$(ws_config_dir_default)/config.sh"
   fi
 
   case "$ws_command" in

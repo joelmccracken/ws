@@ -188,3 +188,40 @@ prop_ws_dotfiles_git_track_fix() {
   git init
   return 0
 }
+
+prop_ws_config_exists() {
+  local settings_file="${WORKSTATION_CONFIG_DIR}/settings.sh"
+  local config_file="${WORKSTATION_CONFIG_DIR}/config.sh"
+  if [[ -f "$settings_file" ]] && [[ -f "$config_file" ]]; then
+    echo "found settings and config file exist."
+    return 0;
+  else
+    if ! [[ -f "$settings_file" ]]; then
+      echo "ws: bootstrap: prop_ws_config_exists: missing settings file from '$settings_file'" 1>&2
+    fi
+    if ! [[ -f "$config_file" ]]; then
+      echo "ws: bootstrap: prop_ws_config_exists: missing config file from '$config_file'" 1>&2
+    fi
+    return 1
+  fi
+}
+
+# depends upon prop_ws_check_workstation_dir
+# TODO automate/enforce this somehow?
+prop_ws_config_exists_fix() {
+  local src_dir="${WORKSTATION_DIR}/ws_tool/sample_config";
+  if [[ -n "$workstation_initial_config_dir_arg" ]]; then
+    src_dir="$workstation_initial_config_dir_arg";
+  fi
+  mkdir -p "$WORKSTATION_CONFIG_DIR"
+  # not perfect, but not worth making much more complicated
+  cd "$src_dir"
+  for f in *; do
+    if [[ -e "$WORKSTATION_CONFIG_DIR/$f" ]]; then
+      echo "$WORKSTATION_CONFIG_DIR/$f: aleady exists, skipping"
+    else
+      echo "copying file to $WORKSTATION_CONFIG_DIR/$f"
+      cp -r "$f" "$WORKSTATION_CONFIG_DIR/$f";
+    fi
+  done
+}

@@ -28,6 +28,7 @@ bootstrap_props=(
   prop_ws_check_workstation_dir
   prop_ws_check_initial_tooling_setup
   prop_ws_check_workstation_repo
+  prop_ws_config_exists
 )
 
 run_props () {

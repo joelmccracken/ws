@@ -21,11 +21,11 @@ export WORKSTATION_DIR=$WORKSTATION_CONFIG_DIR/workstation_source
 
 # workstation_names is a regular variable, though it is used
 # for configuration. ws uses expected
-workstation_names=(glamdring belthronding aeglos);
+workstation_names=(aeglos belthronding angrist);
 
-workstation_descriptions_glamdring="parimary laptop"
+workstation_descriptions_aeglos="parimary laptop"
 workstation_descriptions_belthronding="cloud VM"
-workstation_descriptions_aeglos="work computer"
+workstation_descriptions_angrist="work computer"
 
 # at times it is necessary to specify settings differently on different workstations.
 # the following can be used to load those workstation-specific settings if such is needed.

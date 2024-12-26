@@ -9,4 +9,4 @@ export WORKSTATION_VERSION=workcomp
 
 bash ws_install.sh
 
-~/.config/workstation/workstation_source/ws_tool/ws bootstrap -n angrist --bootstrap-initial-config-dir ./my_config
+~/.config/workstation/workstation_source/ws_tool/ws bootstrap -n angrist --initial-config-dir ./my_config

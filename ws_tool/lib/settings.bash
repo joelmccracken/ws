@@ -1,5 +1,5 @@
 ws_config_dir_default () {
-    echo "$HOME/.config/workstation"
+    printf "%s/.config/workstation" $HOME
 }
 
 : "${WORKSTATION_NAME:=}"
