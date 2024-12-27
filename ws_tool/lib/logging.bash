@@ -2,15 +2,15 @@ log_level_num() {
   local lvl_num msg_lvl
   msg_lvl="$1"
   case "$msg_lvl" in
-    emerg)  lvl_num=1;;
-    alert)  lvl_num=2;;
-    crit)   lvl_num=3;;
-    error)  lvl_num=4;;
-    warn)   lvl_num=5;;
-    notice) lvl_num=6;;
-    info)   lvl_num=7;;
-    debug)  lvl_num=8;;
-    *) lvl_num=8;; # default at debug, something is wrong
+    (emerg)  lvl_num=1;;
+    (alert)  lvl_num=2;;
+    (crit)   lvl_num=3;;
+    (error)  lvl_num=4;;
+    (warn)   lvl_num=5;;
+    (notice) lvl_num=6;;
+    (info)   lvl_num=7;;
+    (debug)  lvl_num=8;;
+    (*) lvl_num=8;; # default at debug, something is wrong
   esac;
   REPLY=("$lvl_num");
   return 0
