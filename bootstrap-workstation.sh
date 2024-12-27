@@ -246,11 +246,11 @@ source "$NIX_DAEMON_PATH";
 set -u
 
 
-is_mac && {
-    info installing darwin-nix
-    ${WORKSTATION_DIR}/lib/shell/setup/install_nix_darwin.sh
-    info finished installing darwin-nix
-}
+# is_mac && {
+#     info installing darwin-nix
+#     ${WORKSTATION_DIR}/lib/shell/setup/install_nix_darwin.sh
+#     info finished installing darwin-nix
+# }
 
 
 ${WORKSTATION_DIR}/lib/shell/setup/install_home_manager.sh
