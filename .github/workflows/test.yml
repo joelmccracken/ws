@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.sha }}
       - name: Run a one-line script
         env:
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
