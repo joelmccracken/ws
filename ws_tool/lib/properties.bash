@@ -146,11 +146,13 @@ prop_ws_check_workstation_dir_fix() {
   # somehow figure out another way to do this?
   TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
   # installer of ws tool/project
-  cd "$TMPINST"
-  curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
+  (
+    cd "$TMPINST";
+    curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
 
-  mkdir -p "$WORKSTATION_DIR"
-  mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
+    mkdir -p "$WORKSTATION_DIR";
+    mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR";
+  )
 }
 
 prop_ws_check_workstation_repo() {
@@ -164,11 +166,13 @@ prop_ws_check_workstation_repo() {
 }
 
 prop_ws_check_workstation_repo_fix() {
-  cd "$WORKSTATION_DIR"
-  git init .
-  git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN"
-  git fetch
-  git reset --mixed "origin/$WORKSTATION_VERSION"
+  (
+    cd "$WORKSTATION_DIR";
+    git init .;
+    git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN";
+    git fetch;
+    git reset --mixed "origin/$WORKSTATION_VERSION";
+  )
 }
 
 : "${WORKSTATION_DOTFILES_TRACK_GIT_DIR:=".git-dotfiles"}"
@@ -184,8 +188,10 @@ prop_ws_dotfiles_git_track() {
 
 prop_ws_dotfiles_git_track_fix() {
   export GIT_DIR="$WORKSTATION_DOTFILES_TRACK_GIT_DIR"
-  cd "$HOME"
-  git init
+  (
+    cd "$HOME";
+    git init
+  )
   return 0
 }
 
@@ -214,16 +220,22 @@ prop_ws_config_exists_fix() {
     src_dir="$workstation_initial_config_dir_arg";
   fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
-  # not perfect, but not worth making much more complicated
-  cd "$src_dir"
-  for f in *; do
-    if [[ -e "$WORKSTATION_CONFIG_DIR/$f" ]]; then
-      echo "$WORKSTATION_CONFIG_DIR/$f: aleady exists, skipping"
-    else
-      echo "copying file to $WORKSTATION_CONFIG_DIR/$f"
-      cp -r "$f" "$WORKSTATION_CONFIG_DIR/$f";
-    fi
-  done
+
+  # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
+  # we want it to go back...
+  (
+    cd "$ws_initial_pwd";
+    cd "$src_dir";
+    # not perfect, but not worth making much more complicated
+    for f in *; do
+      if [[ -e "$WORKSTATION_CONFIG_DIR/$f" ]]; then
+        echo "$WORKSTATION_CONFIG_DIR/$f: aleady exists, skipping"
+      else
+        echo "copying file to $WORKSTATION_CONFIG_DIR/$f"
+        cp -r "$f" "$WORKSTATION_CONFIG_DIR/$f";
+      fi
+    done
+  )
 }
 
 prop_ws_current_settings_symlink() {
@@ -268,4 +280,19 @@ prop_ws_current_settings_symlink_fix() {
   fi
 
   ln -s "$src_settings_file" "$current_settings_file"
+}
+
+prop_ws_nix_daemon_installed() {
+  if which nix > /dev/null ; then
+    echo "nix command found"
+    echo 0
+  else
+    echo "nix command not found" 1>&3
+    echo 1
+  fi
+}
+
+: "${WORKSTATION_NIX_PM_VERSION:=nix-2.11.1}"
+prop_ws_nix_daemon_installed_fix() {
+    sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
 }

@@ -9,6 +9,8 @@
 
 ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+ws_initial_pwd="$PWD"
+
 # set -x
 
 . "${ws_script_dir}/lib/settings.bash"

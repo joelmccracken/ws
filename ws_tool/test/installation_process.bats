@@ -18,11 +18,11 @@ setup (){
 
     # below we use the stuff from this project checkout however to test it
     # HACK get the tool to actually run code from current local checkout
-    { cd "$PROJECT_ROOT";
+    ( cd "$PROJECT_ROOT";
       git ls-files | while read -r gitfile; do
           cp -r "$gitfile" "$WORKSTATION_DIR/$gitfile"
       done;
-    }
+    )
     # export WORKSTATION_DIR="${PROJECT_ROOT}"
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
@@ -44,6 +44,7 @@ EOF
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
+    (
     cd "$(_mktemp "ws-installer-dl-dir")"
     do_ws_install() {
         bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
@@ -65,4 +66,5 @@ EOF
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
 
     assert_success
+    )
 }
