@@ -20,19 +20,18 @@ set_workstation_version_last_sha() {
 }
 
 retfunc() {
-    # use set -o posix
-    # plus saving and restoring sets
-    # to make set print vars (and not functions)
-    local orig_sets
-    orig_sets=$(set +o)
-    set -o posix
-    "$@";
-
-    set | while read -r i; do
-        printf "VAR:%s" "$i";
-    done
-    # declare -p REPLY
-    eval "$orig_sets"
+  # use set -o posix
+  # plus saving and restoring sets
+  # to make set print vars (and not functions)
+  local orig_sets
+  orig_sets=$(set +o)
+  set -o posix
+  "$@";
+  set | while read -r i; do
+      printf "VAR:%s" "$i";
+  done
+  # declare -p REPLY
+  eval "$orig_sets"
 }
 
 dump_output() {

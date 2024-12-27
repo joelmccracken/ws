@@ -5,10 +5,9 @@
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 # installer of ws tool/project
-(
-cd "$TMPINST"
-curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
+( cd "$TMPINST";
+  curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
-mkdir -p "$WORKSTATION_DIR"
-mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
+  mkdir -p "$WORKSTATION_DIR"
+  mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
 )

@@ -146,8 +146,7 @@ prop_ws_check_workstation_dir_fix() {
   # somehow figure out another way to do this?
   TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
   # installer of ws tool/project
-  (
-    cd "$TMPINST";
+  ( cd "$TMPINST";
     curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
 
     mkdir -p "$WORKSTATION_DIR";
@@ -166,8 +165,7 @@ prop_ws_check_workstation_repo() {
 }
 
 prop_ws_check_workstation_repo_fix() {
-  (
-    cd "$WORKSTATION_DIR";
+  ( cd "$WORKSTATION_DIR";
     git init .;
     git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN";
     git fetch;
@@ -188,8 +186,7 @@ prop_ws_dotfiles_git_track() {
 
 prop_ws_dotfiles_git_track_fix() {
   export GIT_DIR="$WORKSTATION_DOTFILES_TRACK_GIT_DIR"
-  (
-    cd "$HOME";
+  ( cd "$HOME";
     git init
   )
   return 0
@@ -223,9 +220,7 @@ prop_ws_config_exists_fix() {
 
   # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
   # we want it to go back...
-  (
-    cd "$ws_initial_pwd";
-    cd "$src_dir";
+  ( cd "$ws_initial_pwd"; cd "$src_dir";
     # not perfect, but not worth making much more complicated
     for f in *; do
       if [[ -e "$WORKSTATION_CONFIG_DIR/$f" ]]; then

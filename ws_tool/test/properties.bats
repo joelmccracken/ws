@@ -114,12 +114,11 @@ setup (){
     run prop_ws_config_exists
     assert_success
 
-    (
-    cd "$workstation_initial_config_dir_arg"
-    for f in *; do
-      # utter insanity
-      assert [ "$(cat $f)" == "$(cat "$WORKSTATION_CONFIG_DIR/$f")" ]
-    done
+    ( cd "$workstation_initial_config_dir_arg";
+      for f in *; do
+        # utter insanity
+        assert [ "$(cat $f)" == "$(cat "$WORKSTATION_CONFIG_DIR/$f")" ]
+      done
     )
 }
 

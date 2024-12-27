@@ -44,8 +44,6 @@ EOF
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
     export WORKSTATION_VERSION=workcomp
 
-    (
-    cd "$(_mktemp "ws-installer-dl-dir")"
     do_ws_install() {
         bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
     }
@@ -66,5 +64,4 @@ EOF
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
 
     assert_success
-    )
 }
