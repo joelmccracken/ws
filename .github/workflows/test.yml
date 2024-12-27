@@ -14,6 +14,10 @@
 # [[file:../../workstation.org::*Github Actions CI][Github Actions CI:1]]
 name: CI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
   schedule:
