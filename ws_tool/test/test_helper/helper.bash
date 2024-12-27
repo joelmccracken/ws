@@ -15,6 +15,10 @@ _setup_common() {
    : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
 }
 
+set_workstation_version_last_sha() {
+  WORKSTATION_VERSION="$(git log -n 1 --format="%H")"
+}
+
 retfunc() {
     # use set -o posix
     # plus saving and restoring sets

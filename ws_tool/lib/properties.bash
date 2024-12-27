@@ -171,7 +171,7 @@ prop_ws_check_workstation_repo_fix() {
     git init .;
     git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN";
     git fetch;
-    git reset --mixed "origin/$WORKSTATION_VERSION";
+    git reset --mixed "$WORKSTATION_VERSION";
   )
 }
 

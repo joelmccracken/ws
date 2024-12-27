@@ -7,7 +7,7 @@ setup (){
 @test "prop_ws_check_workstation_dir" {
     ws_unset_settings
     WORKSTATION_DIR="$(_mktemp "ws-dir")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
     run prop_ws_check_workstation_dir
@@ -23,7 +23,7 @@ setup (){
 @test "prop_ws_check_workstation_repo" {
     ws_unset_settings
     WORKSTATION_DIR="$(_mktemp "ws-dir")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
     # set up the workstation dir, but wont set up git, just project source
@@ -44,7 +44,7 @@ setup (){
 @test "prop_ws_dotfiles_git_track" {
     ws_unset_settings
     FAKE_HOME="$(_mktemp "ws-fake-home")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
 
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
@@ -70,7 +70,7 @@ setup (){
 @test "prop_ws_config_exists default config" {
     ws_unset_settings
     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
     WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
@@ -95,7 +95,7 @@ setup (){
 @test "prop_ws_config_exists using custom config" {
     ws_unset_settings
     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
     WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
@@ -138,7 +138,7 @@ setup (){
 @test "prop_ws_current_settings_symlink works for default" {
     ws_unset_settings
     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
-    WORKSTATION_VERSION=workcomp
+    set_workstation_version_last_sha
     WORKSTATION_NAME=default
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
