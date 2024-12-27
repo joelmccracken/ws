@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+declare -a REPLY
+
 # bootstrapping and doctoring is closely related enough for now
 # decide to keep these in the same file.
 doctor_command() {
@@ -60,8 +62,10 @@ get_workstation_properties() {
     printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
     eval "$setprops"
     REPLY=("${props[@]}")
+    declare -p REPLY
   else
-     REPLY=()
+    REPLY=()
+    declare -p REPLY
   fi
   return 0
 }

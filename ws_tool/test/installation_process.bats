@@ -28,11 +28,18 @@ setup (){
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
     export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
     export WORKSTATION_DIR="$PROJECT_ROOT"
+    export workstation_names=(workstation_a workstation_b)
+EOF
+
+    cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.workstation_a.sh"
+    WORKSTATION_NAME=workstation_a
 EOF
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/config.sh"
-    export workstation_names=(workstation_a workstation_b)
+    workstation_props_workstation_a=()
+    workstation_props_workstation_a+=(prop_ws_current_settings_symlink)
 EOF
+
     export WORKSTATION_NAME=workstation_a
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
 
