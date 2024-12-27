@@ -17,4 +17,4 @@ else
     WORKSTATION_NAME=ci_ubuntu
 fi
 
-ws_tool/ws bootstrap -n "$WORKSTATION_NAME" --initial-config-dir ./test/test_config
+ws bootstrap -n "$WORKSTATION_NAME" --initial-config-dir ./test/test_config
