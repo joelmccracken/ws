@@ -38,11 +38,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
-      - name: Run a one-line script
+          ref: ${{ github.event.pull_request.head.sha }}
+          # ref: ${{ github.sha }}
+      - run: ./test/ci.sh
         env:
+          WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
           BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
           WS_BW_MASTER_PASS: ${{ secrets.WS_BW_MASTER_PASS }}
-        run: ./test/ci.sh
 # Github Actions CI:1 ends here

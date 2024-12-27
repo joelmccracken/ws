@@ -12,10 +12,10 @@ set -xeuo pipefail
 
 cd ~
 
-if [ "$GITHUB_SHA" == "" ]; then
+if [ "$WORKSTATION_VERSION" == "" ]; then
     WORKSTATION_BOOTSTRAP_COMMIT=master
 else
-    WORKSTATION_BOOTSTRAP_COMMIT="$GITHUB_SHA"
+    WORKSTATION_BOOTSTRAP_COMMIT="$WORKSTATION_VERSION"
 fi
 
 curl https://raw.githubusercontent.com/joelmccracken/workstation/$WORKSTATION_BOOTSTRAP_COMMIT/bootstrap-workstation.sh > bootstrap-workstation.sh

@@ -5,7 +5,6 @@ set -xeuo pipefail
 rm -rf $HOME/.config/workstation
 
 unset WORKSTATION_DIR
-export WORKSTATION_VERSION="$GITHUB_SHA"
 
 bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
 
