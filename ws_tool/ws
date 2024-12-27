@@ -76,31 +76,31 @@ process_cli_args() {
     local current="${args[i]}"
 
     case "$current" in
-      -v|--verbose)
+      (-v|--verbose)
         WORKSTATION_VERBOSE=true
         WORKSTATION_LOG_LEVEL=info
         ;;
-      -n|--name)
+      (-n|--name)
         workstation_name_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
-      -c|--initial-config-dir)
+      (-c|--initial-config-dir)
         workstation_initial_config_dir_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
-      -h|--help|help)
+      (-h|--help|help)
         usage_and_quit 0;
         ;;
-      -i|--interactive)
+      (-i|--interactive)
         workstation_interactive=true;
         ;;
-      bootstrap)
+      (bootstrap)
         ws_command="$current";
         ;;
-      doctor)
+      (doctor)
         ws_command="$current";
         ;;
-      *)
+      (*)
         error "ws: argument parsing: unknown argument '$current'";
         exit 10;
         ;;
@@ -133,10 +133,10 @@ ws_main() {
   fi
 
   case "$ws_command" in
-    bootstrap) bootstrap_command;;
-    doctor) doctor_command;;
-    "help") help_command;;
-    *) error "unknown command $ws_command; how did we get here?"
+    (bootstrap) bootstrap_command;;
+    (doctor) doctor_command;;
+    ("help") help_command;;
+    (*) error "unknown command $ws_command; how did we get here?"
   esac
 }
 

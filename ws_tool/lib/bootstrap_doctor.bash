@@ -165,12 +165,12 @@ interact() {
   while [ "$has_continue" != "1" ]; do
     read -r -e -n 1 -p "About to run '$1', continue? (c/q/!/p/?):" response
     case "$response" in
-      c) has_continue=1;;
-      q) echo "quitting..."; exit 0;;
-      \!) interact_always_continue=1; has_continue=1;;
-      p) type "$the_command";;
-      ?) interact_help;;
-      *) echo "unrecognized response '$response'."
+      (c) has_continue=1;;
+      (q) echo "quitting..."; exit 0;;
+      (\!) interact_always_continue=1; has_continue=1;;
+      (p) type "$the_command";;
+      (?) interact_help;;
+      (*) echo "unrecognized response '$response'."
     esac
   done
 
