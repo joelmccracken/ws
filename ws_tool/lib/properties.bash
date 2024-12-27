@@ -225,3 +225,47 @@ prop_ws_config_exists_fix() {
     fi
   done
 }
+
+prop_ws_current_settings_symlink() {
+  current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
+
+  if [[ -L "$current_settings_file" ]]; then
+    echo "symlink found at $current_settings_file"
+    return 0
+  fi
+
+  if ! [[ -e "$current_settings_file" ]]; then
+    echo "no file found at '$current_settings_file'" 1>&2
+  fi
+
+  if ! [[ -L "$current_settings_file" ]]; then
+    {
+      echo "Warning: File found at '$current_settings_file', but it was not a symlink."
+      echo "  This will probably work, but its possible that something wonky"
+      echo "  has happened."
+    } 1>&2
+  fi
+
+  return 2
+}
+
+# depends upon prop_ws_config_exists
+prop_ws_current_settings_symlink_fix() {
+  current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
+  src_settings_file="$WORKSTATION_CONFIG_DIR/settings.${WORKSTATION_NAME}.sh"
+
+  prop_ws_config_exists
+
+  if [[ -e "$current_settings_file" ]] && \
+    ! [[ -L "$current_settings_file" ]]; then
+    echo "non-symlink file exists at '$current_settings_file'. Cannot automatically fix." 1>&2
+    return 10
+  fi
+
+  if ! [[ -e "$src_settings_file" ]]; then
+    echo "Expecting to find file at '$src_settings_file' to use as symlink src. File not found." 1>&2
+    return 3
+  fi
+
+  ln -s "$src_settings_file" "$current_settings_file"
+}

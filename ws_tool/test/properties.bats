@@ -126,11 +126,32 @@ setup (){
     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
 
-
     touch "${WORKSTATION_CONFIG_DIR}/settings.sh"
     touch "${WORKSTATION_CONFIG_DIR}/config.sh"
 
     run prop_ws_config_exists
     assert_success
+}
 
+@test "prop_ws_current_settings_symlink works for default" {
+    ws_unset_settings
+    WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+    WORKSTATION_VERSION=workcomp
+    WORKSTATION_NAME=default
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    prop_ws_check_workstation_dir_fix
+    prop_ws_config_exists_fix
+
+    run prop_ws_current_settings_symlink
+    assert_failure
+
+    run prop_ws_current_settings_symlink_fix
+    assert_success
+
+    run prop_ws_current_settings_symlink
+    assert_success
+
+    # echo "$WORKSTATION_CONFIG_DIR" 1>&3
+    # ls -lah "$WORKSTATION_CONFIG_DIR" 1>&3
 }
