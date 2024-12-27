@@ -46,7 +46,8 @@ run_all_props() {
 
   REPLY=()
   get_workstation_properties
-  local ws_props=("${REPLY[@]}")
+  local ws_props=()
+  (( ${#REPLY[@]} > 0)) && ws_props=("${REPLY[@]}") || return 0
   REPLY=()
   if (( ${#ws_props[@]} > 0)); then
     echo "$label: ${WORKSTATION_NAME} properties: (${ws_props[*]})"
