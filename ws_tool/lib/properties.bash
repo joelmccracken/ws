@@ -287,7 +287,7 @@ prop_ws_nix_daemon_installed() {
   fi
 }
 
-: "${WORKSTATION_NIX_PM_VERSION:=nix-2.11.1}"
+: "${WORKSTATION_NIX_PM_VERSION:=nix-2.25.3}"
 prop_ws_nix_daemon_installed_fix() {
     sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
 }
