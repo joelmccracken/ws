@@ -52,7 +52,7 @@ EOF
     set_workstation_version_last_sha
 
     do_ws_install() {
-        bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/refs/heads/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
+        bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
     }
     run do_ws_install
 
