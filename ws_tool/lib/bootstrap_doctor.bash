@@ -135,6 +135,17 @@ run_props () {
       fi
     fi
   done
+
+  if (( ${#failed_props[@]} > 0 ));  then
+     echo "ws: ${label}: unable to satisfy the following props:" 1>&2
+     for prop in "${failed_props[@]}"; do
+       echo "    - $prop" 1>&2
+     done
+     echo " Examine earlier log output to see what went wrong." 1>&2
+     return 10
+  else
+     return 0
+  fi
 }
 
 : "${interact_always_continue:=0}"
