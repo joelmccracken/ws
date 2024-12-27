@@ -41,17 +41,29 @@ run_all_props() {
   run_props --fix "$fix" "${bootstrap_props[@]}"
 
   echo "$label: '$WORKSTATION_NAME' properties"
-  set -x
+
+  REPLY=()
+  get_workstation_properties
+  local ws_props=("${REPLY[@]}")
+  REPLY=()
+  if (( ${#ws_props[@]} > 0)); then
+    echo "$label: ${WORKSTATION_NAME} properties: (${ws_props[*]})"
+    run_props --fix "$fix" "${ws_props[@]}"
+  else
+     echo "no properties defined for '${WORKSTATION_NAME}'"
+  fi
+}
+
+get_workstation_properties() {
   ws_props_ptr="workstation_props_$WORKSTATION_NAME"
   if declare -p "$ws_props_ptr" &> /dev/null; then
     printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
     eval "$setprops"
-    echo "$label: ${WORKSTATION_NAME} properties: (${props[*]})"
-    set +x
-    run_props --fix "$fix" "${props[@]}"
+    REPLY=("${props[@]}")
   else
-     echo "unable to find any defined properties for ${WORKSTATION_NAME}"
+     REPLY=()
   fi
+  return 0
 }
 
 bootstrap_props=(
@@ -65,7 +77,10 @@ run_props () {
   local fix=
   if [[ "$1" == "--fix" ]]; then
     fix="$2";
-    shift;
+    shift; shift;
+  else
+     echo "run_props: arguments: must specify --fix <bool> parameter as starting parameter" 1>&2
+     return 8
   fi
 
   local initial_props=("$@")
