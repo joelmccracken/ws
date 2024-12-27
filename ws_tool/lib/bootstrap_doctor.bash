@@ -6,7 +6,7 @@ set -euo pipefail
 # decide to keep these in the same file.
 doctor_command() {
   echo "doctor!";
-  run_props --check-only "${bootstrap_props[@]}"
+  run_all_props --fix false --label "doctor"
 }
 
 bootstrap_command_setup() {
@@ -17,11 +17,41 @@ bootstrap_command_setup() {
 }
 
 bootstrap_command() {
-  echo "bootstrapping base properties"
+  run_all_props --fix true --label "bootstrap"
+}
 
-  run_props "${bootstrap_props[@]}"
+run_all_props() {
+  local fix="" label=""
 
-  echo "bootstrapping workstation properties for ${WORKSTATION_NAME}"
+  if (( $# != 4 )); then
+    echo "requires both --fix <val> and --label <val> flags" 1>&2
+  fi
+
+  while (( $# > 0 )); do
+    local current="$1"
+    shift
+    case "$current" in
+      (--fix) fix="$1"; shift;;
+      (--label) label="$1"; shift;;
+      (*) echo "unknown argument '$current', remaining arguments '$*'"; return 10;;
+    esac
+  done
+
+  echo "$label: base properties"
+  run_props --fix "$fix" "${bootstrap_props[@]}"
+
+  echo "$label: '$WORKSTATION_NAME' properties"
+  set -x
+  ws_props_ptr="workstation_props_$WORKSTATION_NAME"
+  if declare -p "$ws_props_ptr" &> /dev/null; then
+    printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
+    eval "$setprops"
+    echo "$label: ${WORKSTATION_NAME} properties: (${props[*]})"
+    set +x
+    run_props --fix "$fix" "${props[@]}"
+  else
+     echo "unable to find any defined properties for ${WORKSTATION_NAME}"
+  fi
 }
 
 bootstrap_props=(
@@ -32,9 +62,9 @@ bootstrap_props=(
 )
 
 run_props () {
-  local check_only=
-  if [[ "$1" == "--check-only" ]]; then
-    check_only=true;
+  local fix=
+  if [[ "$1" == "--fix" ]]; then
+    fix="$2";
     shift;
   fi
 
@@ -51,19 +81,17 @@ run_props () {
     REPLY=()
     prop_result=0
     "$current" || { prop_result="$?"; : ; }
+    if (( ${#REPLY[@]} > 1 )) && [[ "${REPLY[0]}" == "additional_props" ]]; then
+      additional_props=("${REPLY[@]:1}")
+      REPLY=() # unset to prevent any confusion on next run
+      echo  "$current defines additional properties, adding to top of properties to check: (${additional_props[@]})"
+      set "${additional_props[@]}" "$@"
+    fi
     if (( prop_result == 0 )); then
-       echo "checking: $current ... OK"
-       if (( ${#REPLY[@]} > 1 )) && [[ "${REPLY[0]}" == "additional_props" ]]; then
-         additional_props=("${REPLY[@]:1}")
-         REPLY=() # unset to prevent any confusion on next run
-         echo  "$current defines additional properties, checking (${additional_props[@]})"
-         set "${additional_props[@]}" "$@"
-       fi
+      echo "checking: $current ... OK"
     else
       echo "checking: $current ... FAIL"
-      if [[ -n "$check_only" ]]; then
-        failed_props+=("$current")
-      else
+      if [[ "$fix" == "true" ]]; then
         echo "fixing: $current ..."
         fix_result=0
         interact "${current}_fix" || { fix_result="$?"; : ; }
@@ -82,6 +110,8 @@ run_props () {
           echo "error while fixing $current, aborting"
           exit 88
         fi
+      else
+        failed_props+=("$current")
       fi
     fi
   done
