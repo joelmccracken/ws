@@ -280,10 +280,10 @@ prop_ws_current_settings_symlink_fix() {
 prop_ws_nix_daemon_installed() {
   if which nix > /dev/null ; then
     echo "nix command found"
-    echo 0
+    return 0
   else
     echo "nix command not found" 1>&2
-    echo 1
+    return 1
   fi
 }
 
