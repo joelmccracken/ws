@@ -282,7 +282,7 @@ prop_ws_nix_daemon_installed() {
     echo "nix command found"
     echo 0
   else
-    echo "nix command not found" 1>&3
+    echo "nix command not found" 1>&2
     echo 1
   fi
 }
