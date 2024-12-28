@@ -51,7 +51,6 @@ jobs:
         with:
           submodules: recursive
           ref: ${{ github.event.pull_request.head.sha }}
-          # ref: ${{ github.sha }}
       - run: bash ws_tool/test/ci_full_setup.bash
         env:
           WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
