@@ -273,10 +273,9 @@ info "running the 'ws install' process"
 ${WORKSTATION_DIR}/lib/shell/setup/ws_install.sh
 info "'ws install' process completed"
 
-info linking dotfiles that should be symlinked
-bash ${WORKSTATION_DIR}/lib/shell/setup/link-dotfiles.sh -f -c
-info finished linking dotfiles
+echo "initial bitwarden sync"
 bash ${WORKSTATION_DIR}/lib/shell/setup/initial_bitwarden_sync.sh
+echo "initial bitwarden sync done"
 
 cat <<-EOF
 Success! However, there are some remaining manual set up steps required.
