@@ -8,6 +8,10 @@ TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 ( cd "$TMPINST";
   curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
 
+  if [[ -e "$WORKSTATION_DIR" ]]; then
+    mv "$WORKSTATION_DIR" "${WORKSTATION_DIR}-$(date +"%s")"
+  fi
+
   mkdir -p "$WORKSTATION_DIR"
   mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR"
 )
