@@ -35,7 +35,6 @@ function find_emacs_init() {
 
 emacs_init="$(find_emacs_init)"
 
-
 function assert_input() {
   local label=$1
   local expected=$2

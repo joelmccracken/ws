@@ -292,5 +292,65 @@ prop_ws_nix_daemon_installed_fix() {
     sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
     # load the needful after installing
     . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-
 }
+
+ws_nix__conf_filename() {
+  printf "/etc/nix/nix.conf"
+}
+
+: "${WS_NIX_GLOBAL_CONFIG_LOCATION:=$(ws_nix__conf_filename)}"
+
+prop_ws_nix__conf_content() {
+  cat - <<-EOF
+# BEGIN prop_ws_nix_global_config
+# configuration from ws property prop_ws_nix_global_config
+# AUTOMATICALLY MANAGED: region edits will be overwritten in the future
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
+substituters = https://cache.nixos.org https://cache.iog.io
+experimental-features = nix-command flakes
+trusted-users = root $(whoami) runner
+build-users-group = nixbld
+EOF
+}
+
+prop_ws_nix_global_config () {
+  local conf="$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  local begin="# BEGIN prop_ws_nix_global_config"
+  local end="# END prop_ws_nix_global_config"
+
+  REPLY=()
+  get_content_between_lines "$begin" "$end" < "$conf"
+  content_parts=("${REPLY[@]}")
+  REPLY=()
+
+  conf_selection="$()"
+
+  if [[ "$conf_selection" == "$(prop_ws_nix__conf_content)" ]]; then
+    echo "config file at '$conf' is up to date"
+    return 0
+  else
+    echo "config file at '$conf' is out of date" 1>&3;
+    return 1
+  fi
+}
+
+prop_ws_nix_global_config_fix () {
+  local conf="$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  local begin="# BEGIN prop_ws_nix_global_config"
+  local end="# END prop_ws_nix_global_config"
+
+  REPLY=(); find_bracketed_content "$begin" "$end" < "$conf";
+  parts=("${REPLY[@]}"); REPLY=();
+
+  if [[ "${parts[1]}" == "$(prop_ws_nix__conf_content)" ]]; then
+    echo "config file at '$conf' is up to date"
+    return 0
+  else
+    echo "config file at '$conf' is out of date" 1>&3;
+    return 1
+  fi
+}
+
+# emit_nix_conf_content | \
+#     sudo bash -c 'mkdir -p /etc/nix; cat > /etc/nix/nix.conf'
+# # install nix configuration file:1 ends here
