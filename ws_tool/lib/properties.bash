@@ -327,7 +327,7 @@ prop_ws_nix_global_config () {
     echo "config file at '$conf' is up to date"
     return 0
   else
-    echo "config file at '$conf' is out of date" 1>&3;
+    echo "config file at '$conf' is out of date";
     return 1
   fi
 }
