@@ -1,8 +1,9 @@
 
-
 workstation_props_angrist=()
 workstation_props_angrist+=(prop_ws_current_settings_symlink)
+workstation_props_angrist+=(prop_ws_dotfiles_git_track)
 workstation_props_angrist+=(prop_ws_nix_daemon_installed)
+workstation_props_angrist+=(prop_ws_nix_global_config)
 
 workstation_props_dotfiles_gitdir=".git-dotfiles"
 

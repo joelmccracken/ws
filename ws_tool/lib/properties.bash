@@ -33,22 +33,6 @@
 # Of course, you wouldn't want this exact example, otherwise it would imply
 # that foo would be checked again and again, ad infinitum.
 
-prop_ws_check_has_git() {
-  if which git > /dev/null; then
-    echo "git is detected"
-  else
-    echo "no git is detected"
-  fi
-}
-
-prop_ws_check_has_git_fix() {
-  if is_mac; then
-    echo "git is detected"
-  else
-    echo "no git is detected"
-  fi
-}
-
 prop_ws_check_initial_tooling_setup()
 {
   if is_mac; then
@@ -289,9 +273,26 @@ prop_ws_nix_daemon_installed() {
 
 : "${WORKSTATION_NIX_PM_VERSION:=nix-2.25.3}"
 prop_ws_nix_daemon_installed_fix() {
-    sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
-    # load the needful after installing
-    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+  sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
+  # load the needful after installing
+  nix_daemon_profile='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+  if [[ ! -e "$nix_daemon_profile" ]]; then
+    echo "nix installed, but cannot find profile file to load" 1>&2
+    return 8
+  fi
+  . "$nix_daemon_profile";
+  ws_nix__restart_daemon
+}
+
+ws_nix__restart_daemon() {
+  if is_mac; then
+    set +e
+    sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+    sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+    set -e
+  else
+    sudo systemctl restart nix-daemon.service;
+  fi
 }
 
 ws_nix__conf_filename() {
@@ -300,7 +301,7 @@ ws_nix__conf_filename() {
 
 : "${WS_NIX_GLOBAL_CONFIG_LOCATION:=$(ws_nix__conf_filename)}"
 
-prop_ws_nix__conf_content() {
+ws_nix__global_conf_content() {
   cat <<-EOF
 	# BEGIN prop_ws_nix_global_config
 	# configuration from ws property prop_ws_nix_global_config
@@ -323,7 +324,7 @@ prop_ws_nix_global_config () {
   find_bracketed_content "$begin" "$end" < "$conf"
   local parts=("${REPLY[@]}")
   REPLY=()
-  if [[ "${parts[1]}" == "$(prop_ws_nix__conf_content)"$'\n' ]]; then
+  if [[ "${parts[1]}" == "$(ws_nix__global_conf_content)"$'\n' ]]; then
     echo "config file at '$conf' is up to date"
     return 0
   else
@@ -344,7 +345,7 @@ prop_ws_nix_global_config_fix () {
 
   {
     echo "${parts[0]}";
-    prop_ws_nix__conf_content;
+    ws_nix__global_conf_content;
     echo "${parts[2]}"
   } > "$new_conf"
 
