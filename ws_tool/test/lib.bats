@@ -64,20 +64,3 @@ EOF
     assert [ "${content[1]}" == '' ]
     assert [ "${content[2]}" == '' ]
 }
-
-
-
-
-# @test "get_content_between never starts" {
-#     local tmp content
-#     tmp="$(_mktemp "get-content")/file"
-#     cat <<-EOF > "$tmp"
-# 	BEFORE
-# 	BEGIN
-# 	1
-# 	2
-# 	3
-# 	AFTER
-# EOF
-#     content=$(get_content_between_lines "BEGINNN" "END" < "$tmp")
-# }
