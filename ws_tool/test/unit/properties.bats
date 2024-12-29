@@ -169,7 +169,6 @@ setup (){
 	# END prop_ws_nix_global_config
 	final config
 EOF
-    # echo "nix_config:$(cat $nix_config)"
 
 
     run_env() {
@@ -183,8 +182,6 @@ EOF
 
     run run_env prop_ws_nix_global_config_fix
     assert_success
-
-    # echo "nix_config:$(cat $nix_config)"
 
     run run_env prop_ws_nix_global_config
     assert_success
