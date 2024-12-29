@@ -52,8 +52,6 @@ setup (){
   assert_equal "${content[*]}" "0 a b c f"
 }
 
-
-
 @test "run_all_props runs workstation specific props along with bootstrap" {
   props_test_tmp_file="$(_mktemp "props-test-tmp")/file"
   prop_a() {

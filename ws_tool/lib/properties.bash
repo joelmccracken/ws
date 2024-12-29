@@ -348,7 +348,8 @@ prop_ws_nix_global_config_fix () {
     echo "${parts[2]}"
   } > "$new_conf"
 
-  maybe_sudo="bash" # basically does nothing different
+  # complicated because I don't want to deal with sudo when running tests
+  maybe_sudo="bash" # null option (is there some better way?)
   if ! [[ -w "$WS_NIX_GLOBAL_CONFIG_LOCATION" ]]; then
     maybe_sudo="sudo"
   fi
