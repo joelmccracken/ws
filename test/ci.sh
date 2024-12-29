@@ -33,5 +33,9 @@ fi
 
 echo INSTALL PROCESS COMPLETE, TESTING
 
+pwd
+env
+ls -lah ~/workstation/
 bash ~/workstation/test/test.sh
+
 # The environment setup script:1 ends here
