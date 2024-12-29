@@ -156,3 +156,36 @@ setup (){
     # echo "$WORKSTATION_CONFIG_DIR" 1>&3
     # ls -lah "$WORKSTATION_CONFIG_DIR" 1>&3
 }
+
+@test "prop_ws_nix_global_config" {
+    ws_unset_settings
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    nix_config="$(_mktemp "nix-config")/nix.conf"
+    cat > "$nix_config" <<-EOF || :
+	other config
+	# BEGIN prop_ws_nix_global_config
+	some old config here
+	# END prop_ws_nix_global_config
+	final config
+EOF
+    # echo "nix_config:$(cat $nix_config)"
+
+
+    run_env() {
+      WS_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
+      WORKSTATION_DIR="$PROJECT_ROOT"
+      "$1"
+    }
+
+    run run_env prop_ws_nix_global_config
+    assert_failure
+
+    run run_env prop_ws_nix_global_config_fix
+    assert_success
+
+    # echo "nix_config:$(cat $nix_config)"
+
+    run run_env prop_ws_nix_global_config
+    assert_success
+}

@@ -5,8 +5,7 @@ setup (){
 }
 
 @test "find_bracketed_content" {
-    local tmp content
-    tmp="$(_mktemp "get-content")/file"
+    local content
     read -r -d '' src <<-EOF || :
 	BEFORE
 	BEGIN
@@ -27,8 +26,7 @@ EOF
 }
 
 @test "find_bracketed_content never ending" {
-    local tmp content
-    tmp="$(_mktemp "get-content")/file"
+    local content
     read -r -d '' src <<-EOF || :
 	BEFORE
 	BEGIN
@@ -48,8 +46,7 @@ EOF
 }
 
 @test "find_bracketed_content never starts" {
-    local tmp content
-    tmp="$(_mktemp "get-content")/file"
+    local content
     read -r -d '' src <<-EOF || :
 	BEFORE
 	1

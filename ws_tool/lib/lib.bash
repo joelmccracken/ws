@@ -29,3 +29,22 @@ find_bracketed_content() {
   REPLY=("$before" "$content" "$after")
   return 0
 }
+
+_mktemp() {
+  mktemp -d "${TMPDIR:-/tmp}/${1}.XXXXXXXXX"
+}
+
+mv_to_backup() {
+  local the_file="$1"
+  if [[ -e "$the_file" ]]; then
+    mv "$the_file" "${the_file}-$(date +"%s")"
+  fi
+}
+
+safe_overwrite() {
+  new="$1"
+  orig="$2"
+
+  mv_to_backup "$orig"
+  mv "$new" "$orig"
+}

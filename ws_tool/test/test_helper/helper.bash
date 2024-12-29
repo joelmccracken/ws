@@ -13,6 +13,7 @@ _setup_common() {
    # make executables in src/ visible to PATH
    PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
    : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
+   . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
 }
 
 set_workstation_version_last_sha() {
@@ -60,8 +61,4 @@ ws_unset_settings() {
 ws_reset_settings () {
     ws_unset_settings
     . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
-}
-
-_mktemp() {
-    mktemp -d "${TMPDIR:-/tmp}/${1}.XXXXXXXXX"
 }
