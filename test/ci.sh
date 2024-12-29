@@ -10,7 +10,7 @@ set -xeuo pipefail
 
 # env # are there environment variables where I can get the commit sha?
 
-cd ~
+cd $HOME
 
 if [ "$WORKSTATION_VERSION" == "" ]; then
     WORKSTATION_BOOTSTRAP_COMMIT=master
@@ -34,8 +34,15 @@ fi
 echo INSTALL PROCESS COMPLETE, TESTING
 
 pwd
+sleep 10
+ls -lah
+sleep 10
+ls -lah $HOME
+sleep 10
 env
-ls -lah ~/workstation/
-bash ~/workstation/test/test.sh
+sleep 10
+ls -lah $HOME/workstation/
+sleep 10
+bash $HOME/workstation/test/test.sh
 
 # The environment setup script:1 ends here

@@ -17,11 +17,11 @@ main() {
     echo "updating EF"
     # TODO this maybe could be better
     # script to generate this file with pointers to specific workstation dirs
-    # perhaps have ~/.config/workstation/ standard location as well/instead?
-    source ~/workstation/hosts/current/zshrc.sh
-    ~/workstation/bin/update-ef-on-server.sh
+    # perhaps have $HOME/.config/workstation/ standard location as well/instead?
+    source $HOME/workstation/hosts/current/zshrc.sh
+    $HOME/workstation/bin/update-ef-on-server.sh
 
     echo "FINISHED $(date)"
 }
 
-main >> ~/workstation/var/log/cron 2>&1
+main >> $HOME/workstation/var/log/cron 2>&1
