@@ -186,3 +186,37 @@ EOF
     run run_env prop_ws_nix_global_config
     assert_success
 }
+
+@test "prop_ws_df_dotfiles" {
+    ws_unset_settings
+    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+
+    df_src_dir="$(_mktemp "dotfiles-src")"
+    df_target_dir="$(_mktemp "dotfiles-target")"
+
+
+    cat > "$df_src_dir/bashrc" <<< "my bash config"
+    test_ws_name=some_name_$RANDOM
+    WORKSTATION_NAME="$test_ws_name"
+
+    eval "$(cat <<-EOF || :)"
+	echo foo
+EOF
+    # workstation_props_dotfiles_angrist() {
+    # run_env() {
+    #   WS_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
+    #   WORKSTATION_DIR="$PROJECT_ROOT"
+    #   "$1"
+    # }
+
+    # run run_env prop_ws_nix_global_config
+    # assert_failure
+
+    # run run_env prop_ws_nix_global_config_fix
+    # assert_success
+
+    # # echo "nix_config:$(cat $nix_config)"
+
+    # run run_env prop_ws_nix_global_config
+    # assert_success
+}

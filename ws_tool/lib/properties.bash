@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 . "$WORKSTATION_DIR/ws_tool/lib/lib.bash"
-
+. "$WORKSTATION_DIR/ws_tool/lib/properties/dotfiles.bash"
 
 # writing properties
 # for a given property foo, define function
@@ -357,3 +357,9 @@ prop_ws_nix_global_config_fix () {
   "$maybe_sudo" "${WORKSTATION_DIR}/ws_tool/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
 }
 
+# prop_ws_nix_homemanager_install() {
+#   export HOME_MANAGER_BACKUP_EXT
+#   HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
+#   WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
+#   nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init "$WORKSTATION_DIR"
+# }
