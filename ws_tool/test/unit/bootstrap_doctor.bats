@@ -79,3 +79,38 @@ setup (){
   )
   assert_equal "$(cat "${props_test_tmp_file}")" "0 a b f"
 }
+
+@test "run_all_props aborts if unable to satisfy a property " {
+  local props_test_tmp_file
+  props_test_tmp_file="$(_mktemp "props-test-tmp")/file"
+  prop_a() {
+    printf " a1" >> "$props_test_tmp_file"
+    return 0
+  }
+
+  prop_b() {
+    printf " b1" >> "$props_test_tmp_file"
+    return 55
+  }
+
+  prop_b_fix() {
+    printf " b1_fix" >> "$props_test_tmp_file"
+    return 56
+  }
+
+  prop_f() {
+    printf " f1" >> "$props_test_tmp_file"
+    return 0
+  }
+
+  ws_unset_settings
+  bootstrap_props=(prop_a prop_b)
+  workstation_props_foo=(prop_f)
+  WORKSTATION_NAME=foo
+  printf "0" >> "$props_test_tmp_file"
+  run run_all_props --fix true --label "foo"
+  # echo "$output" 1>&3
+  assert_failure
+
+  assert_equal "$(cat "${props_test_tmp_file}")" "0 a1 b1 b1_fix"
+}

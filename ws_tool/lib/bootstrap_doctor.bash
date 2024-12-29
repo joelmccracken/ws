@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 declare -a REPLY
@@ -40,7 +39,11 @@ run_all_props() {
   done
 
   echo "$label: base properties"
-  run_props --fix "$fix" "${bootstrap_props[@]}"
+  local result=0
+  run_props --fix "$fix" "${bootstrap_props[@]}" || { result="$?"; : ; }
+  if (( result > 0 )); then
+    return "$result";
+  fi
 
   echo "$label: '$WORKSTATION_NAME' properties"
 
@@ -63,10 +66,8 @@ get_workstation_properties() {
     printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
     eval "$setprops"
     REPLY=("${props[@]}")
-    declare -p REPLY
   else
     REPLY=()
-    declare -p REPLY
   fi
   return 0
 }
@@ -113,7 +114,7 @@ run_props () {
       echo "checking: $current ... FAIL"
       if [[ "$fix" == "true" ]]; then
         echo "fixing: $current ..."
-        fix_result=0
+        local fix_result=0
         interact "${current}_fix" || { fix_result="$?"; : ; }
         if (( fix_result == 0 )); then
           echo "fixing: $current .... OK"
@@ -123,12 +124,13 @@ run_props () {
             echo "checking: $current .... OK"
           else
             echo "checking: $current .... FAIL"
-            echo "prop $current still failing after running fix, aborting"
+            echo "prop $current still failing after running fix, aborting";
+            return "$prop_result"
           fi
         else
           echo "fixing: $current .... FAIL"
           echo "error while fixing $current, aborting"
-          exit 88
+          return 88
         fi
       else
         failed_props+=("$current")
@@ -148,34 +150,38 @@ run_props () {
   fi
 }
 
-: "${interact_always_continue:=0}"
+: "${interact_always_continue:=false}"
+do_interact() {
+  # only interact if stdin is a terminal,
+  # the workstation_interactive variable is set to true,
+  # and interact_always_continue is not set to true
+  [[ -t 0 ]] && \
+    [[ "${workstation_interactive:-false}" == "true" ]] && \
+    [[ "${interact_always_continue:-false}" != "true" ]]
+}
 
 interact() {
-  local has_continue=0 the_command="$1"
+  local has_continue=0 the_command="$1" result
 
-  if [ "$workstation_interactive" != "true" ]; then
-    "$the_command";
-    return 0;
+  if do_interact ; then
+    while [ "$has_continue" != "1" ]; do
+      read -r -e -n 1 -p "About to run '$1', continue? (c/q/!/p/?):" response
+      case "$response" in
+        (c) has_continue=1;;
+        (q) echo "quitting..."; exit 0;;
+        (\!) interact_always_continue=1; has_continue=1;;
+        (p) type "$the_command";;
+        (?) interact_help;;
+        (*) echo "unrecognized response '$response'."
+      esac
+    done
   fi
-
-  if [ "$interact_always_continue" == "1" ]; then
-    has_continue=1
-  fi
-
-  while [ "$has_continue" != "1" ]; do
-    read -r -e -n 1 -p "About to run '$1', continue? (c/q/!/p/?):" response
-    case "$response" in
-      (c) has_continue=1;;
-      (q) echo "quitting..."; exit 0;;
-      (\!) interact_always_continue=1; has_continue=1;;
-      (p) type "$the_command";;
-      (?) interact_help;;
-      (*) echo "unrecognized response '$response'."
-    esac
-  done
 
   # if we're here, we must have gotten continue
-  "$the_command"
+  # or not needed to interact
+  result=0
+  "$the_command" || { result="$?"; : ; }
+  return "$result";
 }
 
 interact_help() {
