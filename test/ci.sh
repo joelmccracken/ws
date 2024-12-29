@@ -33,6 +33,7 @@ fi
 
 echo INSTALL PROCESS COMPLETE, TESTING
 
+
 pwd
 sleep 10
 ls -lah
@@ -43,6 +44,7 @@ env
 sleep 10
 ls -lah $HOME/workstation/
 sleep 10
+export WORKSTATION_DIR=$HOME/workstation
 bash $HOME/workstation/test/test.sh
 
 # The environment setup script:1 ends here
