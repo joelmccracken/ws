@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 setup (){
-    load 'test_helper/helper'
+    load '../test_helper/helper'
     _setup_common
     ws_reset_settings
 }

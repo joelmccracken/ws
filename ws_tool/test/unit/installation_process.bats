@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 setup (){
-    load 'test_helper/helper'
+    load '../test_helper/helper'
     _setup_common
 }
 

@@ -1,7 +1,7 @@
 setup (){
-    load 'test_helper/helper'
-    _setup_common
-    . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
+  load "../test_helper/helper"
+  _setup_common
+  . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
 }
 
 @test "find_bracketed_content" {

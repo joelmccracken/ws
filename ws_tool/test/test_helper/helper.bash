@@ -1,19 +1,14 @@
 _setup_common() {
-   # BATS_LIB_PATH="test_helper/bats-support:/opt/homebrew/lib:/opt/homebrew/Cellar/bats-support/0.3.0/lib:$BATS_LIB_PATH"
-   load 'test_helper/bats-support/load'
-   load 'test_helper/bats-assert/load'
+  PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../../" &>/dev/null && pwd)"
+  BATS_LIB_PATH="$PROJECT_ROOT/ws_tool/test/test_helper:$BATS_LIB_PATH"
+  bats_load_library "bats-support"
+  bats_load_library "bats-assert"
 
-
-   # get the containing directory of this file
-   # use $BATS_TEST_FILENAME instead of ${BASH_SOURCE[0]} or $0,
-   # as those will point to the bats executable's location or the preprocessed file respectively
-   PROJECT_ROOT="$( cd "$( dirname "$BATS_TEST_FILENAME" )/../../" >/dev/null 2>&1 && pwd )"
-   ws_unset_settings
-   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
-   # make executables in src/ visible to PATH
-   PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
-   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
-   . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
+  ws_unset_settings
+  # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
+  PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
+  : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
+  . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
 }
 
 set_workstation_version_last_sha() {

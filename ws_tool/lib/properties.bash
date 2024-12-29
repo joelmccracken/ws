@@ -348,6 +348,10 @@ prop_ws_nix_global_config_fix () {
     echo "${parts[2]}"
   } > "$new_conf"
 
-  sudo "${WORKSTATION_DIR}/ws_tool/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  maybe_sudo="bash" # basically does nothing different
+  if ! [[ -w "$WS_NIX_GLOBAL_CONFIG_LOCATION" ]]; then
+    maybe_sudo="sudo"
+  fi
+  "$maybe_sudo" "${WORKSTATION_DIR}/ws_tool/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
 }
 
