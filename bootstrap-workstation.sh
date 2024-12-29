@@ -26,7 +26,7 @@ fi
 # When the CI process starts, we start out with a check out of the code for this
 # commit in a directory on the CI machine. However, this is not how workstation runs:
 # - part of the job of workstation is getting its own code from the server
-# - workstation expects the code to be in a specific directory, that is, ~/workstation
+# - workstation expects the code to be in a specific directory, that is, $HOME/workstation
 # Because of this (and possibly other reasons that escape me now), even though the
 # source code of the current commit is checked out on the CI machine already,
 # the CI process re-downloads the code (via this script). The specific SHA to get
@@ -42,8 +42,8 @@ else
 fi
 # [[file:../../workstation.org::workstation_foundation][workstation_foundation]]
 
-export WORKSTATION_DIR="${WORKSTATION_DIR:-~/workstation}"
-export WORKSTATION_EMACS_CONFIG_DIR=~/.config/emacs
+export WORKSTATION_DIR="${WORKSTATION_DIR:-$HOME/workstation}"
+export WORKSTATION_EMACS_CONFIG_DIR=$HOME/.config/emacs
 export WORKSTATION_GIT_ORIGIN='git@github.com:joelmccracken/workstation.git'
 export WORKSTATION_GIT_ORIGIN_PUB='https://github.com/joelmccracken/workstation.git'
 export WORKSTATION_HOST_CURRENT_SETTINGS_DIR=$WORKSTATION_DIR/hosts/current
@@ -216,13 +216,13 @@ is_git_repo_cloned_at $WORKSTATION_DIR $WORKSTATION_GIT_ORIGIN || {
 }
 # at this point, this is hardly necessary; however, the gitignore file is handy
 # i may explore getting rid of this repo entirely and just having a fresh
-# repo without any origin in ~
+# repo without any origin in $HOME
 info ensuring dotfiles repo is checked out
 
 DOTFILES_ORIGIN='git@github.com:joelmccracken/dotfiles.git'
 
-is_git_repo_cloned_at ~ "$DOTFILES_ORIGIN" ||
-    polite-git-checkout ~ 'https://github.com/joelmccracken/dotfiles.git' \
+is_git_repo_cloned_at $HOME "$DOTFILES_ORIGIN" ||
+    polite-git-checkout $HOME 'https://github.com/joelmccracken/dotfiles.git' \
         "$DOTFILES_ORIGIN"
 
 info finished ensuring dotfiles repo is checked out
@@ -288,7 +288,7 @@ manually:
 - icloud
 - slack
 - spotify
-- install haskell language server in ~/bin (or somwewhere else?) for hls
+- install haskell language server in $HOME/bin (or somwewhere else?) for hls
 
 These are the settings I use for slack:
 - accessibility then at bottom changbe up arrow to move focus to last message
