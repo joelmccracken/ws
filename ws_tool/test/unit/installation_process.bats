@@ -11,6 +11,7 @@ setup (){
     set_workstation_version_last_sha
 
     run ws_install.sh
+    assert_success
     assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
 
     # ok, above we demonstrate that the ws_install script in this repo does
