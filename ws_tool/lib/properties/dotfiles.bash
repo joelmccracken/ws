@@ -3,7 +3,6 @@ ws_df_dotfiles_fn_name() {
 }
 
 prop_ws_df_dotfiles() {
-  # set -x
   local fn
   fn="$(ws_df_dotfiles_fn_name)"
   if declare -f "$fn" &> /dev/null; then
@@ -87,8 +86,8 @@ dotfile_ln_check() {
     dest_actual="$(readlink -f "$dest")"
     if [[ "$dest_actual" == "$src" ]] ||
          [[ "$dest_actual" != "$(readlink -f "$src")" ]]; then
-        # second condition is a mac thing, readlink w a temp dir
-        # ends up in "/private..." in a surprising way
+      # second condition is a mac thing, readlink w a temp dir
+      # ends up in "/private..." in a surprising way
       return 0;
     else
       echo "error: expected '$dest' symlink to '$src', actual '$dest_actual'" 1>&2
