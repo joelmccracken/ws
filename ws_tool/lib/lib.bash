@@ -35,9 +35,11 @@ _mktemp() {
 }
 
 mv_to_backup() {
-  local the_file="$1"
+  local the_file="$1" new=
+  new="${the_file}-$(date +"%s")"
   if [[ -e "$the_file" ]]; then
-    mv "$the_file" "${the_file}-$(date +"%s")"
+    mv "$the_file" "$new" > /dev/null
+    echo "$new"
   fi
 }
 

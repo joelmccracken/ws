@@ -31,7 +31,6 @@ function check () {
     fi
 }
 
-
 function ln_helper() {
     dest=~/$2$1
     src=${WORKSTATION_DIR}/dotfiles/$1
