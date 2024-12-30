@@ -6,7 +6,7 @@ _setup_common() {
 
   ws_unset_settings
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
-  PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
+  PATH="$PROJECT_ROOT:$PROJECT_ROOT/bin/:$PATH"
   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
   . "$PROJECT_ROOT/lib/lib.bash"
 }

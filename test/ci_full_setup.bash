@@ -8,7 +8,7 @@ unset WORKSTATION_DIR
 
 bash <(curl "https://raw.githubusercontent.com/joelmccracken/ws/${WORKSTATION_VERSION}/ws_install.sh")
 
-cd ~/.config/workstation/workstation_source/ws_tool
+cd ~/.config/workstation/workstation_source/
 
 if [ "$RUNNER_OS" == "macOS" ]; then
     WORKSTATION_NAME=ci_macos

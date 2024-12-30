@@ -50,4 +50,4 @@ workstation_descriptions_default="primary workstation"
 
 # Oh, you may wish to add the following to your shell profile file:
 # export WORKSTATION_CONFIG_DIR=/path/to/specific/location
-# export PATH="${WORKSTATION_DIR}/ws_tool:$PATH"
+# export PATH="${WORKSTATION_DIR}:$PATH"
