@@ -49,29 +49,38 @@ ws_df_dotfile_dest_dir_default() {
 : "${ws_df_dotfile_run_failure:=}"
 
 dotfile() {
-  local ln_dot= filename=
+  local dot= filename= ln= dir=
   while (( $# > 0 )); do
     local current="$1"
     shift;
     case "$current" in
-      (--ln-dot) ln_dot=true;;
+      (--dot) dot=true;;
+      (--ln) ln=true;;
+      (--dir) dir=true;;
       (*) filename=$current;;
     esac
   done
   local src="${ws_df_dotfile_src_dir}"
   local dest="${ws_df_dotfile_dest_dir}"
 
-  if [[ -n "$ln_dot" ]]; then
-    # note dest filename prefixed with a dot
-    dotfile_ln "$src/$filename" "$dest/.$filename"
+  if [[ -n "$ln" ]] ; then
+    local pfx=""
+    if [[ -n "$dot" ]]; then
+      pfx="."
+    fi
+    dest_full="${dest}/${pfx}${filename}"
+    if [[ -n "$dir" ]]; then
+      dotfile_dir "$dest_full"
+    fi
+    dotfile_ln "$src/$filename" "$dest_full"
   fi
 }
 
 dotfile_ln(){
   case "$ws_df_dotfile_mode" in
-      (check) dotfile_ln_check "$@";;
-      (fix) dotfile_ln_fix "$@";;
-      (*) echo "ws_df_dotfile_mode unexpected value '$ws_df_dotfile_mode'" 1>&2; exit 1;;
+    (check) dotfile_ln_check "$@";;
+    (fix) dotfile_ln_fix "$@";;
+    (*) echo "ws_df_dotfile_mode unexpected value '$ws_df_dotfile_mode'" 1>&2; exit 1;;
   esac
 }
 
@@ -125,4 +134,31 @@ dotfile_ln_fix() {
     echo "moving '$dest' to backup at '$backup'"
   fi
   ln -s "$src" "$dest"
+}
+
+dotfile_dir() {
+  case "$ws_df_dotfile_mode" in
+    (check) dotfile_dir_check "$@";;
+    (fix) dotfile_dir_fix "$@";;
+    (*) echo "ws_df_dotfile_mode unexpected value '$ws_df_dotfile_mode'" 1>&2; exit 1;;
+  esac
+}
+
+dotfile_dir_check() {
+  local dest_full="$1" dest_dir
+  dest_dir="$(dirname "$dest_full")"
+  if ! [[ -e "$dest_dir" ]]; then
+    echo "no directory exists at '$dest_dir'" 1>&2
+    ws_df_dotfile_run_failure=true
+    return 8;
+  fi
+}
+
+dotfile_dir_fix() {
+  local dest_full="$1" dest_dir
+  dest_dir="$(dirname "$dest_full")"
+  if ! [[ -e "$dest_dir" ]]; then
+    echo "creating directory '$dest_dir'" 1>&2
+    mkdir -p "$dest_dir"
+  fi
 }

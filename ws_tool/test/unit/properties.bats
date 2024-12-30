@@ -186,6 +186,7 @@ EOF
   assert_success
 }
 
+## bats test_tags=bats:focus
 @test "prop_ws_df_dotfiles basic dotfile test" {
   ws_unset_settings
   . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
@@ -197,13 +198,19 @@ EOF
   ws_df_dotfile_dest_dir="$df_dest_dir"
 
   cat > "$df_src_dir/bashrc" <<< "my bash config"
+  cat > "$df_src_dir/Brewfile" <<< "some homebrew package"
+  mkdir -p "$df_src_dir/config/git/"
+  cat > "$df_src_dir/config/git/ignore" <<< ".DS_Store"
+
   test_ws_name=some_name_$RANDOM
   WORKSTATION_NAME="$test_ws_name"
 
   df_fn_src_file="$(_mktemp "df-fn-src")/df.bash"
   cat > "$df_fn_src_file" <<-EOF
 	workstation_props_dotfiles_${WORKSTATION_NAME} () {
-	  dotfile --ln-dot bashrc
+	  dotfile --ln --dot bashrc
+	  dotfile --ln --dot --dir config/git
+	  dotfile --ln Brewfile
 	}
 EOF
   # cat < "$df_fn_src_file" 1>&3
@@ -218,4 +225,8 @@ EOF
 
   run prop_ws_df_dotfiles
   assert_success
+
+  assert [ -f "$df_dest_dir/.bashrc" ]
+  assert [ -f "$df_dest_dir/Brewfile" ]
+  assert [ -f "$df_dest_dir/.config/git/ignore" ]
 }
