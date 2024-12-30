@@ -37,6 +37,8 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
+;; (setq org-directory "~/freckle/notes/")
+(setq org-directory "/Volumes/Personal/EF")
 
 (setq workstation-config-path
       (concat (or (getenv "WORKSTATION_DIR")
@@ -49,7 +51,9 @@
 (defun jnm/ef-ssh-belthronding ()
   "open EF via ssh on belthronding"
   (interactive)
-  (find-file "/ssh:joel@belthronding.wildkraken.monster:~/EF/"))
+  ;; (find-file "/ssh:joel@belthronding.wildkraken.monster:~/EF/")
+  (find-file "/ssh:joel@137.184.110.5:~/EF/") ;;
+  )
 
 (map! "C-c e" #'jnm/ef-ssh-belthronding)
 (map! "C-c d" #'org-timestamp-inactive)
