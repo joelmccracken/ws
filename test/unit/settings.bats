@@ -20,7 +20,7 @@ setup (){
 @test "settings sets appropriate default values" {
     assert_regex "$WORKSTATION_CONFIG_DIR" .*/.config/workstation
     assert_regex "$WORKSTATION_DIR" .*/.config/workstation/workstation_source
-    assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = 'https://github.com/joelmccracken/workstation.git' ]
+    assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = 'https://github.com/joelmccracken/ws.git' ]
     assert [ "$WORKSTATION_VERBOSE" = false ]
     assert [ "$WORKSTATION_LOG_LEVEL" = error ]
 }

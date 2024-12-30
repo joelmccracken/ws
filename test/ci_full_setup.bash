@@ -6,7 +6,7 @@ rm -rf $HOME/.config/workstation
 
 unset WORKSTATION_DIR
 
-bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/${WORKSTATION_VERSION}/ws_install.sh")
+bash <(curl "https://raw.githubusercontent.com/joelmccracken/ws/${WORKSTATION_VERSION}/ws_install.sh")
 
 cd ~/.config/workstation/workstation_source/ws_tool
 
