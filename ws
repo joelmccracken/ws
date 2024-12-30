@@ -7,6 +7,9 @@
 # (ensures that any other bash processes will use builtin too)
 # set -euo pipefail
 
+# env
+# exit 10;
+
 ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ws_initial_pwd="$PWD"
@@ -127,9 +130,9 @@ ws_main() {
     load_expected "$workstation_initial_config_dir_arg/config.sh"
   fi
 
-  if [[ -d "$(ws_config_dir_default)" ]]; then
-    load_expected "$(ws_config_dir_default)/settings.sh"
-    load_expected "$(ws_config_dir_default)/config.sh"
+  if [[ -d "$WORKSTATION_CONFIG_DIR" ]]; then
+    load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
+    load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
   fi
 
   case "$ws_command" in
