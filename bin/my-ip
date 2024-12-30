@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-ifconfig en0 inet | grep inet | awk '{print $2}'

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-shopt -s checkwinsize
-shopt -s histappend
-
-# these can be shared for now
-source ~/.zshrc

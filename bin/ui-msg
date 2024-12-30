@@ -1,3 +1,0 @@
-#!/usr/bin/env ruby
-
-system %Q{osascript -e 'display notification "#{ARGV[1]}" with title "#{ARGV[0]}"'}
