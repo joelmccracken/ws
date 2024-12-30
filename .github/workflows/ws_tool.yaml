@@ -30,7 +30,7 @@ jobs:
         with:
           submodules: recursive
           ref: ${{ github.event.pull_request.head.ref }}
-      - run: ws_tool/test/bats/bin/bats ws_tool/test
+      - run: test/bats/bin/bats test
         env:
           WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
@@ -54,7 +54,7 @@ jobs:
         with:
           submodules: recursive
           ref: ${{ github.event.pull_request.head.sha }}
-      - run: bash ws_tool/test/ci_full_setup.bash
+      - run: bash test/ci_full_setup.bash
         env:
           WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
