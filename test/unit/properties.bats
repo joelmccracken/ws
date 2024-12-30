@@ -92,7 +92,7 @@ setup (){
   done
 }
 
-@test "prop_ws_config_exists using custom config" {
+@test "prop_ws_config_exists using custom config dir" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha

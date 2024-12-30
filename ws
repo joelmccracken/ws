@@ -24,9 +24,11 @@ ws_initial_pwd="$PWD"
 REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
 declare -a ws_command_arguments
-workstation_initial_config_dir_arg=
-workstation_name_arg=
-workstation_interactive=
+: "${workstation_initial_config_dir_arg:=}"
+: "${workstation_name_arg:=}"
+: "${workstation_interactive:=}"
+: "${workstation_initial_config_repo_arg:=}"
+: "${workstation_initial_config_repo_ref_arg:=}"
 
 usage_and_quit() {
     print_usage
@@ -89,6 +91,14 @@ process_cli_args() {
         ;;
       (-c|--initial-config-dir)
         workstation_initial_config_dir_arg="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (-c|--initial-config-repo)
+        workstation_initial_config_repo_arg="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (-c|--initial-config-repo-ref)
+        workstation_initial_config_repo_ref_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
       (-h|--help|help)
