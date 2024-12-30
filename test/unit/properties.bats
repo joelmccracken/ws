@@ -106,7 +106,7 @@ setup (){
   run prop_ws_config_exists
   assert_failure
 
-  workstation_initial_config_dir_arg="${WORKSTATION_DIR}/my_config"
+  workstation_initial_config_dir_arg="${WORKSTATION_DIR}/sample_config"
 
   run prop_ws_config_exists_fix
   assert_success
