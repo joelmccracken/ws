@@ -30,7 +30,7 @@ setup (){
     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     WORKSTATION_REPO_GIT_ORIGIN='git@github.com:some-other-user/workstation.git'
     MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
-    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+    . "$PROJECT_ROOT/lib/settings.bash"
 
     assert [ "$WORKSTATION_CONFIG_DIR" = "$WORKSTATION_CONFIG_DIR" ]
     assert [ "$WORKSTATION_DIR" = "$WORKSTATION_CONFIG_DIR/workstation_source" ]

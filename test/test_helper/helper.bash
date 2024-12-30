@@ -1,6 +1,6 @@
 _setup_common() {
   PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../../" &>/dev/null && pwd)"
-  BATS_LIB_PATH="$PROJECT_ROOT/ws_tool/test/test_helper:$BATS_LIB_PATH"
+  BATS_LIB_PATH="$PROJECT_ROOT/test/test_helper:$BATS_LIB_PATH"
   bats_load_library "bats-support"
   bats_load_library "bats-assert"
 
@@ -8,7 +8,7 @@ _setup_common() {
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
   PATH="$PROJECT_ROOT:/bin/:${PROJECT_ROOT}/ws_tool:$PATH"
   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
-  . "$PROJECT_ROOT/ws_tool/lib/lib.bash"
+  . "$PROJECT_ROOT/lib/lib.bash"
 }
 
 set_workstation_version_last_sha() {
@@ -43,7 +43,7 @@ ws_get_all_settings() {
             var_name="${without_export/%# META:workstation_setting/}"
             all_settings+=("$var_name")
         fi
-   done < "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+   done < "$PROJECT_ROOT/lib/settings.bash"
    read -ra REPLY <<< "${all_settings[@]}"
 }
 
@@ -56,5 +56,5 @@ ws_unset_settings() {
 
 ws_reset_settings () {
     ws_unset_settings
-    . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+    . "$PROJECT_ROOT/lib/settings.bash"
 }

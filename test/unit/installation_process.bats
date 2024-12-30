@@ -12,7 +12,7 @@ setup (){
 
     run ws_install.sh
     assert_success
-    assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
+    assert [ -x "${WORKSTATION_DIR}/ws" ]
 
     # ok, above we demonstrate that the ws_install script in this repo does
     # indeed install the ws executable
@@ -41,7 +41,7 @@ EOF
 EOF
 
     export WORKSTATION_NAME=workstation_a
-    run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
+    run "${WORKSTATION_DIR}/ws" bootstrap
     assert_success
 }
 
@@ -51,12 +51,12 @@ EOF
     set_workstation_version_last_sha
 
     do_ws_install() {
-        bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/${WORKSTATION_VERSION}/ws_tool/ws_install.sh")
+        bash <(curl "https://raw.githubusercontent.com/joelmccracken/workstation/${WORKSTATION_VERSION}/ws_install.sh")
     }
     run do_ws_install
 
     assert_success
-    assert [ -x "${WORKSTATION_DIR}/ws_tool/ws" ]
+    assert [ -x "${WORKSTATION_DIR}/ws" ]
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
     export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
@@ -67,7 +67,7 @@ EOF
     workstation_names=(workstation_a workstation_b)
 EOF
     export WORKSTATION_NAME=workstation_b
-    run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
+    run "${WORKSTATION_DIR}/ws" bootstrap
 
     assert_success
 }

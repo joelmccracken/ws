@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-. "$WORKSTATION_DIR/ws_tool/lib/lib.bash"
-. "$WORKSTATION_DIR/ws_tool/lib/properties/dotfiles.bash"
+. "$WORKSTATION_DIR/lib/lib.bash"
+. "$WORKSTATION_DIR/lib/properties/dotfiles.bash"
 
 # writing properties
 # for a given property foo, define function
@@ -111,7 +111,7 @@ prop_ws_check_linux_git_installed_fix() {
 prop_ws_check_workstation_dir() {
   if [ -d "$WORKSTATION_DIR" ]; then
     echo "WORKSTATION_DIR exists"
-    if [ -x "$WORKSTATION_DIR/ws_tool/ws" ]; then
+    if [ -x "$WORKSTATION_DIR/ws" ]; then
       echo "WORKSTATION_DIR contains ws executable"
       return 0
     else
@@ -198,7 +198,7 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
-  local src_dir="${WORKSTATION_DIR}/ws_tool/sample_config";
+  local src_dir="${WORKSTATION_DIR}/sample_config";
   if [[ -n "$workstation_initial_config_dir_arg" ]]; then
     src_dir="$workstation_initial_config_dir_arg";
   fi
@@ -356,7 +356,7 @@ prop_ws_nix_global_config_fix () {
   if ! [[ -w "$WS_NIX_GLOBAL_CONFIG_LOCATION" ]]; then
     maybe_sudo="sudo"
   fi
-  "$maybe_sudo" "${WORKSTATION_DIR}/ws_tool/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  "$maybe_sudo" "${WORKSTATION_DIR}/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
 }
 
 # prop_ws_nix_homemanager_install() {

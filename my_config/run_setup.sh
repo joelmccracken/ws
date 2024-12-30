@@ -10,4 +10,4 @@ WORKSTATION_VERSION="$(git log -n 1 --format="%H")"
 
 bash ws_install.sh
 
-~/.config/workstation/workstation_source/ws_tool/ws bootstrap -n angrist --initial-config-dir ./my_config
+~/.config/workstation/workstation_source/ws bootstrap -n angrist --initial-config-dir ./my_config
