@@ -203,6 +203,11 @@ prop_ws_config_exists_fix() {
   else
     ws_prop_config_exists_install_from_directory
   fi
+
+  if [[ -n "$WORKSTATION_CONFIG_DIR" ]]; then
+    load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
+    load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
+  fi
 }
 
 ws_prop_config_exists_install_from_directory() {
