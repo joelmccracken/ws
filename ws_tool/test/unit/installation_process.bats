@@ -24,7 +24,6 @@ setup (){
           cp -r "$gitfile" "$WORKSTATION_DIR/$gitfile"
       done;
     )
-    # export WORKSTATION_DIR="${PROJECT_ROOT}"
 
     cat <<-EOF > "${WORKSTATION_CONFIG_DIR}/settings.sh"
     export WORKSTATION_CONFIG_DIR="$WORKSTATION_CONFIG_DIR"
@@ -43,7 +42,6 @@ EOF
 
     export WORKSTATION_NAME=workstation_a
     run "${WORKSTATION_DIR}/ws_tool/ws" bootstrap
-
     assert_success
 }
 

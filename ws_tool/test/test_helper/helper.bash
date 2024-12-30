@@ -12,6 +12,7 @@ _setup_common() {
 }
 
 set_workstation_version_last_sha() {
+  export WORKSTATION_VERSION
   WORKSTATION_VERSION="$(git log -n 1 --format="%H")"
 }
 
