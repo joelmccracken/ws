@@ -186,7 +186,6 @@ EOF
   assert_success
 }
 
-##### bats test_tags=bats:focus
 @test "prop_ws_df_dotfiles basic dotfile test" {
   ws_unset_settings
   . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
@@ -218,6 +217,5 @@ EOF
   assert_success
 
   run prop_ws_df_dotfiles
-  # echo "$output" 1>&3
   assert_success
 }

@@ -85,7 +85,7 @@ dotfile_ln_check() {
   if [[ -L "$dest" ]]; then
     dest_actual="$(readlink -f "$dest")"
     if [[ "$dest_actual" == "$src" ]] ||
-         [[ "$dest_actual" != "$(readlink -f "$src")" ]]; then
+         [[ "$dest_actual" == "$(readlink -f "$src")" ]]; then
       # second condition is a mac thing, readlink w a temp dir
       # ends up in "/private..." in a surprising way
       return 0;
