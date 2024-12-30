@@ -134,7 +134,7 @@ prop_ws_check_workstation_dir_fix() {
     curl -L https://github.com/joelmccracken/ws/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
 
     mkdir -p "$WORKSTATION_DIR";
-    mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR";
+    mv "${TMPINST}"/ws-*/{,.[^.]}* "$WORKSTATION_DIR";
   )
 }
 

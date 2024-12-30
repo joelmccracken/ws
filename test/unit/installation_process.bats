@@ -4,7 +4,7 @@ setup (){
     load '../test_helper/helper'
     _setup_common
 }
-
+## bats test_tags=bats:focus
 @test "the install script and then run ws bootstrap from this project checkout" {
     export WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"

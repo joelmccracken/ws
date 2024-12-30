@@ -10,5 +10,6 @@ setup (){
     set_workstation_version_last_sha
     # export TO_WORKSTATION_DIR="${TMPDIR}/workstation"
     run ws_install.sh
+
     assert [ -x "${WORKSTATION_DIR}/ws" ]
 }
