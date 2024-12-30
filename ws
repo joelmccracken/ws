@@ -135,10 +135,10 @@ ws_main() {
     set -x
   fi
 
-  if [[ -n "$workstation_initial_config_dir_arg" ]]; then
-    load_expected "$workstation_initial_config_dir_arg/settings.sh"
-    load_expected "$workstation_initial_config_dir_arg/config.sh"
-  fi
+  # if [[ -n "$workstation_initial_config_dir_arg" ]]; then
+  #   load_expected "$workstation_initial_config_dir_arg/settings.sh"
+  #   load_expected "$workstation_initial_config_dir_arg/config.sh"
+  # fi
 
   if [[ -d "$WORKSTATION_CONFIG_DIR" ]]; then
     load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
