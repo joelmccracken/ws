@@ -134,6 +134,44 @@ setup (){
   assert_success
 }
 
+# bats test_tags=bats:focus
+@test "prop_ws_config_exists use repo" {
+  ws_unset_settings
+
+  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  set_workstation_version_last_sha
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+  . "$PROJECT_ROOT/lib/settings.bash"
+
+  # make a config repo
+  workstation_initial_config_repo_arg="$(_mktemp "ws-fake-config-repo")"
+  workstation_initial_config_repo_ref_arg='some-branch'
+  workstation_initial_config_dir_arg=''
+  ( cd "$workstation_initial_config_repo_arg";
+    git init .;
+    echo "config stuff" > config.sh
+    echo "settings stuff" > settings.sh
+    git add .;
+    git commit -m 'initial commit';
+    git checkout -b some-branch
+  )
+
+  run prop_ws_check_workstation_dir_fix
+
+  run prop_ws_config_exists
+  assert_failure
+
+  run prop_ws_config_exists_fix
+  echo "$output" 1>&3
+  assert_success
+
+  run prop_ws_config_exists
+  assert_success
+
+  ls -lah "$WORKSTATION_CONFIG_DIR/" 1>&3
+
+}
+
 @test "prop_ws_current_settings_symlink works for default" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
@@ -186,7 +224,6 @@ EOF
   assert_success
 }
 
-## bats test_tags=bats:focus
 @test "prop_ws_df_dotfiles basic dotfile test" {
   ws_unset_settings
   . "$PROJECT_ROOT/lib/settings.bash"

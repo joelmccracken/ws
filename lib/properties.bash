@@ -198,9 +198,21 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
+  if [[ -n "$workstation_initial_config_repo_arg" ]]; then
+    ws_prop_config_exists_install_from_repo
+  else
+    ws_prop_config_exists_install_from_directory
+  fi
+}
+
+ws_prop_config_exists_install_from_directory() {
   local src_dir="${WORKSTATION_DIR}/sample_config";
   if [[ -n "$workstation_initial_config_dir_arg" ]]; then
     src_dir="$workstation_initial_config_dir_arg";
+  fi
+
+  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+    mv_to_backup "$WORKSTATION_CONFIG_DIR"
   fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
 
@@ -216,6 +228,23 @@ prop_ws_config_exists_fix() {
         cp -r "$f" "$WORKSTATION_CONFIG_DIR/$f";
       fi
     done
+  )
+}
+
+ws_prop_config_exists_install_from_repo() {
+  local ref="main";
+  if [[ -n "$workstation_initial_config_repo_ref_arg" ]]; then
+    ref="$workstation_initial_config_repo_ref_arg"
+  fi
+
+  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+    mv_to_backup "$WORKSTATION_CONFIG_DIR"
+  fi
+  mkdir -p "$WORKSTATION_CONFIG_DIR"
+
+  ( cd "$WORKSTATION_CONFIG_DIR";
+    git clone "$workstation_initial_config_repo_arg" .;
+    git checkout "$ref";
   )
 }
 
