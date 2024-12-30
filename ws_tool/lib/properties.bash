@@ -171,7 +171,9 @@ prop_ws_dotfiles_git_track() {
 prop_ws_dotfiles_git_track_fix() {
   export GIT_DIR="$WORKSTATION_DOTFILES_TRACK_GIT_DIR"
   ( cd "$HOME";
-    git init
+    git init .
+    git config --local --get-all core.bare true >/dev/null && \
+      git config --local --replace-all core.bare false true
   )
   return 0
 }
