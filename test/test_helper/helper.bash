@@ -1,5 +1,5 @@
 _setup_common() {
-  PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../../" &>/dev/null && pwd)"
+  PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../" &>/dev/null && pwd)"
   BATS_LIB_PATH="$PROJECT_ROOT/test/test_helper:$BATS_LIB_PATH"
   bats_load_library "bats-support"
   bats_load_library "bats-assert"
