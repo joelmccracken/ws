@@ -6,7 +6,7 @@ ws_config_dir_default () {
 : "${WORKSTATION_VERBOSE:=false}"
 : "${WORKSTATION_LOG_LEVEL:=error}"
 : "${WORKSTATION_CONFIG_DIR:="$(ws_config_dir_default)"}"
-: "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/workstation_source"}"
+: "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/vendor/ws"}"
 : "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/ws.git"}"
 : "${WORKSTATION_VERSION:=master}"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 set -x
-: "${WORKSTATION_DIR:=$HOME/.config/workstation/workstation_source}"
+: "${WORKSTATION_DIR:=$HOME/.config/workstation/vendor/ws}"
 : "${WORKSTATION_VERSION:=workcomp}"
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")

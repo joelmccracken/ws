@@ -8,7 +8,7 @@ setup (){
 @test "the install script and then run ws bootstrap from this project checkout" {
     export WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     export WORKSTATION_CONFIG_SRC_DIR="$(_mktemp "ws-config-src-dir")"
-    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
+    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/vendor/ws"
 
     set_workstation_version_last_sha
 
@@ -52,7 +52,7 @@ EOF
 @test "the install script from curl/github and then run ws bootstrap" {
     export WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
     export WORKSTATION_CONFIG_SRC_DIR="$(_mktemp "ws-config-src-dir")"
-    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/workstation_source"
+    export WORKSTATION_DIR="${WORKSTATION_CONFIG_DIR}/vendor/ws"
     set_workstation_version_last_sha
 
     do_ws_install() {

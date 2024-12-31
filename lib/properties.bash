@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-. "$WORKSTATION_DIR/lib/lib.bash"
 . "$WORKSTATION_DIR/lib/properties/dotfiles.bash"
 
 # writing properties

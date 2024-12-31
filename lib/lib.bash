@@ -50,3 +50,17 @@ safe_overwrite() {
   mv_to_backup "$orig"
   mv "$new" "$orig"
 }
+
+load_if_exists() {
+  if [ -f "$1" ]; then
+    . "$1"
+  fi
+}
+
+load_expected() {
+  if [ -f "$1" ]; then
+    . "$1"
+  else
+    error "ws: init: expected to load file $1, but no file found"
+  fi
+}

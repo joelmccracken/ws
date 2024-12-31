@@ -35,20 +35,6 @@ usage_and_quit() {
     exit "$1"
 }
 
-load_if_exists() {
-  if [ -f "$1" ]; then
-    . "$1"
-  fi
-}
-
-load_expected() {
-  if [ -f "$1" ]; then
-    . "$1"
-  else
-    error "ws: init: expected to load file $1, but no file found"
-  fi
-}
-
 print_usage() {
   echo "Workstation configuration tool."
   echo

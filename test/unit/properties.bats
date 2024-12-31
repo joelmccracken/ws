@@ -71,7 +71,7 @@ setup (){
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -96,7 +96,7 @@ setup (){
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -134,13 +134,13 @@ setup (){
   assert_success
 }
 
-# bats test_tags=bats:focus
+## bats test_tags=bats:focus
 @test "prop_ws_config_exists use repo" {
   ws_unset_settings
 
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # make a config repo

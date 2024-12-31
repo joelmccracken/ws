@@ -8,6 +8,7 @@ _setup_common() {
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
   PATH="$PROJECT_ROOT:$PROJECT_ROOT/bin/:$PATH"
   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
+  . "$PROJECT_ROOT/lib/logging.bash"
   . "$PROJECT_ROOT/lib/lib.bash"
 }
 
