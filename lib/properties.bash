@@ -218,9 +218,9 @@ ws_prop_config_exists_install_from_directory() {
     src_dir="$workstation_initial_config_dir_arg";
   fi
 
-  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
-    mv_to_backup "$WORKSTATION_CONFIG_DIR"
-  fi
+  # if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+  #   mv_to_backup "$WORKSTATION_CONFIG_DIR"
+  # fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
 
   # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
@@ -244,9 +244,9 @@ ws_prop_config_exists_install_from_repo() {
     ref="$workstation_initial_config_repo_ref_arg"
   fi
 
-  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
-    mv_to_backup "$WORKSTATION_CONFIG_DIR"
-  fi
+  # if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+  #   mv_to_backup "$WORKSTATION_CONFIG_DIR"
+  # fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
 
   ( cd "$WORKSTATION_CONFIG_DIR";
