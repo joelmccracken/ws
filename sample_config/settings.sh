@@ -9,10 +9,10 @@
 # these things.
 
 # you may wish to customize this if you want your configuration somewhere else.
-export WORKSTATION_CONFIG_DIR=$HOME/.config/workstation
+# export WORKSTATION_CONFIG_DIR=$HOME/.config/workstation
 
 # location of workstation source. This is where the ws source code should live.
-export WORKSTATION_DIR=$WORKSTATION_CONFIG_DIR/vendor/ws
+# export WORKSTATION_DIR=$WORKSTATION_CONFIG_DIR/vendor/ws
 
 # Workstation name to use.
 # Used to identify a machine, determine which settings it should have.
