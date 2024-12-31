@@ -257,7 +257,6 @@ ws_prop_config_exists_install_from_repo() {
   ( cd "$WORKSTATION_CONFIG_DIR";
     git clone "$workstation_initial_config_repo_arg" .;
     git checkout "$ref";
-    set -x
     if [[ -n "$ws_tmp" ]]; then
       ( cd "$ws_tmp";
         for f in * .*; do
@@ -266,7 +265,6 @@ ws_prop_config_exists_install_from_repo() {
         done
       )
     fi
-    set +x
   )
 }
 
