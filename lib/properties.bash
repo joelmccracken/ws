@@ -198,6 +198,7 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
+  set -x
   if [[ -n "$workstation_initial_config_repo_arg" ]]; then
     ws_prop_config_exists_install_from_repo
   else
@@ -208,6 +209,7 @@ prop_ws_config_exists_fix() {
     load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
     load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
   fi
+  set +x
 }
 
 ws_prop_config_exists_install_from_directory() {
