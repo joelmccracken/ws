@@ -244,7 +244,12 @@ ws_prop_config_exists_install_from_repo() {
   ws_tmp=
   if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
     ws_tmp="$(_mktemp "ws-tmp")"
-    mv "$WORKSTATION_CONFIG_DIR" "$ws_tmp/"
+    ( cd "$WORKSTATION_CONFIG_DIR";
+      for f in * .*; do
+        if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
+        mv "$f" "$ws_tmp"
+      done
+    )
   fi
 
   mkdir -p "$WORKSTATION_CONFIG_DIR"
