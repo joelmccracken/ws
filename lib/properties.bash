@@ -198,7 +198,6 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
-  set -x
   if [[ -n "$workstation_initial_config_repo_arg" ]]; then
     ws_prop_config_exists_install_from_repo
   else
@@ -209,7 +208,6 @@ prop_ws_config_exists_fix() {
     load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
     load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
   fi
-  set +x
 }
 
 ws_prop_config_exists_install_from_directory() {
@@ -243,15 +241,27 @@ ws_prop_config_exists_install_from_repo() {
   if [[ -n "$workstation_initial_config_repo_ref_arg" ]]; then
     ref="$workstation_initial_config_repo_ref_arg"
   fi
+  ws_tmp=
+  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+    ws_tmp="$(_mktemp "ws-tmp")"
+    mv "$WORKSTATION_CONFIG_DIR" "$ws_tmp/"
+  fi
 
-  # if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
-  #   mv_to_backup "$WORKSTATION_CONFIG_DIR"
-  # fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
 
   ( cd "$WORKSTATION_CONFIG_DIR";
     git clone "$workstation_initial_config_repo_arg" .;
     git checkout "$ref";
+    set -x
+    if [[ -n "$ws_tmp" ]]; then
+      ( cd "$ws_tmp";
+        for f in * .*; do
+          if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
+          cp -r "$f" "$WORKSTATION_CONFIG_DIR"
+        done
+      )
+    fi
+    set +x
   )
 }
 
