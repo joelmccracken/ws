@@ -257,17 +257,13 @@ ws_prop_config_exists_install_from_repo() {
 
 prop_ws_current_settings_symlink() {
   current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
-
   if [[ -L "$current_settings_file" ]]; then
     echo "symlink found at $current_settings_file"
     return 0
   fi
-
   if ! [[ -e "$current_settings_file" ]]; then
     echo "no file found at '$current_settings_file'" 1>&2
-  fi
-
-  if ! [[ -L "$current_settings_file" ]]; then
+  elif ! [[ -L "$current_settings_file" ]]; then
     {
       echo "Warning: File found at '$current_settings_file', but it was not a symlink."
       echo "  This will probably work, but its possible that something wonky"
