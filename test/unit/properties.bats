@@ -149,8 +149,8 @@ setup (){
   workstation_initial_config_dir_arg=''
   ( cd "$workstation_initial_config_repo_arg";
     git init .;
-    echo "config stuff" > config.sh
-    echo "settings stuff" > settings.sh
+    echo "# config stuff" > config.sh
+    echo "# settings stuff" > settings.sh
     git add .;
     git commit -m 'initial commit';
     git checkout -b some-branch
@@ -179,6 +179,8 @@ setup (){
   WORKSTATION_NAME=default
   . "$PROJECT_ROOT/lib/settings.bash"
 
+  # env 1>&3
+  # return 1
   prop_ws_check_workstation_dir_fix
   prop_ws_config_exists_fix
 
