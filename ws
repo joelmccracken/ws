@@ -15,9 +15,9 @@ ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
 ws_initial_pwd="$PWD"
 
 # set -x
-
 . "${ws_script_dir}/lib/settings.bash"
 . "${ws_script_dir}/lib/logging.bash"
+. "${ws_script_dir}/lib/lib.bash"
 . "${ws_script_dir}/lib/properties.bash"
 . "${ws_script_dir}/lib/bootstrap_doctor.bash"
 
