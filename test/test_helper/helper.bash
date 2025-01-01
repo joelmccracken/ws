@@ -4,6 +4,11 @@ _setup_common() {
   bats_load_library "bats-support"
   bats_load_library "bats-assert"
 
+  export BATS_WS_USER_HOME
+  BATS_WS_USER_HOME="$HOME"
+
+  HOME="$BATS_TEST_TMPDIR/home"
+
   ws_unset_settings
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
   PATH="$PROJECT_ROOT:$PROJECT_ROOT/bin/:$PATH"

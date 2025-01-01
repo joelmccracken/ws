@@ -134,7 +134,6 @@ setup (){
   assert_success
 }
 
-## bats test_tags=bats:focus
 @test "prop_ws_config_exists use repo" {
   ws_unset_settings
 
@@ -162,16 +161,17 @@ setup (){
   assert_failure
 
   run prop_ws_config_exists_fix
-  echo "$output" 1>&3
+  #echo "$output" 1>&3
   assert_success
 
   run prop_ws_config_exists
   assert_success
 
-  ls -lah "$WORKSTATION_CONFIG_DIR/" 1>&3
+  #ls -lah "$WORKSTATION_CONFIG_DIR/" 1>&3
 
 }
 
+## bats test_tags=bats:focus
 @test "prop_ws_current_settings_symlink works for default" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
