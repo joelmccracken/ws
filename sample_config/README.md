@@ -1,1 +1,1 @@
-# Workstation Sample Config
+# Workstation Sample Configuration

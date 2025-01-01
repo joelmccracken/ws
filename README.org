@@ -23,3 +23,51 @@ execute ws bootstrap ()
 - at this point, where should configurations be?
 implement a -i or -q for interactive/quiet? (-i default?)
 where should the settings and config file be located?
+* ideas/TODO
+- TODO make actual modification commands clearer/explicitly logged.
+- automatic adding of ws tool's bin dir to PATH, at least, and perhaps
+  other relevant tasks?
+- automatically/better handle conflicts when e.g. replacing a file/dir with a ws
+  managed version that already exists?
+  - good idea to log, "save" these differences in state
+- command like `ws hack` that loads all of the relevant workstation stuff into
+  an interactive bash session and drops the user in it so they can
+  experiment/make whatever changes are necessary.
+- finish porting remaining functionality from workstation repo to this (ws)
+  - home manager
+  - bww/secrets
+  - df/dotfiles subcommand
+  - standardized/better logging/output
+    - save logs in a subdir?
+    - save state/info somewhere?
+      - "last checked on $date, properties verified ..."
+      - ran the following potentially destructive commands,
+        making the differences/changes noted in <some diff>
+      - save md5 hashes of previous runs/files so it can know
+        that nothing has changed in a file since a previous run, and so it can
+        safely overwrite/remove whatever necessary changes.
+- better docs/explanation of how it all works
+- parameterizable properties?
+  - vs just wanting props to wrap?
+  - oo commands to props, e.g. so that prop_foo takes a --fix flag
+    and then a separate function is not needed? makes some things simpler
+    - also does expand upon the notion of functions as way to indirectly trigger
+      or control behavior, like how the dotfiles mgmt system works.
+- collect/predefine descriptionm of what changes would be made as detailed as
+  possible before actually invoking?
+  - the "print the fix function" is pretty useless, fix funcs too complex
+    - replace with "drop into shell here" command, similar to the `ws hack`
+      suggestion above?
+- build a single ws bin that can be thus distributed
+  - cat most of the files together should work
+  - avoids much of the initial difficulty
+    - no need to clone/fetch entire repo
+    - ws_install can be replaced with a curl that just downloads the ws tool
+    - no need for WORKSTATION_DIR to house files etc
+  - makes sense with XDG_BASE_DIRECTORY spec:
+    - .local/state/ws for logs, saving state
+      - XDG_STATE_HOME
+  - store ws bin itself in .local/bin
+    - havintg just one bin would remove a lot of the unknowns with issues
+  - thinking about things that work in this direction anyway, like
+    generating default config files from code instead of
