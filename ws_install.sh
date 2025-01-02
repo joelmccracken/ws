@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
-set -x
 : "${WORKSTATION_DIR:=$HOME/.config/workstation/vendor/ws}"
-: "${WORKSTATION_VERSION:=workcomp}"
+: "${WORKSTATION_VERSION:=master}"
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 # installer of ws tool/project

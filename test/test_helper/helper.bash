@@ -8,6 +8,10 @@ _setup_common() {
   BATS_WS_USER_HOME="$HOME"
 
   HOME="$BATS_TEST_TMPDIR/home"
+  mkdir -p "$HOME"
+  # need this for a couple of automated commit tests
+  git config --global user.email "automated@example.com"
+  git config --global user.name "Test Automation"
 
   ws_unset_settings
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
