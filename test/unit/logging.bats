@@ -2,7 +2,7 @@
 setup (){
   load "../test_helper/helper"
   _setup_common
-  . "$PROJECT_ROOT/ws_tool/lib/logging.bash"
+  . "$PROJECT_ROOT/lib/logging.bash"
 }
 
 @test "log_level_num gets level number from name" {

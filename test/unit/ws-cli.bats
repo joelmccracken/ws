@@ -1,7 +1,7 @@
 setup (){
   load "../test_helper/helper"
     _setup_common
-    . "$PROJECT_ROOT/ws_tool/ws"
+    . "$PROJECT_ROOT/ws"
 }
 
 @test "supports help flag" {
@@ -51,4 +51,14 @@ setup (){
     run process_cli_args -z
     assert_failure
     assert_output --partial "ws: argument parsing: unknown argument '-z'"
+}
+
+@test "parses args for initial config w a repo" {
+   process_cli_args \
+       --initial-config-repo 'git@github.com:whatever/foo.git' \
+       --initial-config-repo-ref 'master'
+
+   assert_equal "$workstation_initial_config_repo_arg" 'git@github.com:whatever/foo.git'
+   assert_equal "$workstation_initial_config_repo_ref_arg" 'master'
+
 }

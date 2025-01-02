@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-. "$WORKSTATION_DIR/ws_tool/lib/lib.bash"
-. "$WORKSTATION_DIR/ws_tool/lib/properties/dotfiles.bash"
+. "$WORKSTATION_DIR/lib/properties/dotfiles.bash"
 
 # writing properties
 # for a given property foo, define function
@@ -111,7 +110,7 @@ prop_ws_check_linux_git_installed_fix() {
 prop_ws_check_workstation_dir() {
   if [ -d "$WORKSTATION_DIR" ]; then
     echo "WORKSTATION_DIR exists"
-    if [ -x "$WORKSTATION_DIR/ws_tool/ws" ]; then
+    if [ -x "$WORKSTATION_DIR/ws" ]; then
       echo "WORKSTATION_DIR contains ws executable"
       return 0
     else
@@ -131,10 +130,10 @@ prop_ws_check_workstation_dir_fix() {
   TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
   # installer of ws tool/project
   ( cd "$TMPINST";
-    curl -L https://github.com/joelmccracken/workstation/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
+    curl -L https://github.com/joelmccracken/ws/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
 
     mkdir -p "$WORKSTATION_DIR";
-    mv "${TMPINST}"/workstation-*/{,.[^.]}* "$WORKSTATION_DIR";
+    mv "${TMPINST}"/ws-*/{,.[^.]}* "$WORKSTATION_DIR";
   )
 }
 
@@ -198,10 +197,27 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
-  local src_dir="${WORKSTATION_DIR}/ws_tool/sample_config";
+  if [[ -n "$workstation_initial_config_repo_arg" ]]; then
+    ws_prop_config_exists_install_from_repo
+  else
+    ws_prop_config_exists_install_from_directory
+  fi
+
+  if [[ -n "$WORKSTATION_CONFIG_DIR" ]]; then
+    load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
+    load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
+  fi
+}
+
+ws_prop_config_exists_install_from_directory() {
+  local src_dir="${WORKSTATION_DIR}/sample_config";
   if [[ -n "$workstation_initial_config_dir_arg" ]]; then
     src_dir="$workstation_initial_config_dir_arg";
   fi
+
+  # if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+  #   mv_to_backup "$WORKSTATION_CONFIG_DIR"
+  # fi
   mkdir -p "$WORKSTATION_CONFIG_DIR"
 
   # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
@@ -219,19 +235,47 @@ prop_ws_config_exists_fix() {
   )
 }
 
+ws_prop_config_exists_install_from_repo() {
+  local ref="main";
+  if [[ -n "$workstation_initial_config_repo_ref_arg" ]]; then
+    ref="$workstation_initial_config_repo_ref_arg"
+  fi
+  ws_tmp=
+  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+    ws_tmp="$(_mktemp "ws-tmp")"
+    ( cd "$WORKSTATION_CONFIG_DIR";
+      for f in * .*; do
+        if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
+        mv "$f" "$ws_tmp"
+      done
+    )
+  fi
+
+  mkdir -p "$WORKSTATION_CONFIG_DIR"
+
+  ( cd "$WORKSTATION_CONFIG_DIR";
+    git clone "$workstation_initial_config_repo_arg" .;
+    git checkout "$ref";
+    if [[ -n "$ws_tmp" ]]; then
+      ( cd "$ws_tmp";
+        for f in * .*; do
+          if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
+          cp -r "$f" "$WORKSTATION_CONFIG_DIR"
+        done
+      )
+    fi
+  )
+}
+
 prop_ws_current_settings_symlink() {
   current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
-
   if [[ -L "$current_settings_file" ]]; then
     echo "symlink found at $current_settings_file"
     return 0
   fi
-
   if ! [[ -e "$current_settings_file" ]]; then
     echo "no file found at '$current_settings_file'" 1>&2
-  fi
-
-  if ! [[ -L "$current_settings_file" ]]; then
+  elif ! [[ -L "$current_settings_file" ]]; then
     {
       echo "Warning: File found at '$current_settings_file', but it was not a symlink."
       echo "  This will probably work, but its possible that something wonky"
@@ -356,7 +400,7 @@ prop_ws_nix_global_config_fix () {
   if ! [[ -w "$WS_NIX_GLOBAL_CONFIG_LOCATION" ]]; then
     maybe_sudo="sudo"
   fi
-  "$maybe_sudo" "${WORKSTATION_DIR}/ws_tool/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  "$maybe_sudo" "${WORKSTATION_DIR}/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
 }
 
 # prop_ws_nix_homemanager_install() {

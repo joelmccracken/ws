@@ -7,41 +7,32 @@
 # (ensures that any other bash processes will use builtin too)
 # set -euo pipefail
 
+# env
+# exit 10;
+
 ws_script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 ws_initial_pwd="$PWD"
 
 # set -x
-
 . "${ws_script_dir}/lib/settings.bash"
 . "${ws_script_dir}/lib/logging.bash"
+. "${ws_script_dir}/lib/lib.bash"
 . "${ws_script_dir}/lib/properties.bash"
 . "${ws_script_dir}/lib/bootstrap_doctor.bash"
 
 REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
 declare -a ws_command_arguments
-workstation_initial_config_dir_arg=
-workstation_name_arg=
-workstation_interactive=
+: "${workstation_initial_config_dir_arg:=}"
+: "${workstation_name_arg:=}"
+: "${workstation_interactive:=}"
+: "${workstation_initial_config_repo_arg:=}"
+: "${workstation_initial_config_repo_ref_arg:=}"
 
 usage_and_quit() {
     print_usage
     exit "$1"
-}
-
-load_if_exists() {
-  if [ -f "$1" ]; then
-    . "$1"
-  fi
-}
-
-load_expected() {
-  if [ -f "$1" ]; then
-    . "$1"
-  else
-    error "ws: init: expected to load file $1, but no file found"
-  fi
 }
 
 print_usage() {
@@ -88,6 +79,14 @@ process_cli_args() {
         workstation_initial_config_dir_arg="${args[i+1]}";
         (( i+=1 ));
         ;;
+      (-c|--initial-config-repo)
+        workstation_initial_config_repo_arg="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (-c|--initial-config-repo-ref)
+        workstation_initial_config_repo_ref_arg="${args[i+1]}";
+        (( i+=1 ));
+        ;;
       (-h|--help|help)
         usage_and_quit 0;
         ;;
@@ -122,14 +121,14 @@ ws_main() {
     set -x
   fi
 
-  if [[ -n "$workstation_initial_config_dir_arg" ]]; then
-    load_expected "$workstation_initial_config_dir_arg/settings.sh"
-    load_expected "$workstation_initial_config_dir_arg/config.sh"
-  fi
+  # if [[ -n "$workstation_initial_config_dir_arg" ]]; then
+  #   load_expected "$workstation_initial_config_dir_arg/settings.sh"
+  #   load_expected "$workstation_initial_config_dir_arg/config.sh"
+  # fi
 
-  if [[ -d "$(ws_config_dir_default)" ]]; then
-    load_expected "$(ws_config_dir_default)/settings.sh"
-    load_expected "$(ws_config_dir_default)/config.sh"
+  if [[ -d "$WORKSTATION_CONFIG_DIR" ]]; then
+    load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
+    load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
   fi
 
   case "$ws_command" in

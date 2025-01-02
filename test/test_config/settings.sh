@@ -1,5 +1,5 @@
 export WORKSTATION_CONFIG_DIR=$HOME/.config/workstation
-export WORKSTATION_DIR=$WORKSTATION_CONFIG_DIR/workstation_source
+export WORKSTATION_DIR=$WORKSTATION_CONFIG_DIR/vendor/ws
 
 workstation_names=(ci_macos ci_ubuntu);
 workstation_descriptions_ci_macos="profile for macos on CI"

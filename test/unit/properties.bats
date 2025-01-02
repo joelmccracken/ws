@@ -1,14 +1,14 @@
 setup (){
   load '../test_helper/helper'
   _setup_common
-  . "$PROJECT_ROOT/ws_tool/lib/properties.bash"
+  . "$PROJECT_ROOT/lib/properties.bash"
 }
 
 @test "prop_ws_check_workstation_dir" {
   ws_unset_settings
   WORKSTATION_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   run prop_ws_check_workstation_dir
   assert_failure
@@ -24,7 +24,7 @@ setup (){
   ws_unset_settings
   WORKSTATION_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   # set up the workstation dir, but wont set up git, just project source
   run prop_ws_check_workstation_dir_fix
@@ -33,7 +33,7 @@ setup (){
   run prop_ws_check_workstation_repo
   assert_failure
 
-  # WORKSTATION_REPO_GIT_ORIGIN=https://github.com/joelmccracken/workstation.git
+  # WORKSTATION_REPO_GIT_ORIGIN=https://github.com/joelmccracken/ws.git
   run prop_ws_check_workstation_repo_fix
   assert_success
 
@@ -46,7 +46,7 @@ setup (){
   FAKE_HOME="$(_mktemp "ws-fake-home")"
   set_workstation_version_last_sha
 
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   wrap() {
     (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track)
@@ -71,8 +71,8 @@ setup (){
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
   # installed; set this up.
@@ -92,12 +92,12 @@ setup (){
   done
 }
 
-@test "prop_ws_config_exists using custom config" {
+@test "prop_ws_config_exists using custom config dir" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/workstation_source"
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
   # installed; set this up.
@@ -106,7 +106,7 @@ setup (){
   run prop_ws_config_exists
   assert_failure
 
-  workstation_initial_config_dir_arg="${WORKSTATION_DIR}/ws_tool/my_config"
+  workstation_initial_config_dir_arg="${WORKSTATION_DIR}/sample_config"
 
   run prop_ws_config_exists_fix
   assert_success
@@ -125,7 +125,7 @@ setup (){
 @test "prop_ws_config_exists config already in place" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   touch "${WORKSTATION_CONFIG_DIR}/settings.sh"
   touch "${WORKSTATION_CONFIG_DIR}/config.sh"
@@ -134,13 +134,53 @@ setup (){
   assert_success
 }
 
+@test "prop_ws_config_exists use repo" {
+  ws_unset_settings
+
+  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  set_workstation_version_last_sha
+  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  . "$PROJECT_ROOT/lib/settings.bash"
+
+  # make a config repo
+  workstation_initial_config_repo_arg="$(_mktemp "ws-fake-config-repo")"
+  workstation_initial_config_repo_ref_arg='some-branch'
+  workstation_initial_config_dir_arg=''
+  ( cd "$workstation_initial_config_repo_arg";
+    git init .;
+    echo "# config stuff" > config.sh
+    echo "# settings stuff" > settings.sh
+    git add .;
+    git commit -m 'initial commit';
+    git checkout -b some-branch
+  )
+
+  run prop_ws_check_workstation_dir_fix
+
+  run prop_ws_config_exists
+  assert_failure
+
+  run prop_ws_config_exists_fix
+  #echo "$output" 1>&3
+  assert_success
+
+  run prop_ws_config_exists
+  assert_success
+
+  #ls -lah "$WORKSTATION_CONFIG_DIR/" 1>&3
+
+}
+
+## bats test_tags=bats:focus
 @test "prop_ws_current_settings_symlink works for default" {
   ws_unset_settings
   WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
   WORKSTATION_NAME=default
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
+  # env 1>&3
+  # return 1
   prop_ws_check_workstation_dir_fix
   prop_ws_config_exists_fix
 
@@ -159,7 +199,7 @@ setup (){
 
 @test "prop_ws_nix_global_config" {
   ws_unset_settings
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   nix_config="$(_mktemp "nix-config")/nix.conf"
   cat > "$nix_config" <<-EOF || :
@@ -186,10 +226,9 @@ EOF
   assert_success
 }
 
-## bats test_tags=bats:focus
 @test "prop_ws_df_dotfiles basic dotfile test" {
   ws_unset_settings
-  . "$PROJECT_ROOT/ws_tool/lib/settings.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 
   df_src_dir="$(_mktemp "dotfiles-src")"
   df_dest_dir="$(_mktemp "dotfiles-dest")"
