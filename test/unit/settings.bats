@@ -27,7 +27,8 @@ setup (){
 
 @test "loading settings honors existing env vars" {
     ws_unset_settings
-    WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
+    WORKSTATION_CONFIG_DIR="$(tmp "ws-config-dir")"
+    # echo "$WORKSTATION_CONFIG_DIR" 1>&3
     WORKSTATION_REPO_GIT_ORIGIN='git@github.com:some-other-user/workstation.git'
     MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
     . "$PROJECT_ROOT/lib/settings.bash"

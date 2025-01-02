@@ -65,6 +65,13 @@ ws_unset_settings() {
 }
 
 ws_reset_settings () {
-    ws_unset_settings
-    . "$PROJECT_ROOT/lib/settings.bash"
+  ws_unset_settings
+  . "$PROJECT_ROOT/lib/settings.bash"
+}
+
+tmp (){
+  local name="$1"
+  local tmp="$BATS_TEST_TMPDIR/$name"
+  mkdir -p "$tmp"
+  echo "$tmp"
 }
