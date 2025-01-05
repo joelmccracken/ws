@@ -1,18 +1,22 @@
-ws_config_dir_default () {
+
+WORKSTATION_VERBOSE__default() {
+  echo -n "false";
+}
+WORKSTATION_LOG_LEVEL__default() {
+  echo -n "error";
+}
+WORKSTATION_CONFIG_DIR__default() {
   printf "%s/.config/workstation" $HOME
 }
-
-ws_config_src_default () {
-  printf "%s/.config/workstation/" $HOME
+WORKSTATION_DIR__default() {
+  echo -n "$(ws_lookup WORKSTATION_CONFIG_DIR)/vendor/ws";
 }
-
-: "${WORKSTATION_NAME:=}"
-: "${WORKSTATION_VERBOSE:=false}"
-: "${WORKSTATION_LOG_LEVEL:=error}"
-: "${WORKSTATION_CONFIG_DIR:="$(ws_config_dir_default)"}"
-: "${WORKSTATION_DIR:="$WORKSTATION_CONFIG_DIR/vendor/ws"}"
-: "${WORKSTATION_REPO_GIT_ORIGIN:="https://github.com/joelmccracken/ws.git"}"
-: "${WORKSTATION_VERSION:=master}"
+WORKSTATION_REPO_GIT_ORIGIN__default() {
+  echo -n "https://github.com/joelmccracken/ws.git";
+}
+WORKSTATION_VERSION__default() {
+  echo -n "master";
+}
 
 export WORKSTATION_NAME # META:workstation_setting
 export WORKSTATION_VERBOSE # META:workstation_setting
@@ -22,21 +26,11 @@ export WORKSTATION_CONFIG_DIR # META:workstation_setting
 export WORKSTATION_REPO_GIT_ORIGIN # META:workstation_setting
 export WORKSTATION_VERSION # META:workstation_setting
 
-# legacy/intermediate versions of these variables
-export WORKSTATION_EMACS_CONFIG_DIR=~/.config/emacs
-export WORKSTATION_GIT_ORIGIN_PUB='https://github.com/joelmccracken/ws.git'
-export WORKSTATION_HOST_CURRENT_SETTINGS_DIR=$WORKSTATION_DIR/hosts/current
-export WORKSTATION_GIT_ORIGIN="git@github.com:joelmccracken/ws.git"
-
-
-# WS_USER_DIR=
-# WS_SRC_DIR=
 
 # logic for looking up values
 # there are some complex things we want to do here
 # - prevent test runs from accessing user home dir
 # - get default values when appropriate
-
 ws_lookup() {
   local name val bypass_sandbox_check
 

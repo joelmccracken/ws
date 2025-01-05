@@ -15,14 +15,12 @@ setup (){
     assert [ "$WORKSTATION_DIR" = "$ORIG_WORKSTATION_DIR" ]
 }
 
-
-
 @test "settings sets appropriate default values" {
-    assert_regex "$WORKSTATION_CONFIG_DIR" .*/.config/workstation
-    assert_regex "$WORKSTATION_DIR" .*/.config/workstation/vendor/ws
-    assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = 'https://github.com/joelmccracken/ws.git' ]
-    assert [ "$WORKSTATION_VERBOSE" = false ]
-    assert [ "$WORKSTATION_LOG_LEVEL" = error ]
+    assert_regex "$(ws_lookup WORKSTATION_CONFIG_DIR)" .*/.config/workstation
+    assert_regex "$(ws_lookup WORKSTATION_DIR)" .*/.config/workstation/vendor/ws
+    assert [ "$(ws_lookup WORKSTATION_REPO_GIT_ORIGIN)" = 'https://github.com/joelmccracken/ws.git' ]
+    assert [ "$(ws_lookup WORKSTATION_VERBOSE)" = false ]
+    assert [ "$(ws_lookup WORKSTATION_LOG_LEVEL)" = error ]
 }
 
 @test "loading settings honors existing env vars" {
@@ -33,11 +31,11 @@ setup (){
     MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
     . "$PROJECT_ROOT/lib/settings.bash"
 
-    assert [ "$WORKSTATION_CONFIG_DIR" = "$WORKSTATION_CONFIG_DIR" ]
-    assert [ "$WORKSTATION_DIR" = "$WORKSTATION_CONFIG_DIR/vendor/ws" ]
-    assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = "$MY_WORKSTATION_REPO_GIT_ORIGIN" ]
-    assert [ "$WORKSTATION_VERBOSE" = false ]
-    assert [ "$WORKSTATION_LOG_LEVEL" = error ]
+    assert [ "$(ws_lookup WORKSTATION_CONFIG_DIR)" = "$WORKSTATION_CONFIG_DIR" ]
+    assert [ "$(ws_lookup WORKSTATION_DIR)" = "$WORKSTATION_CONFIG_DIR/vendor/ws" ]
+    assert [ "$(ws_lookup WORKSTATION_REPO_GIT_ORIGIN)" = "$MY_WORKSTATION_REPO_GIT_ORIGIN" ]
+    assert [ "$(ws_lookup WORKSTATION_VERBOSE)" = false ]
+    assert [ "$(ws_lookup WORKSTATION_LOG_LEVEL)" = error ]
 }
 
 @test "ws_lookup prevents 'sandbox' violations" {
@@ -71,6 +69,7 @@ setup (){
     assert_output "hello clarice"
     assert_success
 }
+
 
 # @test "setting accessor errors if home dir is referenced " {
 #     ws_unset_settings
