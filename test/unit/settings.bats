@@ -6,13 +6,13 @@ setup (){
 }
 
 @test "ws_reset_settings works like i think it does" {
-    ORIG_WORKSTATION_DIR="$WORKSTATION_DIR"
+    ORIG_WORKSTATION_DIR="$(ws_lookup WORKSTATION_DIR)"
     WORKSTATION_DIR=poopy
     assert [ "$WORKSTATION_DIR" = "poopy" ]
 
     ws_reset_settings
 
-    assert [ "$WORKSTATION_DIR" = "$ORIG_WORKSTATION_DIR" ]
+    assert [ "$(ws_lookup WORKSTATION_DIR)" = "$ORIG_WORKSTATION_DIR" ]
 }
 
 @test "settings sets appropriate default values" {
