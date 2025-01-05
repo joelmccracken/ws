@@ -39,7 +39,7 @@ EOF
 
     cat <<-EOF > "$ws_cfg_src/config.sh"
     workstation_props_workstation_a=()
-    workstation_props_workstation_a+=(prop_ws_current_settings_symlink)
+    workstation_props_workstation_a+=(ws_prop_current_settings_symlink)
 EOF
 
     WS_NAME=workstation_a

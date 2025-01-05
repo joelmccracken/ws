@@ -32,18 +32,18 @@
 # Of course, you wouldn't want this exact example, otherwise it would imply
 # that foo would be checked again and again, ad infinitum.
 
-prop_ws_check_initial_tooling_setup()
+ws_prop_check_initial_tooling_setup()
 {
   if is_mac; then
     REPLY=(additional_props \
-      prop_ws_check_mac_cli_tools\
-      prop_ws_check_mac_homebrew_installed\
-      prop_ws_check_mac_git_installed\
+      ws_prop_check_mac_cli_tools\
+      ws_prop_check_mac_homebrew_installed\
+      ws_prop_check_mac_git_installed\
       )
     return 0
   else
     if is_linux; then
-      REPLY=(additional_props prop_ws_check_linux_git_installed)
+      REPLY=(additional_props ws_prop_check_linux_git_installed)
       return 0
     else
       # TODO linux is assumed to be debian based
@@ -55,7 +55,7 @@ prop_ws_check_initial_tooling_setup()
 
 # check to ensure that xcode cli tools are installed
 # this command will tell without itself trying to install them
-prop_ws_check_mac_cli_tools () {
+ws_prop_check_mac_cli_tools () {
   if pkgutil --pkg-info=com.apple.pkg.CLTools_Executables; then
     echo "cli tools package is installed";
     return 0
@@ -65,11 +65,11 @@ prop_ws_check_mac_cli_tools () {
   fi
 }
 
-prop_ws_check_mac_cli_tools_fix () {
+ws_prop_check_mac_cli_tools_fix () {
   sudo bash -c '(xcodebuild -license accept; xcode-select --install) || exit 0'
 }
 
-prop_ws_check_mac_homebrew_installed() {
+ws_prop_check_mac_homebrew_installed() {
   if which brew > /dev/null; then
     echo "homebrew is installed"
     return 0
@@ -79,11 +79,11 @@ prop_ws_check_mac_homebrew_installed() {
   fi
 }
 
-prop_ws_check_mac_homebrew_installed_fix() {
+ws_prop_check_mac_homebrew_installed_fix() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
-prop_ws_check_mac_git_installed() {
+ws_prop_check_mac_git_installed() {
   if which git > /dev/null; then
     echo "git is detected"
   else
@@ -91,11 +91,11 @@ prop_ws_check_mac_git_installed() {
   fi
 }
 
-prop_ws_check_mac_git_installed_fix() {
+ws_prop_check_mac_git_installed_fix() {
   brew install git
 }
 
-prop_ws_check_linux_git_installed() {
+ws_prop_check_linux_git_installed() {
   if which git > /dev/null; then
     echo "git is detected"
   else
@@ -103,11 +103,11 @@ prop_ws_check_linux_git_installed() {
   fi
 }
 
-prop_ws_check_linux_git_installed_fix() {
+ws_prop_check_linux_git_installed_fix() {
   sudo bash -c 'apt-get update && apt-get install git'
 }
 
-prop_ws_check_workstation_dir() {
+ws_prop_check_workstation_dir() {
   local wsd
   wsd="$(ws_lookup WS_DIR)"
   if [ -d "$wsd" ]; then
@@ -126,7 +126,7 @@ prop_ws_check_workstation_dir() {
   fi
 }
 
-prop_ws_check_workstation_dir_fix() {
+ws_prop_check_workstation_dir_fix() {
   # TODO this is basically a copy/paste of ws_install.sh
   # somehow figure out another way to do this?
   TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
@@ -140,7 +140,7 @@ prop_ws_check_workstation_dir_fix() {
   )
 }
 
-prop_ws_check_workstation_repo() {
+ws_prop_check_workstation_repo() {
   local wsd
   wsd="$(ws_lookup WS_DIR)"
   if [ -d "$wsd/.git" ]; then
@@ -152,7 +152,7 @@ prop_ws_check_workstation_repo() {
   fi
 }
 
-prop_ws_check_workstation_repo_fix() {
+ws_prop_check_workstation_repo_fix() {
   ( cd "$(ws_lookup WS_DIR)";
     git init .;
     git remote add origin "$(ws_lookup WS_REPO_ORIGIN)";
@@ -160,14 +160,15 @@ prop_ws_check_workstation_repo_fix() {
     git reset --mixed "$(ws_lookup WS_VERSION)";
   )
 }
-WORKSTATION_DOTFILES_TRACK_GIT_DIR__default() {
+
+WS_PROP_DF_GIT_DIR__default() {
   printf ".git-dotfiles"
 }
-: "${WORKSTATION_DOTFILES_TRACK_GIT_DIR:=}"
+: "${WS_PROP_DF_GIT_DIR:=}"
 
-prop_ws_dotfiles_git_track() {
+ws_prop_dotfiles_git_track() {
   local gd
-  gd="$(ws_lookup WORKSTATION_DOTFILES_TRACK_GIT_DIR)"
+  gd="$(ws_lookup WS_PROP_DF_GIT_DIR)"
   if [ -d "$HOME/$gd" ]; then
     echo "git directory at $HOME/$gd exists"
     return 0
@@ -177,9 +178,9 @@ prop_ws_dotfiles_git_track() {
   fi
 }
 
-prop_ws_dotfiles_git_track_fix() {
+ws_prop_dotfiles_git_track_fix() {
   export GIT_DIR
-  GIT_DIR="$(ws_lookup WORKSTATION_DOTFILES_TRACK_GIT_DIR)"
+  GIT_DIR="$(ws_lookup WS_PROP_DF_GIT_DIR)"
   ( cd "$HOME";
     git init .
     git config --local --get-all core.bare true >/dev/null && \
@@ -188,7 +189,7 @@ prop_ws_dotfiles_git_track_fix() {
   return 0
 }
 
-prop_ws_config_exists() {
+ws_prop_config_exists() {
   local settings_file config_file wcd
   wcd="$(ws_lookup WS_CONF)"
   settings_file="$wcd/settings.sh"
@@ -198,18 +199,18 @@ prop_ws_config_exists() {
     return 0;
   else
     if ! [[ -f "$settings_file" ]]; then
-      echo "ws: bootstrap: prop_ws_config_exists: missing settings file from '$settings_file'" 1>&2
+      echo "ws: bootstrap: ws_prop_config_exists: missing settings file from '$settings_file'" 1>&2
     fi
     if ! [[ -f "$config_file" ]]; then
-      echo "ws: bootstrap: prop_ws_config_exists: missing config file from '$config_file'" 1>&2
+      echo "ws: bootstrap: ws_prop_config_exists: missing config file from '$config_file'" 1>&2
     fi
     return 1
   fi
 }
 
-# depends upon prop_ws_check_workstation_dir
+# depends upon ws_prop_check_workstation_dir
 # TODO automate/enforce this somehow?
-prop_ws_config_exists_fix() {
+ws_prop_config_exists_fix() {
   local wcd
   wcd="$(ws_lookup WS_CONF)"
   if [[ -n "$workstation_initial_config_repo_arg" ]]; then
@@ -296,7 +297,7 @@ ws_prop_config_exists_install_from_repo() {
   )
 }
 
-prop_ws_current_settings_symlink() {
+ws_prop_current_settings_symlink() {
   local current_settings_file
   current_settings_file="$(ws_lookup WS_CONF)/settings.current.sh"
   if [[ -L "$current_settings_file" ]]; then
@@ -316,15 +317,15 @@ prop_ws_current_settings_symlink() {
   return 2
 }
 
-# depends upon prop_ws_config_exists
-prop_ws_current_settings_symlink_fix() {
+# depends upon ws_prop_config_exists
+ws_prop_current_settings_symlink_fix() {
   local wcd wsd
   wcd="$(ws_lookup WS_CONF)"
 
   current_settings_file="$wcd/settings.current.sh"
   src_settings_file="$wcd/settings.$(ws_lookup WS_NAME).sh"
 
-  prop_ws_config_exists
+  ws_prop_config_exists
 
   if [[ -e "$current_settings_file" ]] && \
     ! [[ -L "$current_settings_file" ]]; then
@@ -340,7 +341,7 @@ prop_ws_current_settings_symlink_fix() {
   ln -s "$src_settings_file" "$current_settings_file"
 }
 
-prop_ws_nix_daemon_installed() {
+ws_prop_nix_daemon_installed() {
   if which nix > /dev/null ; then
     echo "nix command found"
     return 0
@@ -350,14 +351,14 @@ prop_ws_nix_daemon_installed() {
   fi
 }
 
-WORKSTATION_NIX_PM_VERSION__default() {
+WS_PROP_NIX_PM_VERSION__default() {
   printf "nix-2.25.3";
 }
-: "${WORKSTATION_NIX_PM_VERSION:=}"
+: "${WS_PROP_NIX_PM_VERSION:=}"
 
-prop_ws_nix_daemon_installed_fix() {
+ws_prop_nix_daemon_installed_fix() {
   local nix_daemon_profile
-  sh <(curl -L https://releases.nixos.org/nix/$(ws_lookup WORKSTATION_NIX_PM_VERSION)/install) --daemon;
+  sh <(curl -L https://releases.nixos.org/nix/$(ws_lookup WS_PROP_NIX_PM_VERSION)/install) --daemon;
   # load the needful after installing
   nix_daemon_profile='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
   if [[ ! -e "$nix_daemon_profile" ]]; then
@@ -379,31 +380,31 @@ ws_nix__restart_daemon() {
   fi
 }
 
-WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION__default () {
+WS_PROP_NIX_NIX_CONF_PATH__default () {
   printf "/etc/nix/nix.conf"
 }
 
-export WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION
-: "${WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION:=}"
+export WS_PROP_NIX_NIX_CONF_PATH
+: "${WS_PROP_NIX_NIX_CONF_PATH:=}"
 
 ws_nix__global_conf_content() {
   cat <<-EOF
-	# BEGIN prop_ws_nix_global_config
-	# configuration from ws property prop_ws_nix_global_config
+	# BEGIN ws_prop_nix_global_config
+	# configuration from ws property ws_prop_nix_global_config
 	# AUTOMATICALLY MANAGED: region edits will be overwritten in the future
 	trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=
 	substituters = https://cache.nixos.org https://cache.iog.io
 	experimental-features = nix-command flakes
 	trusted-users = root $(whoami) runner
 	build-users-group = nixbld
-	# END prop_ws_nix_global_config
+	# END ws_prop_nix_global_config
 EOF
 }
 
-prop_ws_nix_global_config () {
-  local conf="$(ws_lookup WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION)"
-  local begin="# BEGIN prop_ws_nix_global_config"
-  local end="# END prop_ws_nix_global_config"
+ws_prop_nix_global_config () {
+  local conf="$(ws_lookup WS_PROP_NIX_NIX_CONF_PATH)"
+  local begin="# BEGIN ws_prop_nix_global_config"
+  local end="# END ws_prop_nix_global_config"
 
   REPLY=()
   find_bracketed_content "$begin" "$end" < "$conf"
@@ -418,11 +419,11 @@ prop_ws_nix_global_config () {
   fi
 }
 
-prop_ws_nix_global_config_fix () {
+ws_prop_nix_global_config_fix () {
   local conf_path
-  local begin="# BEGIN prop_ws_nix_global_config"
-  local end="# END prop_ws_nix_global_config"
-  conf_path="$(ws_lookup WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION)"
+  local begin="# BEGIN ws_prop_nix_global_config"
+  local end="# END ws_prop_nix_global_config"
+  conf_path="$(ws_lookup WS_PROP_NIX_NIX_CONF_PATH)"
 
   REPLY=(); find_bracketed_content "$begin" "$end" < "$conf_path";
   local parts=("${REPLY[@]}"); REPLY=();
@@ -444,7 +445,7 @@ prop_ws_nix_global_config_fix () {
   "$maybe_sudo" "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
-# prop_ws_nix_homemanager_install() {
+# ws_prop_nix_homemanager_install() {
 #   export HOME_MANAGER_BACKUP_EXT
 #   HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
 #   WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486

@@ -118,6 +118,6 @@ gen_config_config_file_contents() {
   local workstation_name="$1"
   cat <<-EOF
 	workstation_props_$workstation_name=()
-	# workstation_props_$workstation_name+=(prop_ws_current_settings_symlink)
+	# workstation_props_$workstation_name+=(ws_prop_current_settings_symlink)
 EOF
 }

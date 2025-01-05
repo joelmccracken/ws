@@ -4,44 +4,44 @@ setup (){
   . "$PROJECT_ROOT/lib/properties.bash"
 }
 
-@test "prop_ws_check_workstation_dir" {
+@test "ws_prop_check_workstation_dir" {
   ws_unset_settings
   WS_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
   . "$PROJECT_ROOT/lib/settings.bash"
 
-  run prop_ws_check_workstation_dir
+  run ws_prop_check_workstation_dir
   assert_failure
 
-  run prop_ws_check_workstation_dir_fix
+  run ws_prop_check_workstation_dir_fix
   assert_success
 
-  run prop_ws_check_workstation_dir
+  run ws_prop_check_workstation_dir
   assert_success
 }
 
-@test "prop_ws_check_workstation_repo" {
+@test "ws_prop_check_workstation_repo" {
   ws_unset_settings
   WS_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # set up the workstation dir, but wont set up git, just project source
-  run prop_ws_check_workstation_dir_fix
+  run ws_prop_check_workstation_dir_fix
   assert_success
 
-  run prop_ws_check_workstation_repo
+  run ws_prop_check_workstation_repo
   assert_failure
 
   # WS_REPO_ORIGIN=https://github.com/joelmccracken/ws.git
-  run prop_ws_check_workstation_repo_fix
+  run ws_prop_check_workstation_repo_fix
   assert_success
 
-  run prop_ws_check_workstation_repo
+  run ws_prop_check_workstation_repo
   assert_success
 }
 
-@test "prop_ws_dotfiles_git_track" {
+@test "ws_prop_dotfiles_git_track" {
   ws_unset_settings
   FAKE_HOME="$(_mktemp "ws-fake-home")"
   set_workstation_version_last_sha
@@ -49,25 +49,25 @@ setup (){
   . "$PROJECT_ROOT/lib/settings.bash"
 
   wrap() {
-    (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track)
+    (export HOME=$FAKE_HOME;  ws_prop_dotfiles_git_track)
   }
   run wrap
   assert_failure
 
   wrap() {
-    (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track_fix)
+    (export HOME=$FAKE_HOME;  ws_prop_dotfiles_git_track_fix)
   }
   run wrap
   assert_success
 
   wrap() {
-    (export HOME=$FAKE_HOME;  prop_ws_dotfiles_git_track)
+    (export HOME=$FAKE_HOME;  ws_prop_dotfiles_git_track)
   }
   run wrap
   assert_success
 }
 
-@test "prop_ws_config_exists default config" {
+@test "ws_prop_config_exists default config" {
   ws_unset_settings
   WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
@@ -76,15 +76,15 @@ setup (){
 
   # valid scenario requires copying from where the workstation source is
   # installed; set this up.
-  run prop_ws_check_workstation_dir_fix
+  run ws_prop_check_workstation_dir_fix
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_failure
 
-  run prop_ws_config_exists_fix
+  run ws_prop_config_exists_fix
   assert_success
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_success
 
   for f in settings.sh config.sh settings.default.sh; do
@@ -92,7 +92,7 @@ setup (){
   done
 }
 
-@test "prop_ws_config_exists using custom config dir" {
+@test "ws_prop_config_exists using custom config dir" {
   ws_unset_settings
   WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
@@ -101,17 +101,17 @@ setup (){
 
   # valid scenario requires copying from where the workstation source is
   # installed; set this up.
-  run prop_ws_check_workstation_dir_fix
+  run ws_prop_check_workstation_dir_fix
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_failure
 
   workstation_initial_config_dir_arg="${WS_DIR}/sample_config"
 
-  run prop_ws_config_exists_fix
+  run ws_prop_config_exists_fix
   assert_success
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_success
 
   ( cd "$workstation_initial_config_dir_arg";
@@ -122,7 +122,7 @@ setup (){
   )
 }
 
-@test "prop_ws_config_exists config already in place" {
+@test "ws_prop_config_exists config already in place" {
   ws_unset_settings
   WS_CONF="$(_mktemp "ws-fake-config")"
   . "$PROJECT_ROOT/lib/settings.bash"
@@ -130,11 +130,11 @@ setup (){
   touch "${WS_CONF}/settings.sh"
   touch "${WS_CONF}/config.sh"
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_success
 }
 
-@test "prop_ws_config_exists use repo" {
+@test "ws_prop_config_exists use repo" {
   ws_unset_settings
 
   WS_CONF="$(_mktemp "ws-fake-config")"
@@ -155,16 +155,16 @@ setup (){
     git checkout -b some-branch
   )
 
-  run prop_ws_check_workstation_dir_fix
+  run ws_prop_check_workstation_dir_fix
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_failure
 
-  run prop_ws_config_exists_fix
+  run ws_prop_config_exists_fix
   #echo "$output" 1>&3
   assert_success
 
-  run prop_ws_config_exists
+  run ws_prop_config_exists
   assert_success
 
   #ls -lah "$WS_CONF/" 1>&3
@@ -172,7 +172,7 @@ setup (){
 }
 
 ## bats test_tags=bats:focus
-@test "prop_ws_current_settings_symlink works for default" {
+@test "ws_prop_current_settings_symlink works for default" {
   ws_unset_settings
   WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
@@ -181,60 +181,60 @@ setup (){
 
   # env 1>&3
   # return 1
-  prop_ws_check_workstation_dir_fix
-  prop_ws_config_exists_fix
+  ws_prop_check_workstation_dir_fix
+  ws_prop_config_exists_fix
 
-  run prop_ws_current_settings_symlink
+  run ws_prop_current_settings_symlink
   assert_failure
 
-  run prop_ws_current_settings_symlink_fix
+  run ws_prop_current_settings_symlink_fix
   assert_success
 
-  run prop_ws_current_settings_symlink
+  run ws_prop_current_settings_symlink
   assert_success
 
   # echo "$WS_CONF" 1>&3
   # ls -lah "$WS_CONF" 1>&3
 }
 
-@test "prop_ws_nix_global_config" {
+@test "ws_prop_nix_global_config" {
   ws_unset_settings
   . "$PROJECT_ROOT/lib/settings.bash"
 
   nix_config="$(_mktemp "nix-config")/nix.conf"
   cat > "$nix_config" <<-EOF || :
 	other config
-	# BEGIN prop_ws_nix_global_config
+	# BEGIN ws_prop_nix_global_config
 	some old config here
-	# END prop_ws_nix_global_config
+	# END ws_prop_nix_global_config
 	final config
 EOF
 
   run_env() {
-    WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
+    WS_PROP_NIX_NIX_CONF_PATH="$nix_config";
     WS_DIR="$PROJECT_ROOT"
     "$1"
   }
 
-  run run_env prop_ws_nix_global_config
+  run run_env ws_prop_nix_global_config
   assert_failure
 
-  run run_env prop_ws_nix_global_config_fix
+  run run_env ws_prop_nix_global_config_fix
   assert_success
 
-  run run_env prop_ws_nix_global_config
+  run run_env ws_prop_nix_global_config
   assert_success
 }
 
-@test "prop_ws_df_dotfiles basic dotfile test" {
+@test "ws_prop_df_dotfiles basic dotfile test" {
   ws_unset_settings
   . "$PROJECT_ROOT/lib/settings.bash"
 
   df_src_dir="$(_mktemp "dotfiles-src")"
   df_dest_dir="$(_mktemp "dotfiles-dest")"
 
-  ws_df_dotfile_src_dir="$df_src_dir"
-  ws_df_dotfile_dest_dir="$df_dest_dir"
+  WS_PROP_DF_SRC_DIR="$df_src_dir"
+  ws_prop_df__dotfile_dest_dir="$df_dest_dir"
 
   cat > "$df_src_dir/bashrc" <<< "my bash config"
   cat > "$df_src_dir/Brewfile" <<< "some homebrew package"
@@ -255,14 +255,14 @@ EOF
   # cat < "$df_fn_src_file" 1>&3
   eval "$(cat < "$df_fn_src_file")"
 
-  run prop_ws_df_dotfiles
+  run ws_prop_df_dotfiles
   # echo "$output" 1>&3
   assert_failure
 
-  run prop_ws_df_dotfiles_fix
+  run ws_prop_df_dotfiles_fix
   assert_success
 
-  run prop_ws_df_dotfiles
+  run ws_prop_df_dotfiles
   assert_success
 
   assert [ -f "$df_dest_dir/.bashrc" ]
