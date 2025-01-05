@@ -32,7 +32,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
       - run: test/bats/bin/bats test
         env:
-          WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
+          WS_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
           BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
           WS_BW_MASTER_PASS: ${{ secrets.WS_BW_MASTER_PASS }}
@@ -56,7 +56,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - run: bash test/ci_full_setup.bash
         env:
-          WORKSTATION_VERSION: ${{ github.event.pull_request.head.sha }}
+          WS_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
           BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
           WS_BW_MASTER_PASS: ${{ secrets.WS_BW_MASTER_PASS }}
