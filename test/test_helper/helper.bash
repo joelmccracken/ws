@@ -1,3 +1,6 @@
+export BATS_WS_USER_HOME
+export WORKSTATION_DIR
+
 _setup_common() {
   PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../" &>/dev/null && pwd)"
   BATS_LIB_PATH="$PROJECT_ROOT/test/test_helper:$BATS_LIB_PATH"
@@ -19,7 +22,8 @@ _setup_common() {
   ws_unset_settings
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
   PATH="$PROJECT_ROOT:$PROJECT_ROOT/bin/:$PATH"
-  : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
+
+  WORKSTATION_DIR="$PROJECT_ROOT"
   . "$PROJECT_ROOT/lib/logging.bash"
   . "$PROJECT_ROOT/lib/lib.bash"
   . "$PROJECT_ROOT/lib/settings.bash"
@@ -62,10 +66,12 @@ ws_get_all_settings() {
 }
 
 ws_unset_settings() {
-    REPLY=()
-    ws_get_all_settings
-    read -ra all_settings <<< "${REPLY[@]}"
-    unset "${all_settings[@]}"
+  REPLY=()
+  ws_get_all_settings
+  read -ra all_settings <<< "${REPLY[@]}"
+  for setting in "${all_settings[@]}"; do
+    eval "$setting=";
+  done
 }
 
 ws_reset_settings () {

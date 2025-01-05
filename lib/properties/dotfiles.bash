@@ -1,5 +1,7 @@
 ws_df_dotfiles_fn_name() {
-  echo "workstation_props_dotfiles_$WORKSTATION_NAME";
+  local wsn
+  wsn="$(ws_lookup WORKSTATION_NAME)"
+  echo "workstation_props_dotfiles_$wsn";
 }
 
 prop_ws_df_dotfiles() {
@@ -13,7 +15,7 @@ prop_ws_df_dotfiles() {
       return 9;
     fi
   else
-    echo "warning: no function exists named '$(ws_df_dotfiles_fn_name)', skipping prop" 1>&2;
+    echo "warning: no function exists named '$fn', skipping prop" 1>&2;
     return 0;
   fi
 }
@@ -29,13 +31,13 @@ prop_ws_df_dotfiles_fix() {
       return 9;
     fi
   else
-    echo "warning: no function exists named '$(ws_df_dotfiles_fn_name)', skipping prop" 1>&2;
+    echo "warning: no function exists named '$fn', skipping prop" 1>&2;
     return 0;
   fi
 }
 
 ws_df_dotfile_src_dir_default() {
-  echo "$WORKSTATION_CONFIG_DIR/dotfiles"
+  echo "$(ws_lookup WORKSTATION_CONFIG_DIR)/dotfiles"
 }
 
 ws_df_dotfile_dest_dir_default() {

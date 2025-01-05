@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "$WORKSTATION_DIR/lib/properties/dotfiles.bash"
+. "$(ws_lookup WORKSTATION_DIR)/lib/properties/dotfiles.bash"
 
 # writing properties
 # for a given property foo, define function
@@ -108,17 +108,19 @@ prop_ws_check_linux_git_installed_fix() {
 }
 
 prop_ws_check_workstation_dir() {
-  if [ -d "$WORKSTATION_DIR" ]; then
+  local wsd
+  wsd="$(ws_lookup WORKSTATION_DIR)"
+  if [ -d "$wsd" ]; then
     echo "WORKSTATION_DIR exists"
-    if [ -x "$WORKSTATION_DIR/ws" ]; then
+    if [ -x "$wsd/ws" ]; then
       echo "WORKSTATION_DIR contains ws executable"
       return 0
     else
-      echo "$WORKSTATION_DIR does not contain the ws tool" 1>&2
+      echo "$wsd does not contain the ws tool" 1>&2
       return 2
     fi
   else
-    echo "$WORKSTATION_DIR (WORKSTATION_DIR) is absent" 1>&2
+    echo "$wsd (WORKSTATION_DIR) is absent" 1>&2
     echo "(is workstation installed to a custom location? set WORKSTATION_DIR=path/to/workstation)" 1>&2
     return 1
   fi
@@ -130,45 +132,54 @@ prop_ws_check_workstation_dir_fix() {
   TMPINST="$(mktemp -d "${TMPDIR:-/tmp}/ws-install-XXXXXXXXX")"
   # installer of ws tool/project
   ( cd "$TMPINST";
-    curl -L https://github.com/joelmccracken/ws/archive/${WORKSTATION_VERSION}.tar.gz | tar zx;
-
-    mkdir -p "$WORKSTATION_DIR";
-    mv "${TMPINST}"/ws-*/{,.[^.]}* "$WORKSTATION_DIR";
+    curl -L https://github.com/joelmccracken/ws/archive/$(ws_lookup WORKSTATION_VERSION).tar.gz | tar zx;
+    local wsd
+    wsd="$(ws_lookup WORKSTATION_DIR)"
+    mkdir -p "$wsd";
+    mv "${TMPINST}"/ws-*/{,.[^.]}* "$wsd";
   )
 }
 
 prop_ws_check_workstation_repo() {
-  if [ -d "$WORKSTATION_DIR/.git" ]; then
+  local wsd
+  wsd="$(ws_lookup WORKSTATION_DIR)"
+  if [ -d "$wsd/.git" ]; then
     echo "WORKSTATION_DIR git directory exists"
     return 0
   else
-    echo "$WORKSTATION_DIR/.git directory is absent" 1>&2
+    echo "$wsd/.git directory is absent" 1>&2
     return 1
   fi
 }
 
 prop_ws_check_workstation_repo_fix() {
-  ( cd "$WORKSTATION_DIR";
+  ( cd "$(ws_lookup WORKSTATION_DIR)";
     git init .;
-    git remote add origin "$WORKSTATION_REPO_GIT_ORIGIN";
+    git remote add origin "$(ws_lookup WORKSTATION_REPO_GIT_ORIGIN)";
     git fetch;
-    git reset --mixed "$WORKSTATION_VERSION";
+    git reset --mixed "$(ws_lookup WORKSTATION_VERSION)";
   )
 }
+WORKSTATION_DOTFILES_TRACK_GIT_DIR__default() {
+  printf ".git-dotfiles"
+}
+: "${WORKSTATION_DOTFILES_TRACK_GIT_DIR:=}"
 
-: "${WORKSTATION_DOTFILES_TRACK_GIT_DIR:=".git-dotfiles"}"
 prop_ws_dotfiles_git_track() {
-  if [ -d "$HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR" ]; then
-    echo "git directory at $HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR exists"
+  local gd
+  gd="$(ws_lookup WORKSTATION_DOTFILES_TRACK_GIT_DIR)"
+  if [ -d "$HOME/$gd" ]; then
+    echo "git directory at $HOME/$gd exists"
     return 0
   else
-    echo "git directory at $HOME/$WORKSTATION_DOTFILES_TRACK_GIT_DIR not found" 1>&2
+    echo "git directory at $HOME/$gd not found" 1>&2
     return 1
   fi
 }
 
 prop_ws_dotfiles_git_track_fix() {
-  export GIT_DIR="$WORKSTATION_DOTFILES_TRACK_GIT_DIR"
+  export GIT_DIR
+  GIT_DIR="$(ws_lookup WORKSTATION_DOTFILES_TRACK_GIT_DIR)"
   ( cd "$HOME";
     git init .
     git config --local --get-all core.bare true >/dev/null && \
@@ -178,8 +189,10 @@ prop_ws_dotfiles_git_track_fix() {
 }
 
 prop_ws_config_exists() {
-  local settings_file="${WORKSTATION_CONFIG_DIR}/settings.sh"
-  local config_file="${WORKSTATION_CONFIG_DIR}/config.sh"
+  local settings_file config_file wcd
+  wcd="$(ws_lookup WORKSTATION_CONFIG_DIR)"
+  settings_file="$wcd/settings.sh"
+  config_file="$wcd/config.sh"
   if [[ -f "$settings_file" ]] && [[ -f "$config_file" ]]; then
     echo "found settings and config file exist."
     return 0;
@@ -197,20 +210,30 @@ prop_ws_config_exists() {
 # depends upon prop_ws_check_workstation_dir
 # TODO automate/enforce this somehow?
 prop_ws_config_exists_fix() {
+  local wcd
+  wcd="$(ws_lookup WORKSTATION_CONFIG_DIR)"
   if [[ -n "$workstation_initial_config_repo_arg" ]]; then
     ws_prop_config_exists_install_from_repo
   else
     ws_prop_config_exists_install_from_directory
   fi
 
-  if [[ -n "$WORKSTATION_CONFIG_DIR" ]]; then
-    load_expected "$WORKSTATION_CONFIG_DIR/settings.sh"
-    load_expected "$WORKSTATION_CONFIG_DIR/config.sh"
+  # TODO this pattern is repeated in a few places, add a
+  # "load from config" function
+  if [[ -n "$wcd" ]]; then
+    load_expected "$wcd/settings.sh"
+    load_expected "$wcd/config.sh"
   fi
 }
 
 ws_prop_config_exists_install_from_directory() {
-  local src_dir="${WORKSTATION_DIR}/sample_config";
+  local src_dir wcd wsd
+  wsd="$(ws_lookup WORKSTATION_DIR)"
+  src_dir="$wsd/sample_config";
+  wcd="$(ws_lookup WORKSTATION_CONFIG_DIR)"
+
+  # TODO convert cli params to ws_lookup settings
+
   if [[ -n "$workstation_initial_config_dir_arg" ]]; then
     src_dir="$workstation_initial_config_dir_arg";
   fi
@@ -218,18 +241,18 @@ ws_prop_config_exists_install_from_directory() {
   # if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
   #   mv_to_backup "$WORKSTATION_CONFIG_DIR"
   # fi
-  mkdir -p "$WORKSTATION_CONFIG_DIR"
+  mkdir -p "$wcd"
 
   # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
   # we want it to go back...
   ( cd "$ws_initial_pwd"; cd "$src_dir";
     # not perfect, but not worth making much more complicated
     for f in *; do
-      if [[ -e "$WORKSTATION_CONFIG_DIR/$f" ]]; then
-        echo "$WORKSTATION_CONFIG_DIR/$f: aleady exists, skipping"
+      if [[ -e "$wcd/$f" ]]; then
+        echo "$wcd/$f: aleady exists, skipping"
       else
-        echo "copying file to $WORKSTATION_CONFIG_DIR/$f"
-        cp -r "$f" "$WORKSTATION_CONFIG_DIR/$f";
+        echo "copying file to $wcd/$f"
+        cp -r "$f" "$wcd/$f";
       fi
     done
   )
@@ -237,13 +260,19 @@ ws_prop_config_exists_install_from_directory() {
 
 ws_prop_config_exists_install_from_repo() {
   local ref="main";
+  local src_dir wcd wsd
+  wsd="$(ws_lookup WORKSTATION_DIR)"
+  src_dir="$wsd/sample_config";
+  wcd="$(ws_lookup WORKSTATION_CONFIG_DIR)"
+
+  # TODO convert cli params to ws_lookup settings
   if [[ -n "$workstation_initial_config_repo_ref_arg" ]]; then
     ref="$workstation_initial_config_repo_ref_arg"
   fi
   ws_tmp=
-  if [[ -e  "$WORKSTATION_CONFIG_DIR" ]]; then
+  if [[ -e  "$wcd" ]]; then
     ws_tmp="$(_mktemp "ws-tmp")"
-    ( cd "$WORKSTATION_CONFIG_DIR";
+    ( cd "$wcd";
       for f in * .*; do
         if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
         mv "$f" "$ws_tmp"
@@ -251,16 +280,16 @@ ws_prop_config_exists_install_from_repo() {
     )
   fi
 
-  mkdir -p "$WORKSTATION_CONFIG_DIR"
+  mkdir -p "$wcd"
 
-  ( cd "$WORKSTATION_CONFIG_DIR";
+  ( cd "$wcd";
     git clone "$workstation_initial_config_repo_arg" .;
     git checkout "$ref";
     if [[ -n "$ws_tmp" ]]; then
       ( cd "$ws_tmp";
         for f in * .*; do
           if [[ "$f" == '.' ]] || [[ "$f" == '..' ]]; then continue; fi
-          cp -r "$f" "$WORKSTATION_CONFIG_DIR"
+          cp -r "$f" "$wcd"
         done
       )
     fi
@@ -268,7 +297,8 @@ ws_prop_config_exists_install_from_repo() {
 }
 
 prop_ws_current_settings_symlink() {
-  current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
+  local current_settings_file
+  current_settings_file="$(ws_lookup WORKSTATION_CONFIG_DIR)/settings.current.sh"
   if [[ -L "$current_settings_file" ]]; then
     echo "symlink found at $current_settings_file"
     return 0
@@ -288,8 +318,11 @@ prop_ws_current_settings_symlink() {
 
 # depends upon prop_ws_config_exists
 prop_ws_current_settings_symlink_fix() {
-  current_settings_file="$WORKSTATION_CONFIG_DIR/settings.current.sh"
-  src_settings_file="$WORKSTATION_CONFIG_DIR/settings.${WORKSTATION_NAME}.sh"
+  local wcd wsd
+  wcd="$(ws_lookup WORKSTATION_CONFIG_DIR)"
+
+  current_settings_file="$wcd/settings.current.sh"
+  src_settings_file="$wcd/settings.$(ws_lookup WORKSTATION_NAME).sh"
 
   prop_ws_config_exists
 
@@ -317,9 +350,14 @@ prop_ws_nix_daemon_installed() {
   fi
 }
 
-: "${WORKSTATION_NIX_PM_VERSION:=nix-2.25.3}"
+WORKSTATION_NIX_PM_VERSION__default() {
+  printf "nix-2.25.3";
+}
+: "${WORKSTATION_NIX_PM_VERSION:=}"
+
 prop_ws_nix_daemon_installed_fix() {
-  sh <(curl -L https://releases.nixos.org/nix/$WORKSTATION_NIX_PM_VERSION/install) --daemon;
+  local nix_daemon_profile
+  sh <(curl -L https://releases.nixos.org/nix/$(ws_lookup WORKSTATION_NIX_PM_VERSION)/install) --daemon;
   # load the needful after installing
   nix_daemon_profile='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
   if [[ ! -e "$nix_daemon_profile" ]]; then
@@ -341,11 +379,12 @@ ws_nix__restart_daemon() {
   fi
 }
 
-ws_nix__conf_filename() {
+WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION__default () {
   printf "/etc/nix/nix.conf"
 }
 
-: "${WS_NIX_GLOBAL_CONFIG_LOCATION:=$(ws_nix__conf_filename)}"
+export WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION
+: "${WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION:=}"
 
 ws_nix__global_conf_content() {
   cat <<-EOF
@@ -362,7 +401,7 @@ EOF
 }
 
 prop_ws_nix_global_config () {
-  local conf="$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  local conf="$(ws_lookup WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION)"
   local begin="# BEGIN prop_ws_nix_global_config"
   local end="# END prop_ws_nix_global_config"
 
@@ -380,11 +419,12 @@ prop_ws_nix_global_config () {
 }
 
 prop_ws_nix_global_config_fix () {
-  local conf="$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  local conf_path
   local begin="# BEGIN prop_ws_nix_global_config"
   local end="# END prop_ws_nix_global_config"
+  conf_path="$(ws_lookup WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION)"
 
-  REPLY=(); find_bracketed_content "$begin" "$end" < "$conf";
+  REPLY=(); find_bracketed_content "$begin" "$end" < "$conf_path";
   local parts=("${REPLY[@]}"); REPLY=();
 
   new_conf="$(_mktemp "nix-conf")/nix.conf"
@@ -397,10 +437,11 @@ prop_ws_nix_global_config_fix () {
 
   # complicated because I don't want to deal with sudo when running tests
   maybe_sudo="bash" # null option (is there some better way?)
-  if ! [[ -w "$WS_NIX_GLOBAL_CONFIG_LOCATION" ]]; then
+  if ! [[ -w "$conf" ]]; then
     maybe_sudo="sudo"
   fi
-  "$maybe_sudo" "${WORKSTATION_DIR}/bin/safe-overwrite" "$new_conf" "$WS_NIX_GLOBAL_CONFIG_LOCATION"
+  # NOTE: this will be a wrinkle if I try compiling all ws code into a single file
+  "$maybe_sudo" "$(ws_lookup WORKSTATION_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
 # prop_ws_nix_homemanager_install() {

@@ -11,7 +11,7 @@ doctor_command() {
 }
 
 bootstrap_command_setup() {
-  if [[ -z "$WORKSTATION_NAME" ]]; then
+  if [[ -z "$(ws_lookup WORKSTATION_NAME)" ]]; then
     error "ws: bootstrap: unable to determine workstation name. Provide it as an argument or env var"
     exit 1
   fi
@@ -22,7 +22,8 @@ bootstrap_command() {
 }
 
 run_all_props() {
-  local fix="" label=""
+  local fix="" label="" wsn
+  wsn="$(ws_lookup WORKSTATION_NAME)"
 
   if (( $# != 4 )); then
     echo "requires both --fix <val> and --label <val> flags" 1>&2
@@ -45,7 +46,7 @@ run_all_props() {
     return "$result";
   fi
 
-  echo "$label: '$WORKSTATION_NAME' properties"
+  echo "$label: '$wsn' properties"
 
   REPLY=()
   get_workstation_properties
@@ -53,15 +54,16 @@ run_all_props() {
   (( ${#REPLY[@]} > 0)) && ws_props=("${REPLY[@]}") || return 0
   REPLY=()
   if (( ${#ws_props[@]} > 0)); then
-    echo "$label: ${WORKSTATION_NAME} properties: (${ws_props[*]})"
+    echo "$label: $wsn properties: (${ws_props[*]})"
     run_props --fix "$fix" "${ws_props[@]}"
   else
-     echo "no properties defined for '${WORKSTATION_NAME}'"
+     echo "no properties defined for '$wsn'"
   fi
 }
 
 get_workstation_properties() {
-  ws_props_ptr="workstation_props_$WORKSTATION_NAME"
+  local ws_props_ptr
+  ws_props_ptr="workstation_props_$(ws_lookup WORKSTATION_NAME)"
   if declare -p "$ws_props_ptr" &> /dev/null; then
     printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
     eval "$setprops"
