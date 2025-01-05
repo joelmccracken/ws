@@ -9,6 +9,9 @@ _setup_common() {
 
   HOME="$BATS_TEST_TMPDIR/home"
   mkdir -p "$HOME"
+
+  TMPDIR="$BATS_TEST_TMPDIR"
+
   # need this for a couple of automated commit tests
   git config --global user.email "automated@example.com"
   git config --global user.name "Test Automation"
@@ -19,6 +22,7 @@ _setup_common() {
   : "${WORKSTATION_DIR:="$PROJECT_ROOT"}"
   . "$PROJECT_ROOT/lib/logging.bash"
   . "$PROJECT_ROOT/lib/lib.bash"
+  . "$PROJECT_ROOT/lib/settings.bash"
 }
 
 set_workstation_version_last_sha() {
