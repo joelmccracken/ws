@@ -1,1 +1,1 @@
-WORKSTATION_NAME=ci_macos
+WS_NAME=ci_macos

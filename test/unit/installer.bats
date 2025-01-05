@@ -5,12 +5,12 @@ setup (){
     _setup_common
 }
 
-export WORKSTATION_DIR
+export WS_DIR
 @test "runs ws_install" {
-    WORKSTATION_DIR="$(_mktemp "ws-install")"
+    WS_DIR="$(_mktemp "ws-install")"
     set_workstation_version_last_sha
 
     run ws_install.sh
 
-    assert [ -x "${WORKSTATION_DIR}/ws" ]
+    assert [ -x "${WS_DIR}/ws" ]
 }

@@ -12,19 +12,19 @@
 # these things.
 # Wou may wish to customize this if you want your configuration somewhere else.
 # The default location is "$HOME/.config/workstation".
-# export WORKSTATION_CONFIG_DIR=
+# export WS_CONF=
 
 # location of workstation source. This is where the ws tool source code should live.
-# the default location is "$WORKSTATION_CONFIG_DIR/vendor/ws"
+# the default location is "$WS_CONF/vendor/ws"
 # (so, "$HOME/.config/workstation/vendor/ws")
-# export WORKSTATION_DIR=
+# export WS_DIR=
 
 # Workstation name to use.
 # Used to identify a machine, determine which settings it should have.
 # if you just have one, you can use this here and set it to 'default'
 # However, the recommendation is not to set this here, but via
 # settings.current.bash file. See below.
-# export WORKSTATION_NAME=default
+# export WS_NAME=default
 
 # workstation_names is an array of names, though it is used
 # names are used to infer the presence of other variables, so each one must
@@ -64,8 +64,8 @@ workstation_descriptions_default='primary workstation';
 # - a symlink from 'hosts/current' to the relevant 'hosts/<ws_name>' dir.
 # This worked well for me, and it may work for you; a setup like this should
 # be easy to adapt.
-[ -f "${WORKSTATION_CONFIG_DIR}/settings.current.sh" ] && . "${WORKSTATION_CONFIG_DIR}/settings.current.sh" || return 0
+[ -f "${WS_CONF}/settings.current.sh" ] && . "${WS_CONF}/settings.current.sh" || return 0
 
 # Oh, you may wish to add the following to your shell profile file:
-# export WORKSTATION_CONFIG_DIR=/path/to/specific/location
-# export PATH="${WORKSTATION_DIR}:$PATH"
+# export WS_CONF=/path/to/specific/location
+# export PATH="${WS_DIR}:$PATH"

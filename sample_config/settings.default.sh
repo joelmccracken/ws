@@ -1,1 +1,1 @@
-export WORKSTATION_NAME='default'
+export WS_NAME='default'

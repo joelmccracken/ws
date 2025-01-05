@@ -6,7 +6,7 @@ setup (){
 
 @test "prop_ws_check_workstation_dir" {
   ws_unset_settings
-  WORKSTATION_DIR="$(_mktemp "ws-dir")"
+  WS_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
   . "$PROJECT_ROOT/lib/settings.bash"
 
@@ -22,7 +22,7 @@ setup (){
 
 @test "prop_ws_check_workstation_repo" {
   ws_unset_settings
-  WORKSTATION_DIR="$(_mktemp "ws-dir")"
+  WS_DIR="$(_mktemp "ws-dir")"
   set_workstation_version_last_sha
   . "$PROJECT_ROOT/lib/settings.bash"
 
@@ -33,7 +33,7 @@ setup (){
   run prop_ws_check_workstation_repo
   assert_failure
 
-  # WORKSTATION_REPO_GIT_ORIGIN=https://github.com/joelmccracken/ws.git
+  # WS_REPO_ORIGIN=https://github.com/joelmccracken/ws.git
   run prop_ws_check_workstation_repo_fix
   assert_success
 
@@ -69,9 +69,9 @@ setup (){
 
 @test "prop_ws_config_exists default config" {
   ws_unset_settings
-  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  WS_DIR="$WS_CONF/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -88,15 +88,15 @@ setup (){
   assert_success
 
   for f in settings.sh config.sh settings.default.sh; do
-    assert [ -f "${WORKSTATION_CONFIG_DIR}/$f" ]
+    assert [ -f "${WS_CONF}/$f" ]
   done
 }
 
 @test "prop_ws_config_exists using custom config dir" {
   ws_unset_settings
-  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  WS_DIR="$WS_CONF/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -106,7 +106,7 @@ setup (){
   run prop_ws_config_exists
   assert_failure
 
-  workstation_initial_config_dir_arg="${WORKSTATION_DIR}/sample_config"
+  workstation_initial_config_dir_arg="${WS_DIR}/sample_config"
 
   run prop_ws_config_exists_fix
   assert_success
@@ -117,18 +117,18 @@ setup (){
   ( cd "$workstation_initial_config_dir_arg";
     for f in *; do
       # utter insanity
-      assert [ "$(cat $f)" == "$(cat "$WORKSTATION_CONFIG_DIR/$f")" ]
+      assert [ "$(cat $f)" == "$(cat "$WS_CONF/$f")" ]
     done
   )
 }
 
 @test "prop_ws_config_exists config already in place" {
   ws_unset_settings
-  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  WS_CONF="$(_mktemp "ws-fake-config")"
   . "$PROJECT_ROOT/lib/settings.bash"
 
-  touch "${WORKSTATION_CONFIG_DIR}/settings.sh"
-  touch "${WORKSTATION_CONFIG_DIR}/config.sh"
+  touch "${WS_CONF}/settings.sh"
+  touch "${WS_CONF}/config.sh"
 
   run prop_ws_config_exists
   assert_success
@@ -137,9 +137,9 @@ setup (){
 @test "prop_ws_config_exists use repo" {
   ws_unset_settings
 
-  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_DIR="$WORKSTATION_CONFIG_DIR/vendor/ws"
+  WS_DIR="$WS_CONF/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # make a config repo
@@ -167,16 +167,16 @@ setup (){
   run prop_ws_config_exists
   assert_success
 
-  #ls -lah "$WORKSTATION_CONFIG_DIR/" 1>&3
+  #ls -lah "$WS_CONF/" 1>&3
 
 }
 
 ## bats test_tags=bats:focus
 @test "prop_ws_current_settings_symlink works for default" {
   ws_unset_settings
-  WORKSTATION_CONFIG_DIR="$(_mktemp "ws-fake-config")"
+  WS_CONF="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WORKSTATION_NAME=default
+  WS_NAME=default
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # env 1>&3
@@ -193,8 +193,8 @@ setup (){
   run prop_ws_current_settings_symlink
   assert_success
 
-  # echo "$WORKSTATION_CONFIG_DIR" 1>&3
-  # ls -lah "$WORKSTATION_CONFIG_DIR" 1>&3
+  # echo "$WS_CONF" 1>&3
+  # ls -lah "$WS_CONF" 1>&3
 }
 
 @test "prop_ws_nix_global_config" {
@@ -212,7 +212,7 @@ EOF
 
   run_env() {
     WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
-    WORKSTATION_DIR="$PROJECT_ROOT"
+    WS_DIR="$PROJECT_ROOT"
     "$1"
   }
 
@@ -242,11 +242,11 @@ EOF
   cat > "$df_src_dir/config/git/ignore" <<< ".DS_Store"
 
   test_ws_name=some_name_$RANDOM
-  WORKSTATION_NAME="$test_ws_name"
+  WS_NAME="$test_ws_name"
 
   df_fn_src_file="$(_mktemp "df-fn-src")/df.bash"
   cat > "$df_fn_src_file" <<-EOF
-	workstation_props_dotfiles_${WORKSTATION_NAME} () {
+	workstation_props_dotfiles_${WS_NAME} () {
 	  dotfile --ln --dot bashrc
 	  dotfile --ln --dot --dir config/git
 	  dotfile --ln Brewfile

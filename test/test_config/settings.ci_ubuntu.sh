@@ -1,1 +1,1 @@
-WORKSTATION_NAME=ci_ubuntu
+WS_NAME=ci_ubuntu

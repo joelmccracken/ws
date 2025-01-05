@@ -1,37 +1,37 @@
-: "${WORKSTATION_NAME:=}"
-: "${WORKSTATION_VERBOSE:=}"
-: "${WORKSTATION_LOG_LEVEL:=}"
-: "${WORKSTATION_CONFIG_DIR:=}"
-: "${WORKSTATION_DIR:=}"
-: "${WORKSTATION_REPO_GIT_ORIGIN:=}"
-: "${WORKSTATION_VERSION:=}"
+: "${WS_NAME:=}"
+: "${WS_VERBOSE:=}"
+: "${WS_LOG_LEVEL:=}"
+: "${WS_CONF:=}"
+: "${WS_DIR:=}"
+: "${WS_REPO_ORIGIN:=}"
+: "${WS_VERSION:=}"
 
-WORKSTATION_VERBOSE__default() {
+WS_VERBOSE__default() {
   echo -n "false";
 }
-WORKSTATION_LOG_LEVEL__default() {
+WS_LOG_LEVEL__default() {
   echo -n "error";
 }
-WORKSTATION_CONFIG_DIR__default() {
+WS_CONF__default() {
   printf "%s/.config/workstation" $HOME
 }
-WORKSTATION_DIR__default() {
-  echo -n "$(ws_lookup WORKSTATION_CONFIG_DIR)/vendor/ws";
+WS_DIR__default() {
+  echo -n "$(ws_lookup WS_CONF)/vendor/ws";
 }
-WORKSTATION_REPO_GIT_ORIGIN__default() {
+WS_REPO_ORIGIN__default() {
   echo -n "https://github.com/joelmccracken/ws.git";
 }
-WORKSTATION_VERSION__default() {
+WS_VERSION__default() {
   echo -n "master";
 }
 
-export WORKSTATION_NAME # META:workstation_setting
-export WORKSTATION_VERBOSE # META:workstation_setting
-export WORKSTATION_LOG_LEVEL # META:workstation_setting
-export WORKSTATION_DIR # META:workstation_setting
-export WORKSTATION_CONFIG_DIR # META:workstation_setting
-export WORKSTATION_REPO_GIT_ORIGIN # META:workstation_setting
-export WORKSTATION_VERSION # META:workstation_setting
+export WS_NAME # META:workstation_setting
+export WS_VERBOSE # META:workstation_setting
+export WS_LOG_LEVEL # META:workstation_setting
+export WS_DIR # META:workstation_setting
+export WS_CONF # META:workstation_setting
+export WS_REPO_ORIGIN # META:workstation_setting
+export WS_VERSION # META:workstation_setting
 
 
 # logic for looking up values

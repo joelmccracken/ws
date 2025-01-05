@@ -12,13 +12,13 @@ setup (){
 }
 
 @test "logs by log level" {
-  WORKSTATION_LOG_LEVEL=debug
+  WS_LOG_LEVEL=debug
   run debug "hello world"
   assert_output --partial 'hello world'
 }
 
 @test "skips logs when out of log level" {
-  WORKSTATION_LOG_LEVEL=error
+  WS_LOG_LEVEL=error
   run debug "hello world"
   refute_output --partial 'hello world'
 }

@@ -6,55 +6,55 @@ setup (){
 }
 
 @test "ws_reset_settings works like i think it does" {
-    ORIG_WORKSTATION_DIR="$(ws_lookup WORKSTATION_DIR)"
-    WORKSTATION_DIR=poopy
-    assert [ "$WORKSTATION_DIR" = "poopy" ]
+    ORIG_WS_DIR="$(ws_lookup WS_DIR)"
+    WS_DIR=poopy
+    assert [ "$WS_DIR" = "poopy" ]
 
     ws_reset_settings
 
-    assert [ "$(ws_lookup WORKSTATION_DIR)" = "$ORIG_WORKSTATION_DIR" ]
+    assert [ "$(ws_lookup WS_DIR)" = "$ORIG_WS_DIR" ]
 }
 
 @test "settings sets appropriate default values" {
-    assert_regex "$(ws_lookup WORKSTATION_CONFIG_DIR)" .*/.config/workstation
-    assert_regex "$(ws_lookup WORKSTATION_DIR)" .*/.config/workstation/vendor/ws
-    assert [ "$(ws_lookup WORKSTATION_REPO_GIT_ORIGIN)" = 'https://github.com/joelmccracken/ws.git' ]
-    assert [ "$(ws_lookup WORKSTATION_VERBOSE)" = false ]
-    assert [ "$(ws_lookup WORKSTATION_LOG_LEVEL)" = error ]
+    assert_regex "$(ws_lookup WS_CONF)" .*/.config/workstation
+    assert_regex "$(ws_lookup WS_DIR)" .*/.config/workstation/vendor/ws
+    assert [ "$(ws_lookup WS_REPO_ORIGIN)" = 'https://github.com/joelmccracken/ws.git' ]
+    assert [ "$(ws_lookup WS_VERBOSE)" = false ]
+    assert [ "$(ws_lookup WS_LOG_LEVEL)" = error ]
 }
 
 @test "loading settings honors existing env vars" {
     ws_unset_settings
-    WORKSTATION_CONFIG_DIR="$(tmp "ws-config-dir")"
-    # echo "$WORKSTATION_CONFIG_DIR" 1>&3
-    WORKSTATION_REPO_GIT_ORIGIN='git@github.com:some-other-user/workstation.git'
-    MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
+    WS_CONF="$(tmp "ws-config-dir")"
+    # echo "$WS_CONF" 1>&3
+    WS_REPO_ORIGIN='git@github.com:some-other-user/workstation.git'
+    MY_WS_REPO_ORIGIN="$WS_REPO_ORIGIN"
     . "$PROJECT_ROOT/lib/settings.bash"
 
-    assert [ "$(ws_lookup WORKSTATION_CONFIG_DIR)" = "$WORKSTATION_CONFIG_DIR" ]
-    assert [ "$(ws_lookup WORKSTATION_DIR)" = "$WORKSTATION_CONFIG_DIR/vendor/ws" ]
-    assert [ "$(ws_lookup WORKSTATION_REPO_GIT_ORIGIN)" = "$MY_WORKSTATION_REPO_GIT_ORIGIN" ]
-    assert [ "$(ws_lookup WORKSTATION_VERBOSE)" = false ]
-    assert [ "$(ws_lookup WORKSTATION_LOG_LEVEL)" = error ]
+    assert [ "$(ws_lookup WS_CONF)" = "$WS_CONF" ]
+    assert [ "$(ws_lookup WS_DIR)" = "$WS_CONF/vendor/ws" ]
+    assert [ "$(ws_lookup WS_REPO_ORIGIN)" = "$MY_WS_REPO_ORIGIN" ]
+    assert [ "$(ws_lookup WS_VERBOSE)" = false ]
+    assert [ "$(ws_lookup WS_LOG_LEVEL)" = error ]
 }
 
 @test "ws_lookup prevents 'sandbox' violations" {
     ws_unset_settings
 
-    WORKSTATION_CONFIG_DIR="$BATS_WS_USER_HOME/.config/workstation"
-    run ws_lookup WORKSTATION_CONFIG_DIR
+    WS_CONF="$BATS_WS_USER_HOME/.config/workstation"
+    run ws_lookup WS_CONF
     assert_failure
-    assert_output --partial "error: test isolation violation: 'WORKSTATION_CONFIG_DIR' has value '$WORKSTATION_CONFIG_DIR'"
+    assert_output --partial "error: test isolation violation: 'WS_CONF' has value '$WS_CONF'"
 }
 
 ## bats test_tags=bats:focus
 @test "ws_lookup 'sandbox' volation check be disabled" {
     ws_unset_settings
 
-    WORKSTATION_CONFIG_DIR="$BATS_WS_USER_HOME/.config/workstation"
-    run ws_lookup --no-test-sandbox WORKSTATION_CONFIG_DIR
+    WS_CONF="$BATS_WS_USER_HOME/.config/workstation"
+    run ws_lookup --no-test-sandbox WS_CONF
     assert_success
-    assert_output --partial "$WORKSTATION_CONFIG_DIR"
+    assert_output --partial "$WS_CONF"
 }
 
 @test "ws_lookup will set with default if available" {
@@ -74,14 +74,14 @@ setup (){
 # @test "setting accessor errors if home dir is referenced " {
 #     ws_unset_settings
 #     ws_setting
-#     WORKSTATION_CONFIG_DIR="$(_mktemp "ws-config-dir")"
-#     WORKSTATION_REPO_GIT_ORIGIN='git@github.com:some-other-user/workstation.git'
-#     MY_WORKSTATION_REPO_GIT_ORIGIN="$WORKSTATION_REPO_GIT_ORIGIN"
+#     WS_CONF="$(_mktemp "ws-config-dir")"
+#     WS_REPO_ORIGIN='git@github.com:some-other-user/workstation.git'
+#     MY_WS_REPO_ORIGIN="$WS_REPO_ORIGIN"
 #     . "$PROJECT_ROOT/lib/settings.bash"
 
-#     assert [ "$WORKSTATION_CONFIG_DIR" = "$WORKSTATION_CONFIG_DIR" ]
-#     assert [ "$WORKSTATION_DIR" = "$WORKSTATION_CONFIG_DIR/vendor/ws" ]
-#     assert [ "$WORKSTATION_REPO_GIT_ORIGIN" = "$MY_WORKSTATION_REPO_GIT_ORIGIN" ]
-#     assert [ "$WORKSTATION_VERBOSE" = false ]
-#     assert [ "$WORKSTATION_LOG_LEVEL" = error ]
+#     assert [ "$WS_CONF" = "$WS_CONF" ]
+#     assert [ "$WS_DIR" = "$WS_CONF/vendor/ws" ]
+#     assert [ "$WS_REPO_ORIGIN" = "$MY_WS_REPO_ORIGIN" ]
+#     assert [ "$WS_VERBOSE" = false ]
+#     assert [ "$WS_LOG_LEVEL" = error ]
 # }

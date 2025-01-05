@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-: "${WORKSTATION_DIR:=$HOME/.config/workstation/vendor/ws}"
-: "${WORKSTATION_VERSION:=master}"
+: "${WS_DIR:=$HOME/.config/workstation/vendor/ws}"
+: "${WS_VERSION:=master}"
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")
 # installer of ws tool/project
 ( cd "$TMPINST";
-  curl -L https://github.com/joelmccracken/ws/archive/${WORKSTATION_VERSION}.tar.gz | tar zx
+  curl -L https://github.com/joelmccracken/ws/archive/${WS_VERSION}.tar.gz | tar zx
 
-  if [[ -e "$WORKSTATION_DIR" ]]; then
-    mv "$WORKSTATION_DIR" "${WORKSTATION_DIR}-$(date +"%s")"
+  if [[ -e "$WS_DIR" ]]; then
+    mv "$WS_DIR" "${WS_DIR}-$(date +"%s")"
   fi
 
-  mkdir -p "$WORKSTATION_DIR"
-  mv "${TMPINST}"/ws-*/{,.[^.]}* "$WORKSTATION_DIR"
+  mkdir -p "$WS_DIR"
+  mv "${TMPINST}"/ws-*/{,.[^.]}* "$WS_DIR"
 )

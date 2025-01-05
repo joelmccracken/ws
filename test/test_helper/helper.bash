@@ -1,5 +1,5 @@
 export BATS_WS_USER_HOME
-export WORKSTATION_DIR
+export WS_DIR
 
 _setup_common() {
   PROJECT_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")/../../" &>/dev/null && pwd)"
@@ -23,15 +23,15 @@ _setup_common() {
   # echo "$PROJECT_ROOT, $BATS_TEST_FILENAME" >&3
   PATH="$PROJECT_ROOT:$PROJECT_ROOT/bin/:$PATH"
 
-  WORKSTATION_DIR="$PROJECT_ROOT"
+  WS_DIR="$PROJECT_ROOT"
   . "$PROJECT_ROOT/lib/logging.bash"
   . "$PROJECT_ROOT/lib/lib.bash"
   . "$PROJECT_ROOT/lib/settings.bash"
 }
 
 set_workstation_version_last_sha() {
-  export WORKSTATION_VERSION
-  WORKSTATION_VERSION="$(git log -n 1 --format="%H")"
+  export WS_VERSION
+  WS_VERSION="$(git log -n 1 --format="%H")"
 }
 
 retfunc() {

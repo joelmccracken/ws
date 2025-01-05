@@ -11,7 +11,7 @@ doctor_command() {
 }
 
 bootstrap_command_setup() {
-  if [[ -z "$(ws_lookup WORKSTATION_NAME)" ]]; then
+  if [[ -z "$(ws_lookup WS_NAME)" ]]; then
     error "ws: bootstrap: unable to determine workstation name. Provide it as an argument or env var"
     exit 1
   fi
@@ -23,7 +23,7 @@ bootstrap_command() {
 
 run_all_props() {
   local fix="" label="" wsn
-  wsn="$(ws_lookup WORKSTATION_NAME)"
+  wsn="$(ws_lookup WS_NAME)"
 
   if (( $# != 4 )); then
     echo "requires both --fix <val> and --label <val> flags" 1>&2
@@ -63,7 +63,7 @@ run_all_props() {
 
 get_workstation_properties() {
   local ws_props_ptr
-  ws_props_ptr="workstation_props_$(ws_lookup WORKSTATION_NAME)"
+  ws_props_ptr="workstation_props_$(ws_lookup WS_NAME)"
   if declare -p "$ws_props_ptr" &> /dev/null; then
     printf -v setprops 'props=("${%s[@]}");' "$ws_props_ptr"
     eval "$setprops"

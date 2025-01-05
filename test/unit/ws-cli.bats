@@ -11,12 +11,12 @@ setup (){
 
 @test "process_cli_args parse verbose flag" {
     process_cli_args -v bootstrap
-    assert_equal "$(ws_lookup WORKSTATION_VERBOSE)" true
+    assert_equal "$(ws_lookup WS_VERBOSE)" true
 }
 
 @test "process_cli_args parse verbose flag (long)" {
     process_cli_args --verbose bootstrap
-    assert_equal "$(ws_lookup WORKSTATION_VERBOSE)" true
+    assert_equal "$(ws_lookup WS_VERBOSE)" true
 }
 
 @test "process_cli_args parse bootstrap subcommand" {

@@ -73,7 +73,7 @@ setup (){
     ws_unset_settings
     bootstrap_props=(prop_a prop_b)
     workstation_props_foo=(prop_f)
-    WORKSTATION_NAME=foo
+    WS_NAME=foo
     printf "0" >> "$props_test_tmp_file"
     run_all_props --fix true --label "foo"
   )
@@ -106,7 +106,7 @@ setup (){
   ws_unset_settings
   bootstrap_props=(prop_a prop_b)
   workstation_props_foo=(prop_f)
-  WORKSTATION_NAME=foo
+  WS_NAME=foo
   printf "0" >> "$props_test_tmp_file"
   run run_all_props --fix true --label "foo"
   # echo "$output" 1>&3

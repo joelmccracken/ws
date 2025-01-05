@@ -20,7 +20,7 @@ log() {
   local this_lvl="$1"
   shift;
   REPLY=()
-  log_level_num "$(ws_lookup WORKSTATION_LOG_LEVEL)"
+  log_level_num "$(ws_lookup WS_LOG_LEVEL)"
   local global_lvl_num="${REPLY[0]}";
   REPLY=()
   log_level_num "$this_lvl"

@@ -68,8 +68,8 @@ process_cli_args() {
 
     case "$current" in
       (-v|--verbose)
-        WORKSTATION_VERBOSE=true
-        WORKSTATION_LOG_LEVEL=info
+        WS_VERBOSE=true
+        WS_LOG_LEVEL=info
         ;;
       (-n|--name)
         workstation_name_arg="${args[i+1]}";
@@ -115,9 +115,9 @@ help_command() {
 
 ws_main() {
   process_cli_args "$@"
-  [ -n "$workstation_name_arg" ] && WORKSTATION_NAME="$workstation_name_arg"
+  [ -n "$workstation_name_arg" ] && WS_NAME="$workstation_name_arg"
 
-  if [ "$(ws_lookup WORKSTATION_VERBOSE)" = "true" ]; then
+  if [ "$(ws_lookup WS_VERBOSE)" = "true" ]; then
     set -x
   fi
 
@@ -126,9 +126,9 @@ ws_main() {
   #   load_expected "$workstation_initial_config_dir_arg/config.sh"
   # fi
 
-  if [[ -d "$(ws_lookup WORKSTATION_CONFIG_DIR)" ]]; then
-    load_expected "$(ws_lookup WORKSTATION_CONFIG_DIR)/settings.sh"
-    load_expected "$(ws_lookup WORKSTATION_CONFIG_DIR)/config.sh"
+  if [[ -d "$(ws_lookup WS_CONF)" ]]; then
+    load_expected "$(ws_lookup WS_CONF)/settings.sh"
+    load_expected "$(ws_lookup WS_CONF)/config.sh"
   fi
 
   case "$ws_command" in

@@ -1,6 +1,6 @@
 ws_df_dotfiles_fn_name() {
   local wsn
-  wsn="$(ws_lookup WORKSTATION_NAME)"
+  wsn="$(ws_lookup WS_NAME)"
   echo "workstation_props_dotfiles_$wsn";
 }
 
@@ -37,7 +37,7 @@ prop_ws_df_dotfiles_fix() {
 }
 
 ws_df_dotfile_src_dir_default() {
-  echo "$(ws_lookup WORKSTATION_CONFIG_DIR)/dotfiles"
+  echo "$(ws_lookup WS_CONF)/dotfiles"
 }
 
 ws_df_dotfile_dest_dir_default() {

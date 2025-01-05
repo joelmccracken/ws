@@ -63,7 +63,7 @@ where should the settings and config file be located?
   - avoids much of the initial difficulty
     - no need to clone/fetch entire repo
     - ws_install can be replaced with a curl that just downloads the ws tool
-    - no need for WORKSTATION_DIR to house files etc
+    - no need for WS_DIR to house files etc
   - makes sense with XDG_BASE_DIRECTORY spec:
     - .local/state/ws for logs, saving state
       - XDG_STATE_HOME
