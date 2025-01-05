@@ -1,0 +1,31 @@
+#+title: Hacking
+* coding standards
+- common prefix is `ws`
+  - config-like environment vars prefixed with ~WS~
+    - ~WS_DIR~
+    - ~WS_CFG~
+- cli args
+  - data is saved into appropriate variables prefixed with ~ws_arg_~
+- othert things prefixed with `ws`
+  - properties:
+    - prefix with ~ws_prop_~, e.g.
+- use ws_lookup to access settings, see that function for information.
+* Adding new properties
+1. make a new function e.g. ~my_new_property~
+   - should exit 0 if property is fulfilled, non-zero otherwise
+   - TODO note about ~REPLY=(additional_props ...)~
+2. make another new function with the same name with additional suffix ~_fix~,
+   e.g. ~my_new_property_fix~
+   - if ~my_new_property~ exits with non-zero, ~my_new_property_fix~ is
+     called
+   - fix should install etc whatever necessary for property to be fulfilled.
+   - fix function has non-zero return, interpreted as it was unable to do its
+     fix for whatever reason, and ~ws~ will itself exit with an error msg.
+   - if fix executes successfully, original property is rechecked as a sanity
+     check. If the prop still fails, `ws` assumes there's a bug/larger problem,
+     and exists
+3. when satisfied these work, make sure they are included the props array for
+   the relevant workstations in your configuration
+4. in future runs `ws` will use it.
+** configuration options
+** make a note on testing?
