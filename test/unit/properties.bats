@@ -211,7 +211,7 @@ setup (){
 EOF
 
   run_env() {
-    WS_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
+    WORKSTATION_NIX_GLOBAL_CONFIG_LOCATION="$nix_config";
     WORKSTATION_DIR="$PROJECT_ROOT"
     "$1"
   }

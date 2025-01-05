@@ -53,7 +53,8 @@ ws_lookup() {
 
   # are we in a test? if so error if value is home directory
   if [[ -z "$bypass_sandbox_check" ]] && [[ -n "$BATS_TEST_TMPDIR" ]]; then
-    if [[ "$val" == "$BATS_WS_USER_HOME/.config/"* ]]; then
+    if [[ "$val" == "$BATS_WS_USER_HOME/.config/"* ||
+          "$val" == "/etc/"* ]]; then
       echo "error: test isolation violation: '$name' has value '$val'"
       exit 1;
     fi
