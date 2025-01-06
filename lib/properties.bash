@@ -438,7 +438,7 @@ ws_prop_nix_global_config_fix () {
 
   # complicated because I don't want to deal with sudo when running tests
   maybe_sudo="bash" # null option (is there some better way?)
-  if ! [[ -w "$conf" ]]; then
+  if ! [[ -w "$conf_path" ]]; then
     maybe_sudo="sudo"
   fi
   # NOTE: this will be a wrinkle if I try compiling all ws code into a single file
