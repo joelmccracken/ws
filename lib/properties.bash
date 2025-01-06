@@ -436,13 +436,8 @@ ws_prop_nix_global_config_fix () {
     echo "${parts[2]}"
   } > "$new_conf"
 
-  # complicated because I don't want to deal with sudo when running tests
-  maybe_sudo="bash" # null option (is there some better way?)
-  if ! [[ -w "$conf_path" ]]; then
-    maybe_sudo="sudo"
-  fi
   # NOTE: this will be a wrinkle if I try compiling all ws code into a single file
-  "$maybe_sudo" "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
+  sudo "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
 # ws_prop_nix_homemanager_install() {
