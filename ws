@@ -22,7 +22,7 @@ ws_initial_pwd="$PWD"
 . "${ws_script_dir}/lib/bootstrap_doctor.bash"
 
 REPLY=() # global "out" var, hack to use return values
-ws_command=help # show help if nothing provided
+ws_cli_arg_cmd=help # show help if nothing provided
 declare -a ws_cli_raw_args
 : "${ws_cli_arg_initial_config_dir:=}"
 : "${ws_cli_arg_ws_name:=}"
@@ -52,7 +52,7 @@ ws_cli_usage() {
   echo "-v -verbose              : Be verbose"
   echo "-n NAME, --name NAME     : Specify the name of this workstation."
   echo "-i, --interactive        : Interactive mode."
-  echo "-c, --initial-conf-dir : Initial configuration directory."
+  echo "-c, --initial-config-dir : Initial configuration directory."
   echo "       If user already has a workstation configuration, "
   echo "       specifies location for tool to use it."
   echo "       Installs this configuration at default configuration location."
@@ -75,15 +75,15 @@ ws_cli_proc_args() {
         ws_cli_arg_ws_name="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (--initial-conf-dir)
+      (--initial-config-dir)
         ws_cli_arg_initial_config_dir="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (--initial-conf-repo)
+      (--initial-config-repo)
         ws_cli_arg_initial_config_repo="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (--initial-conf-repo-ref)
+      (--initial-config-repo-ref)
         ws_cli_arg_initial_config_repo_ref="${args[i+1]}";
         (( i+=1 ));
         ;;
@@ -94,10 +94,10 @@ ws_cli_proc_args() {
         ws_cli_arg_interactive=true;
         ;;
       (bootstrap)
-        ws_command="$current";
+        ws_cli_arg_cmd="$current";
         ;;
       (doctor)
-        ws_command="$current";
+        ws_cli_arg_cmd="$current";
         ;;
       (*)
         error "ws: argument parsing: unknown argument '$current'";
@@ -131,11 +131,11 @@ ws_cli_main() {
     load_expected "$(ws_lookup WS_CONFIG)/config.sh"
   fi
 
-  case "$ws_command" in
+  case "$ws_cli_arg_cmd" in
     (bootstrap) ws_cli_cmds_bootstrap;;
     (doctor) ws_cli_cmds_doctor;;
     ("help") ws_cli_cmds_help;;
-    (*) error "unknown command $ws_command; how did we get here?"
+    (*) error "unknown command $ws_cli_arg_cmd; how did we get here?"
   esac
 }
 

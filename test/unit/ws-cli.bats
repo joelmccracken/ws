@@ -21,24 +21,24 @@ setup (){
 
 @test "ws_cli_proc_args parse bootstrap subcommand" {
     ws_cli_proc_args bootstrap
-    assert_equal "$ws_command" "bootstrap"
+    assert_equal "$ws_cli_arg_cmd" "bootstrap"
 }
 
 @test "ws_cli_proc_args parse bootstrap subcommand with name flag short" {
     ws_cli_proc_args -n glamdring bootstrap
-    assert_equal "$ws_command" "bootstrap"
+    assert_equal "$ws_cli_arg_cmd" "bootstrap"
     assert_equal "$ws_cli_arg_ws_name" "glamdring"
 }
 
 @test "ws_cli_proc_args parse bootstrap subcommand with workstation name long flag" {
     ws_cli_proc_args --name aeglos bootstrap
-    assert_equal "$ws_command" "bootstrap"
+    assert_equal "$ws_cli_arg_cmd" "bootstrap"
     assert_equal "$ws_cli_arg_ws_name" "aeglos"
 }
 
 @test "ws_cli_proc_args parse bootstrap command doctor" {
     ws_cli_proc_args doctor
-    assert_equal "$ws_command" "doctor"
+    assert_equal "$ws_cli_arg_cmd" "doctor"
 }
 
 @test "fails with unknown long" {

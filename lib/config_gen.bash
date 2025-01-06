@@ -86,18 +86,18 @@ cat <<-EOF
 	# Even if you are just using this for a single workstation, it is good to
 	# have this capability in place and thought about before it is immediately needed.
 	# the following is the way I like to support this, and ws is designed for:
-	# - Have global/common settings in \$WS_CFG/settings.sh
-	# - Have workstation-specific settings in \${WS_CFG}/settings.\${WS_NAME}.sh
-	# - Have a symlink from "\$WS_CFG/settings.current.sh" to the specific file
-	# - Have a symlink from "\$WS_CFG/settings.current.sh" to specific settings
+	# - Have global/common settings in \$WS_CONFIG/settings.sh
+	# - Have workstation-specific settings in \${WS_CONFIG}/settings.\${WS_NAME}.sh
+	# - Have a symlink from "\$WS_CONFIG/settings.current.sh" to the specific file
+	# - Have a symlink from "\$WS_CONFIG/settings.current.sh" to specific settings
 	#   file. Tools can then look in that well-understood spot for any
 	#   settings they need.
 	# In the past, I've followed this pattern in an expanded way like so:
 	# - a 'hosts' subdirectory within my main configuration
 	# - a 'hosts/<ws_name>' for each individial workstation,
 	# - files in this directory that are specific to each host.
-	#   - \$WS_CFG/hosts/<ws_name>/settings.sh: shell settings
-	#   - \$WS_CFG/hosts/<ws_name>/settings.el: emacs lisp settings
+	#   - \$WS_CONFIG/hosts/<ws_name>/settings.sh: shell settings
+	#   - \$WS_CONFIG/hosts/<ws_name>/settings.el: emacs lisp settings
 	# - a symlink from 'hosts/current' to the relevant 'hosts/<ws_name>' dir.
 	# This worked well for me, and it may work for you; a setup like this should
 	# be easy to adapt.

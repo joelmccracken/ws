@@ -28,8 +28,8 @@ Why Bash?
 - the universal interface to the tool. You shouldn't need to use anything else.
 *** the ~bootstrap~ subcommand
 *** the ~doctor~ subcommand
-** ~WS_CFG~: configuration files
-*** ~WS_CFG/settings.sh~
+** ~WS_CONFIG~: configuration files
+*** ~WS_CONFIG/settings.sh~
 - settings file
 
 * Install

@@ -3,7 +3,7 @@
 - common prefix is `ws`
   - config-like environment vars prefixed with ~WS~
     - ~WS_DIR~
-    - ~WS_CFG~
+    - ~WS_CONFIG~
 - cli args
   - data is saved into appropriate variables prefixed with ~ws_arg_~
 - othert things prefixed with `ws`
