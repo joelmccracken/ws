@@ -39,7 +39,7 @@ export WS_VERSION # META:workstation_setting
 # - prevent test runs from accessing user home dir
 # - get default values when appropriate
 ws_lookup() {
-  local name val bypass_sandbox_check
+  local name='' val='' bypass_sandbox_check=''
 
   while (( "$#" > 0 )); do
     case "$1" in

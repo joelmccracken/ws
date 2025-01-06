@@ -247,9 +247,9 @@ EOF
   df_fn_src_file="$(_mktemp "df-fn-src")/df.bash"
   cat > "$df_fn_src_file" <<-EOF
 	workstation_props_dotfiles_${WS_NAME} () {
-	  dotfile --ln --dot bashrc
-	  dotfile --ln --dot --dir config/git
-	  dotfile --ln Brewfile
+	  ws_df_dotfile --ln --dot bashrc
+	  ws_df_dotfile --ln --dot --dir config/git
+	  ws_df_dotfile --ln Brewfile
 	}
 EOF
   # cat < "$df_fn_src_file" 1>&3
