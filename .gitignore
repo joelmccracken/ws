@@ -231,3 +231,6 @@ wshs/result
 
 # this is a symlink to settings for the "current" machine
 hosts/current
+
+test/bats
+test/test_helper/bats-*

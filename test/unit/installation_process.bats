@@ -5,8 +5,8 @@ setup (){
 
 ## bats test_tags=bats:focus
 @test "the install script and then run ws bootstrap from this project checkout" {
-    WS_CONF="$(_mktemp "ws-config-dir")"
-    WS_DIR="$WS_CONF/vendor/ws"
+    WS_CONFIG="$(_mktemp "ws-config-dir")"
+    WS_DIR="$WS_CONFIG/vendor/ws"
 
     set_workstation_version_last_sha
 
@@ -28,7 +28,7 @@ setup (){
     local ws_cfg_src
     ws_cfg_src="$(_mktemp "ws-config-src-dir")"
     cat <<-EOF > "$ws_cfg_src/settings.sh"
-    export WS_CONF="$WS_CONF"
+    export WS_CONFIG="$WS_CONFIG"
     export WS_DIR="$PROJECT_ROOT"
     export workstation_names=(workstation_a workstation_b)
 EOF
@@ -48,9 +48,9 @@ EOF
 }
 
 @test "the install script from curl/github and then run ws bootstrap" {
-    WS_CONF="$(_mktemp "ws-config-dir")"
+    WS_CONFIG="$(_mktemp "ws-config-dir")"
     ws_cfg_src="$(_mktemp "ws-config-src-dir")"
-    WS_DIR="$WS_CONF/vendor/ws"
+    WS_DIR="$WS_CONFIG/vendor/ws"
     set_workstation_version_last_sha
 
     do_ws_install() {
@@ -62,7 +62,7 @@ EOF
     assert [ -x "$WS_DIR/ws" ]
 
     cat <<-EOF > "$ws_cfg_src/settings.sh"
-    export WS_CONF="$WS_CONF"
+    export WS_CONFIG="$WS_CONFIG"
     export WS_DIR="$WS_DIR"
 EOF
 

@@ -50,10 +50,10 @@ cat <<-EOF
 	# these things.
 	# Wou may wish to customize this if you want your configuration somewhere else.
 	# The default location is "\$HOME/.config/workstation".
-	# export WS_CONF=
+	# export WS_CONFIG=
 
 	# location of workstation source. This is where the ws tool source code should live.
-	# the default location is "\$WS_CONF/vendor/ws"
+	# the default location is "\$WS_CONFIG/vendor/ws"
 	# (so, "\$HOME/.config/workstation/vendor/ws")
 	# export WS_DIR=
 
@@ -101,10 +101,10 @@ cat <<-EOF
 	# - a symlink from 'hosts/current' to the relevant 'hosts/<ws_name>' dir.
 	# This worked well for me, and it may work for you; a setup like this should
 	# be easy to adapt.
-	[ -f "\${WS_CONF}/settings.current.sh" ] && . "\${WS_CONF}/settings.current.sh" || return 0
+	[ -f "\${WS_CONFIG}/settings.current.sh" ] && . "\${WS_CONFIG}/settings.current.sh" || return 0
 
 	# Oh, you may wish to add the following to your shell profile file:
-	# export WS_CONF=/path/to/specific/location
+	# export WS_CONFIG=/path/to/specific/location
 	# export PATH="\${WS_DIR}:\$PATH"
 EOF
 }

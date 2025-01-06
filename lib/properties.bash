@@ -191,7 +191,7 @@ ws_prop_dotfiles_git_track_fix() {
 
 ws_prop_config_exists() {
   local settings_file config_file wcd
-  wcd="$(ws_lookup WS_CONF)"
+  wcd="$(ws_lookup WS_CONFIG)"
   settings_file="$wcd/settings.sh"
   config_file="$wcd/config.sh"
   if [[ -f "$settings_file" ]] && [[ -f "$config_file" ]]; then
@@ -212,8 +212,8 @@ ws_prop_config_exists() {
 # TODO automate/enforce this somehow?
 ws_prop_config_exists_fix() {
   local wcd
-  wcd="$(ws_lookup WS_CONF)"
-  if [[ -n "$workstation_initial_config_repo_arg" ]]; then
+  wcd="$(ws_lookup WS_CONFIG)"
+  if [[ -n "$ws_cli_arg_initial_config_repo" ]]; then
     ws_prop_config_exists_install_from_repo
   else
     ws_prop_config_exists_install_from_directory
@@ -231,20 +231,20 @@ ws_prop_config_exists_install_from_directory() {
   local src_dir wcd wsd
   wsd="$(ws_lookup WS_DIR)"
   src_dir="$wsd/sample_config";
-  wcd="$(ws_lookup WS_CONF)"
+  wcd="$(ws_lookup WS_CONFIG)"
 
   # TODO convert cli params to ws_lookup settings
 
-  if [[ -n "$workstation_initial_config_dir_arg" ]]; then
-    src_dir="$workstation_initial_config_dir_arg";
+  if [[ -n "$ws_cli_arg_initial_config_dir" ]]; then
+    src_dir="$ws_cli_arg_initial_config_dir";
   fi
 
-  # if [[ -e  "$WS_CONF" ]]; then
-  #   mv_to_backup "$WS_CONF"
+  # if [[ -e  "$WS_CONFIG" ]]; then
+  #   mv_to_backup "$WS_CONFIG"
   # fi
   mkdir -p "$wcd"
 
-  # hack, because if a relative dir is used for $workstation_initial_config_dir_arg
+  # hack, because if a relative dir is used for $ws_cli_arg_initial_config_dir
   # we want it to go back...
   ( cd "$ws_initial_pwd"; cd "$src_dir";
     # not perfect, but not worth making much more complicated
@@ -264,11 +264,11 @@ ws_prop_config_exists_install_from_repo() {
   local src_dir wcd wsd
   wsd="$(ws_lookup WS_DIR)"
   src_dir="$wsd/sample_config";
-  wcd="$(ws_lookup WS_CONF)"
+  wcd="$(ws_lookup WS_CONFIG)"
 
   # TODO convert cli params to ws_lookup settings
-  if [[ -n "$workstation_initial_config_repo_ref_arg" ]]; then
-    ref="$workstation_initial_config_repo_ref_arg"
+  if [[ -n "$ws_cli_arg_initial_config_repo_ref" ]]; then
+    ref="$ws_cli_arg_initial_config_repo_ref"
   fi
   ws_tmp=
   if [[ -e  "$wcd" ]]; then
@@ -284,7 +284,7 @@ ws_prop_config_exists_install_from_repo() {
   mkdir -p "$wcd"
 
   ( cd "$wcd";
-    git clone "$workstation_initial_config_repo_arg" .;
+    git clone "$ws_cli_arg_initial_config_repo" .;
     git checkout "$ref";
     if [[ -n "$ws_tmp" ]]; then
       ( cd "$ws_tmp";
@@ -299,7 +299,7 @@ ws_prop_config_exists_install_from_repo() {
 
 ws_prop_current_settings_symlink() {
   local current_settings_file
-  current_settings_file="$(ws_lookup WS_CONF)/settings.current.sh"
+  current_settings_file="$(ws_lookup WS_CONFIG)/settings.current.sh"
   if [[ -L "$current_settings_file" ]]; then
     echo "symlink found at $current_settings_file"
     return 0
@@ -320,7 +320,7 @@ ws_prop_current_settings_symlink() {
 # depends upon ws_prop_config_exists
 ws_prop_current_settings_symlink_fix() {
   local wcd wsd
-  wcd="$(ws_lookup WS_CONF)"
+  wcd="$(ws_lookup WS_CONFIG)"
 
   current_settings_file="$wcd/settings.current.sh"
   src_settings_file="$wcd/settings.$(ws_lookup WS_NAME).sh"

@@ -37,7 +37,7 @@ ws_prop_df_dotfiles_fix() {
 }
 
 WS_PROP_DF_SRC_DIR__default() {
-  echo "$(ws_lookup WS_CONF)/dotfiles"
+  echo "$(ws_lookup WS_CONFIG)/dotfiles"
 }
 
 ws_prop_df__dotfile_dest_dir_default() {

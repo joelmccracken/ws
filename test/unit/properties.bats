@@ -69,9 +69,9 @@ setup (){
 
 @test "ws_prop_config_exists default config" {
   ws_unset_settings
-  WS_CONF="$(_mktemp "ws-fake-config")"
+  WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONF/vendor/ws"
+  WS_DIR="$WS_CONFIG/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -88,15 +88,15 @@ setup (){
   assert_success
 
   for f in settings.sh config.sh settings.default.sh; do
-    assert [ -f "${WS_CONF}/$f" ]
+    assert [ -f "${WS_CONFIG}/$f" ]
   done
 }
 
 @test "ws_prop_config_exists using custom config dir" {
   ws_unset_settings
-  WS_CONF="$(_mktemp "ws-fake-config")"
+  WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONF/vendor/ws"
+  WS_DIR="$WS_CONFIG/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -106,7 +106,7 @@ setup (){
   run ws_prop_config_exists
   assert_failure
 
-  workstation_initial_config_dir_arg="${WS_DIR}/sample_config"
+  ws_cli_arg_initial_config_dir="${WS_DIR}/sample_config"
 
   run ws_prop_config_exists_fix
   assert_success
@@ -114,21 +114,21 @@ setup (){
   run ws_prop_config_exists
   assert_success
 
-  ( cd "$workstation_initial_config_dir_arg";
+  ( cd "$ws_cli_arg_initial_config_dir";
     for f in *; do
       # utter insanity
-      assert [ "$(cat $f)" == "$(cat "$WS_CONF/$f")" ]
+      assert [ "$(cat $f)" == "$(cat "$WS_CONFIG/$f")" ]
     done
   )
 }
 
 @test "ws_prop_config_exists config already in place" {
   ws_unset_settings
-  WS_CONF="$(_mktemp "ws-fake-config")"
+  WS_CONFIG="$(_mktemp "ws-fake-config")"
   . "$PROJECT_ROOT/lib/settings.bash"
 
-  touch "${WS_CONF}/settings.sh"
-  touch "${WS_CONF}/config.sh"
+  touch "${WS_CONFIG}/settings.sh"
+  touch "${WS_CONFIG}/config.sh"
 
   run ws_prop_config_exists
   assert_success
@@ -137,16 +137,16 @@ setup (){
 @test "ws_prop_config_exists use repo" {
   ws_unset_settings
 
-  WS_CONF="$(_mktemp "ws-fake-config")"
+  WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONF/vendor/ws"
+  WS_DIR="$WS_CONFIG/vendor/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # make a config repo
-  workstation_initial_config_repo_arg="$(_mktemp "ws-fake-config-repo")"
-  workstation_initial_config_repo_ref_arg='some-branch'
-  workstation_initial_config_dir_arg=''
-  ( cd "$workstation_initial_config_repo_arg";
+  ws_cli_arg_initial_config_repo="$(_mktemp "ws-fake-config-repo")"
+  ws_cli_arg_initial_config_repo_ref='some-branch'
+  ws_cli_arg_initial_config_dir=''
+  ( cd "$ws_cli_arg_initial_config_repo";
     git init .;
     echo "# config stuff" > config.sh
     echo "# settings stuff" > settings.sh
@@ -167,14 +167,14 @@ setup (){
   run ws_prop_config_exists
   assert_success
 
-  #ls -lah "$WS_CONF/" 1>&3
+  #ls -lah "$WS_CONFIG/" 1>&3
 
 }
 
 ## bats test_tags=bats:focus
 @test "ws_prop_current_settings_symlink works for default" {
   ws_unset_settings
-  WS_CONF="$(_mktemp "ws-fake-config")"
+  WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
   WS_NAME=default
   . "$PROJECT_ROOT/lib/settings.bash"
@@ -193,8 +193,8 @@ setup (){
   run ws_prop_current_settings_symlink
   assert_success
 
-  # echo "$WS_CONF" 1>&3
-  # ls -lah "$WS_CONF" 1>&3
+  # echo "$WS_CONFIG" 1>&3
+  # ls -lah "$WS_CONFIG" 1>&3
 }
 
 @test "ws_prop_nix_global_config" {

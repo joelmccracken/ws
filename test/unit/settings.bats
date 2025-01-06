@@ -16,7 +16,7 @@ setup (){
 }
 
 @test "settings sets appropriate default values" {
-    assert_regex "$(ws_lookup WS_CONF)" .*/.config/workstation
+    assert_regex "$(ws_lookup WS_CONFIG)" .*/.config/workstation
     assert_regex "$(ws_lookup WS_DIR)" .*/.config/workstation/vendor/ws
     assert [ "$(ws_lookup WS_REPO_ORIGIN)" = 'https://github.com/joelmccracken/ws.git' ]
     assert [ "$(ws_lookup WS_VERBOSE)" = false ]
@@ -25,14 +25,14 @@ setup (){
 
 @test "loading settings honors existing env vars" {
     ws_unset_settings
-    WS_CONF="$(tmp "ws-config-dir")"
-    # echo "$WS_CONF" 1>&3
+    WS_CONFIG="$(tmp "ws-config-dir")"
+    # echo "$WS_CONFIG" 1>&3
     WS_REPO_ORIGIN='git@github.com:some-other-user/workstation.git'
     MY_WS_REPO_ORIGIN="$WS_REPO_ORIGIN"
     . "$PROJECT_ROOT/lib/settings.bash"
 
-    assert [ "$(ws_lookup WS_CONF)" = "$WS_CONF" ]
-    assert [ "$(ws_lookup WS_DIR)" = "$WS_CONF/vendor/ws" ]
+    assert [ "$(ws_lookup WS_CONFIG)" = "$WS_CONFIG" ]
+    assert [ "$(ws_lookup WS_DIR)" = "$WS_CONFIG/vendor/ws" ]
     assert [ "$(ws_lookup WS_REPO_ORIGIN)" = "$MY_WS_REPO_ORIGIN" ]
     assert [ "$(ws_lookup WS_VERBOSE)" = false ]
     assert [ "$(ws_lookup WS_LOG_LEVEL)" = error ]
@@ -41,20 +41,20 @@ setup (){
 @test "ws_lookup prevents 'sandbox' violations" {
     ws_unset_settings
 
-    WS_CONF="$BATS_WS_USER_HOME/.config/workstation"
-    run ws_lookup WS_CONF
+    WS_CONFIG="$BATS_WS_USER_HOME/.config/workstation"
+    run ws_lookup WS_CONFIG
     assert_failure
-    assert_output --partial "error: test isolation violation: 'WS_CONF' has value '$WS_CONF'"
+    assert_output --partial "error: test isolation violation: 'WS_CONFIG' has value '$WS_CONFIG'"
 }
 
 ## bats test_tags=bats:focus
 @test "ws_lookup 'sandbox' volation check be disabled" {
     ws_unset_settings
 
-    WS_CONF="$BATS_WS_USER_HOME/.config/workstation"
-    run ws_lookup --no-test-sandbox WS_CONF
+    WS_CONFIG="$BATS_WS_USER_HOME/.config/workstation"
+    run ws_lookup --no-test-sandbox WS_CONFIG
     assert_success
-    assert_output --partial "$WS_CONF"
+    assert_output --partial "$WS_CONFIG"
 }
 
 @test "ws_lookup will set with default if available" {
@@ -74,13 +74,13 @@ setup (){
 # @test "setting accessor errors if home dir is referenced " {
 #     ws_unset_settings
 #     ws_setting
-#     WS_CONF="$(_mktemp "ws-config-dir")"
+#     WS_CONFIG="$(_mktemp "ws-config-dir")"
 #     WS_REPO_ORIGIN='git@github.com:some-other-user/workstation.git'
 #     MY_WS_REPO_ORIGIN="$WS_REPO_ORIGIN"
 #     . "$PROJECT_ROOT/lib/settings.bash"
 
-#     assert [ "$WS_CONF" = "$WS_CONF" ]
-#     assert [ "$WS_DIR" = "$WS_CONF/vendor/ws" ]
+#     assert [ "$WS_CONFIG" = "$WS_CONFIG" ]
+#     assert [ "$WS_DIR" = "$WS_CONFIG/vendor/ws" ]
 #     assert [ "$WS_REPO_ORIGIN" = "$MY_WS_REPO_ORIGIN" ]
 #     assert [ "$WS_VERBOSE" = false ]
 #     assert [ "$WS_LOG_LEVEL" = error ]

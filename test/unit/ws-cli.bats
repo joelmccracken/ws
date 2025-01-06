@@ -9,56 +9,56 @@ setup (){
     assert_output --partial 'Usage:'
 }
 
-@test "process_cli_args parse verbose flag" {
-    process_cli_args -v bootstrap
+@test "ws_cli_proc_args parse verbose flag" {
+    ws_cli_proc_args -v bootstrap
     assert_equal "$(ws_lookup WS_VERBOSE)" true
 }
 
-@test "process_cli_args parse verbose flag (long)" {
-    process_cli_args --verbose bootstrap
+@test "ws_cli_proc_args parse verbose flag (long)" {
+    ws_cli_proc_args --verbose bootstrap
     assert_equal "$(ws_lookup WS_VERBOSE)" true
 }
 
-@test "process_cli_args parse bootstrap subcommand" {
-    process_cli_args bootstrap
+@test "ws_cli_proc_args parse bootstrap subcommand" {
+    ws_cli_proc_args bootstrap
     assert_equal "$ws_command" "bootstrap"
 }
 
-@test "process_cli_args parse bootstrap subcommand with name flag short" {
-    process_cli_args -n glamdring bootstrap
+@test "ws_cli_proc_args parse bootstrap subcommand with name flag short" {
+    ws_cli_proc_args -n glamdring bootstrap
     assert_equal "$ws_command" "bootstrap"
-    assert_equal "$workstation_name_arg" "glamdring"
+    assert_equal "$ws_cli_arg_ws_name" "glamdring"
 }
 
-@test "process_cli_args parse bootstrap subcommand with workstation name long flag" {
-    process_cli_args --name aeglos bootstrap
+@test "ws_cli_proc_args parse bootstrap subcommand with workstation name long flag" {
+    ws_cli_proc_args --name aeglos bootstrap
     assert_equal "$ws_command" "bootstrap"
-    assert_equal "$workstation_name_arg" "aeglos"
+    assert_equal "$ws_cli_arg_ws_name" "aeglos"
 }
 
-@test "process_cli_args parse bootstrap command doctor" {
-    process_cli_args doctor
+@test "ws_cli_proc_args parse bootstrap command doctor" {
+    ws_cli_proc_args doctor
     assert_equal "$ws_command" "doctor"
 }
 
 @test "fails with unknown long" {
-    run process_cli_args --foo
+    run ws_cli_proc_args --foo
     assert_failure
     assert_output --partial "unknown argument '--foo'"
 }
 
 @test "fails with unknown short" {
-    run process_cli_args -z
+    run ws_cli_proc_args -z
     assert_failure
     assert_output --partial "ws: argument parsing: unknown argument '-z'"
 }
 
 @test "parses args for initial config w a repo" {
-   process_cli_args \
+   ws_cli_proc_args \
        --initial-config-repo 'git@github.com:whatever/foo.git' \
        --initial-config-repo-ref 'master'
 
-   assert_equal "$workstation_initial_config_repo_arg" 'git@github.com:whatever/foo.git'
-   assert_equal "$workstation_initial_config_repo_ref_arg" 'master'
+   assert_equal "$ws_cli_arg_initial_config_repo" 'git@github.com:whatever/foo.git'
+   assert_equal "$ws_cli_arg_initial_config_repo_ref" 'master'
 
 }

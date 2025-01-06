@@ -23,19 +23,19 @@ ws_initial_pwd="$PWD"
 
 REPLY=() # global "out" var, hack to use return values
 ws_command=help # show help if nothing provided
-declare -a ws_command_arguments
-: "${workstation_initial_config_dir_arg:=}"
-: "${workstation_name_arg:=}"
-: "${workstation_interactive:=}"
-: "${workstation_initial_config_repo_arg:=}"
-: "${workstation_initial_config_repo_ref_arg:=}"
+declare -a ws_cli_raw_args
+: "${ws_cli_arg_initial_config_dir:=}"
+: "${ws_cli_arg_ws_name:=}"
+: "${ws_cli_arg_interactive:=}"
+: "${ws_cli_arg_initial_config_repo:=}"
+: "${ws_cli_arg_initial_config_repo_ref:=}"
 
-usage_and_quit() {
-    print_usage
+ws_cli_usage_exit() {
+    ws_cli_usage
     exit "$1"
 }
 
-print_usage() {
+ws_cli_usage() {
   echo "Workstation configuration tool."
   echo
   echo "Usage:"
@@ -52,14 +52,14 @@ print_usage() {
   echo "-v -verbose              : Be verbose"
   echo "-n NAME, --name NAME     : Specify the name of this workstation."
   echo "-i, --interactive        : Interactive mode."
-  echo "-c, --initial-config-dir : Initial configuration directory."
+  echo "-c, --initial-conf-dir : Initial configuration directory."
   echo "       If user already has a workstation configuration, "
   echo "       specifies location for tool to use it."
   echo "       Installs this configuration at default configuration location."
 }
 
-process_cli_args() {
-  ws_command_arguments=("$@")
+ws_cli_proc_args() {
+  ws_cli_raw_args=("$@")
   local args=("$@")
   local i;                      #
   for ((i=0;i < ${#args[@]}; i++)); do
@@ -72,26 +72,26 @@ process_cli_args() {
         WS_LOG_LEVEL=info
         ;;
       (-n|--name)
-        workstation_name_arg="${args[i+1]}";
+        ws_cli_arg_ws_name="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (-c|--initial-config-dir)
-        workstation_initial_config_dir_arg="${args[i+1]}";
+      (--initial-conf-dir)
+        ws_cli_arg_initial_config_dir="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (-c|--initial-config-repo)
-        workstation_initial_config_repo_arg="${args[i+1]}";
+      (--initial-conf-repo)
+        ws_cli_arg_initial_config_repo="${args[i+1]}";
         (( i+=1 ));
         ;;
-      (-c|--initial-config-repo-ref)
-        workstation_initial_config_repo_ref_arg="${args[i+1]}";
+      (--initial-conf-repo-ref)
+        ws_cli_arg_initial_config_repo_ref="${args[i+1]}";
         (( i+=1 ));
         ;;
       (-h|--help|help)
-        usage_and_quit 0;
+        ws_cli_usage_exit 0;
         ;;
       (-i|--interactive)
-        workstation_interactive=true;
+        ws_cli_arg_interactive=true;
         ;;
       (bootstrap)
         ws_command="$current";
@@ -109,36 +109,35 @@ process_cli_args() {
   return 0
 }
 
-help_command() {
-  usage_and_quit 0;
+ws_cli_cmds_help() {
+  ws_cli_usage_exit 0;
 }
 
-ws_main() {
-  process_cli_args "$@"
-  [ -n "$workstation_name_arg" ] && WS_NAME="$workstation_name_arg"
+ws_cli_main() {
+  ws_cli_proc_args "$@"
+  [ -n "$ws_cli_arg_ws_name" ] && WS_NAME="$ws_cli_arg_ws_name"
 
   if [ "$(ws_lookup WS_VERBOSE)" = "true" ]; then
     set -x
   fi
 
-  # if [[ -n "$workstation_initial_config_dir_arg" ]]; then
-  #   load_expected "$workstation_initial_config_dir_arg/settings.sh"
-  #   load_expected "$workstation_initial_config_dir_arg/config.sh"
+  # if [[ -n "$ws_cli_arg_initial_config_dir" ]]; then
+  #   load_expected "$ws_cli_arg_initial_config_dir/settings.sh"
+  #   load_expected "$ws_cli_arg_initial_config_dir/config.sh"
   # fi
 
-  if [[ -d "$(ws_lookup WS_CONF)" ]]; then
-    load_expected "$(ws_lookup WS_CONF)/settings.sh"
-    load_expected "$(ws_lookup WS_CONF)/config.sh"
+  if [[ -d "$(ws_lookup WS_CONFIG)" ]]; then
+    load_expected "$(ws_lookup WS_CONFIG)/settings.sh"
+    load_expected "$(ws_lookup WS_CONFIG)/config.sh"
   fi
 
   case "$ws_command" in
-    (bootstrap) bootstrap_command;;
-    (doctor) doctor_command;;
-    ("help") help_command;;
+    (bootstrap) ws_cli_cmds_bootstrap;;
+    (doctor) ws_cli_cmds_doctor;;
+    ("help") ws_cli_cmds_help;;
     (*) error "unknown command $ws_command; how did we get here?"
   esac
 }
 
 # if being run directly, run main
-(return 0 2>/dev/null) || ws_main "$@"
-
+(return 0 2>/dev/null) || ws_cli_main "$@"

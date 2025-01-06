@@ -1,7 +1,7 @@
 : "${WS_NAME:=}"
 : "${WS_VERBOSE:=}"
 : "${WS_LOG_LEVEL:=}"
-: "${WS_CONF:=}"
+: "${WS_CONFIG:=}"
 : "${WS_DIR:=}"
 : "${WS_REPO_ORIGIN:=}"
 : "${WS_VERSION:=}"
@@ -12,11 +12,11 @@ WS_VERBOSE__default() {
 WS_LOG_LEVEL__default() {
   echo -n "error";
 }
-WS_CONF__default() {
+WS_CONFIG__default() {
   printf "%s/.config/workstation" $HOME
 }
 WS_DIR__default() {
-  echo -n "$(ws_lookup WS_CONF)/vendor/ws";
+  echo -n "$(ws_lookup WS_CONFIG)/vendor/ws";
 }
 WS_REPO_ORIGIN__default() {
   echo -n "https://github.com/joelmccracken/ws.git";
@@ -29,7 +29,7 @@ export WS_NAME # META:workstation_setting
 export WS_VERBOSE # META:workstation_setting
 export WS_LOG_LEVEL # META:workstation_setting
 export WS_DIR # META:workstation_setting
-export WS_CONF # META:workstation_setting
+export WS_CONFIG # META:workstation_setting
 export WS_REPO_ORIGIN # META:workstation_setting
 export WS_VERSION # META:workstation_setting
 

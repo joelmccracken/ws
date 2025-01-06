@@ -5,19 +5,19 @@ declare -a REPLY
 
 # bootstrapping and doctoring is closely related enough for now
 # decide to keep these in the same file.
-doctor_command() {
+ws_cli_cmds_doctor() {
   echo "doctor!";
   run_all_props --fix false --label "doctor"
 }
 
-bootstrap_command_setup() {
+ws_cli_cmds_bootstrap_setup() {
   if [[ -z "$(ws_lookup WS_NAME)" ]]; then
     error "ws: bootstrap: unable to determine workstation name. Provide it as an argument or env var"
     exit 1
   fi
 }
 
-bootstrap_command() {
+ws_cli_cmds_bootstrap() {
   run_all_props --fix true --label "bootstrap"
 }
 
@@ -155,10 +155,10 @@ run_props () {
 : "${interact_always_continue:=false}"
 do_interact() {
   # only interact if stdin is a terminal,
-  # the workstation_interactive variable is set to true,
+  # the ws_cli_arg_interactive variable is set to true,
   # and interact_always_continue is not set to true
   [[ -t 0 ]] && \
-    [[ "${workstation_interactive:-false}" == "true" ]] && \
+    [[ "${ws_cli_arg_interactive:-false}" == "true" ]] && \
     [[ "${interact_always_continue:-false}" != "true" ]]
 }
 
