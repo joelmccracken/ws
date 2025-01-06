@@ -44,11 +44,13 @@ mv_to_backup() {
 }
 
 safe_overwrite() {
+  set -x
   new="$1"
   orig="$2"
 
   mv_to_backup "$orig"
   mv "$new" "$orig"
+  set +x
 }
 
 load_if_exists() {
