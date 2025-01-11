@@ -115,9 +115,9 @@ ws_prop_nix_home_manager_fix() {
   export HOME_MANAGER_BACKUP_EXT
   HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
   WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
-  nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init "$WS_DIR"
-  nix build --no-link ${WS_DIR}/#homeConfigurations.${WS_NAME}.$(whoami).activationPackage --show-trace
+  nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init "$(ws_lookup WS_CONFIG)"
+  nix build --no-link $(ws_lookup WS_CONFIG)/#homeConfigurations.$(ws_lookup WS_NAME).$(whoami).activationPackage --show-trace
 
-  "$(nix path-info ${WS_DIR}/#homeConfigurations.${WS_NAME}.$(whoami).activationPackage)"/activate --show-trace
+  "$(nix path-info $(ws_lookup WS_CONFIG)/#homeConfigurations.$(ws_lookup WS_NAME).$(whoami).activationPackage)"/activate --show-trace
 
 }
