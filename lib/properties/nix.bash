@@ -99,9 +99,25 @@ ws_prop_nix_global_config_fix () {
   sudo "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
-# ws_prop_nix_homemanager_install() {
-#   export HOME_MANAGER_BACKUP_EXT
-#   HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
-#   WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
-#   nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init "$WS_DIR"
-# }
+ws_prop_nix_home_manager() {
+  if which home-manager > /dev/null; then
+    echo "Found home-manager executable"
+    return 0
+  else
+    echo "Did not find home-manager executable"
+    # TODO should also somehow tell if everything is up to date, if I can figure that out.
+    # i wonder if I could also write a tool that checks how out of date various flake inputs are?
+    return 1
+  fi
+}
+
+ws_prop_nix_home_manager_fix() {
+  export HOME_MANAGER_BACKUP_EXT
+  HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
+  WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
+  nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init "$WS_DIR"
+  nix build --no-link ${WS_DIR}/#homeConfigurations.${WS_NAME}.$(whoami).activationPackage --show-trace
+
+  "$(nix path-info ${WS_DIR}/#homeConfigurations.${WS_NAME}.$(whoami).activationPackage)"/activate --show-trace
+
+}
