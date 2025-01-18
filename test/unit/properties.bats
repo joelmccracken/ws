@@ -269,3 +269,7 @@ EOF
   assert [ -f "$df_dest_dir/Brewfile" ]
   assert [ -f "$df_dest_dir/.config/git/ignore" ]
 }
+
+@test "ws_prop_nix_home_manager" {
+
+}

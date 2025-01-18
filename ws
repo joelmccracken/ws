@@ -93,10 +93,7 @@ ws_cli_proc_args() {
       (-i|--interactive)
         ws_cli_arg_interactive=true;
         ;;
-      (bootstrap)
-        ws_cli_arg_cmd="$current";
-        ;;
-      (doctor)
+      (bootstrap|doctor|sh)
         ws_cli_arg_cmd="$current";
         ;;
       (*)
@@ -134,10 +131,14 @@ ws_cli_main() {
   case "$ws_cli_arg_cmd" in
     (bootstrap) ws_cli_cmds_bootstrap;;
     (doctor) ws_cli_cmds_doctor;;
+    (sh) ws_cli_cmds_sh;;
     ("help") ws_cli_cmds_help;;
     (*) error "unknown command $ws_cli_arg_cmd; how did we get here?"
   esac
 }
 
+ws_cli_cmds_sh() {
+  bash
+}
 # if being run directly, run main
 (return 0 2>/dev/null) || ws_cli_main "$@"
