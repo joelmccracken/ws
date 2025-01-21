@@ -99,6 +99,20 @@ ws_prop_nix_global_config_fix () {
   sudo "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
+WS_PROP_NIX_HOME_MANAGER_DIR__default() {
+  wsc="$(ws_lookup WS_CONFIG)"
+  echo -n "$wsc/nix"
+}
+export WS_PROP_NIX_HOME_MANAGER_DIR
+: "${WS_PROP_NIX_HOME_MANAGER_DIR:=}"
+
+WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT__default() {
+  wsn="$(ws_lookup WS_NAME)"
+  echo -n ".#homeConfigurations.\"$wsn\".\"$(whoami)\""
+}
+export WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT
+: "${WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT:=}"
+
 ws_prop_nix_home_manager() {
   if which home-manager > /dev/null; then
     echo "Found home-manager executable"
@@ -113,32 +127,10 @@ ws_prop_nix_home_manager() {
 
 ws_prop_nix_home_manager_fix() {
   export HOME_MANAGER_BACKUP_EXT
-  HOME_MANAGER_BACKUP_EXT="old-$(date +'%s')"
-  WORKSTATION_HOME_MANAGER_VERSION=0f4e5b4999fd6a42ece5da8a3a2439a50e48e486
-  WORKSTATION_HOME_MANAGER_VERSION=master
-  local wsc wsn ws_home ws_nix
-  wsc="$(ws_lookup WS_CONFIG)"
-  wsn="$(ws_lookup WS_NAME)"
-  ws_nix="$wsc/nix"
-  ws_home="$ws_nix/home-$wsn.nix"
-  home_nix=~/.config/home-manager/home.nix
-  mkdir -p ~/.config/home-manager
-  ln -s "$ws_home" "$home_nix"
-  ln -s "$ws_home" "$ws_nix/home.nix"
-  ln -s "$ws_nix/flake.nix" ~/.config/home-manager/flake.nix
-  ln -s "$ws_nix/flake.lock" ~/.config/home-manager/flake.lock
-  nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init --switch
-  # if [[ -e "$home_nix" ]]; then
-  #   echo "file already exists at '$home_nix', using it"
-  #   nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init --switch
-  # else
-  #   if [[ -e "$ws_home" ]]; then
-  #   mkdir -p ~/.config/home-manager
-  #     ln -s "$ws_home" "$home_nix"
-  #     nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init --switch "$ws_nix"
-  #   else
-  #     echo "no file found at '$ws_home', a fresh profile will be provisioned"
-  #     nix run "home-manager/$WORKSTATION_HOME_MANAGER_VERSION" -- init --switch "$ws_nix"
-  #   fi
-  # fi
+  local flake_out dir
+  dir="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_DIR)"
+  flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
+  ( cd "$dir";
+    nix run -v -L "${flake_out}.activationPackage" --show-trace;
+  )
 }
