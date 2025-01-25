@@ -99,13 +99,6 @@ ws_prop_nix_global_config_fix () {
   sudo "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
 }
 
-WS_PROP_NIX_HOME_MANAGER_DIR__default() {
-  wsc="$(ws_lookup WS_CONFIG)"
-  echo -n "$wsc/nix"
-}
-export WS_PROP_NIX_HOME_MANAGER_DIR
-: "${WS_PROP_NIX_HOME_MANAGER_DIR:=}"
-
 WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT__default() {
   wsn="$(ws_lookup WS_NAME)"
   echo -n ".#homeConfigurations.\"$wsn\".\"$(whoami)\""
@@ -116,11 +109,23 @@ export WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT
 ws_prop_nix_home_manager() {
   if which home-manager > /dev/null; then
     echo "Found home-manager executable"
-    return 0
+    dir="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_DIR)"
+    flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
+    build_info="$(
+      cd "$dir";
+      nix build --json --dry-run  -v -L "$flake_out" --show-trace
+    )"
+    out_path="$(dumb_json_parse_value "out" "$build_info")"
+
+    if [[ -e "$out_path" ]]; then
+      echo "home manager profile flake exists"
+      return 0;
+    else
+      echo "home manager profile flake is not built"
+      return 6;
+    fi
   else
     echo "Did not find home-manager executable"
-    # TODO should also somehow tell if everything is up to date, if I can figure that out.
-    # i wonder if I could also write a tool that checks how out of date various flake inputs are?
     return 1
   fi
 }
@@ -128,9 +133,15 @@ ws_prop_nix_home_manager() {
 ws_prop_nix_home_manager_fix() {
   export HOME_MANAGER_BACKUP_EXT
   local flake_out dir
-  dir="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_DIR)"
+  dir="$(ws_lookup WS_CONFIG)/nix"
   flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
   ( cd "$dir";
     nix run -v -L "${flake_out}.activationPackage" --show-trace;
   )
+}
+
+dumb_json_parse_value() {
+  local key="$1" json="$2" tmp
+  tmp="${json#*\"$key\":\"}"
+  echo "${tmp%%\"*}"
 }
