@@ -109,7 +109,7 @@ export WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT
 ws_prop_nix_home_manager() {
   if which home-manager > /dev/null; then
     echo "Found home-manager executable"
-    dir="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_DIR)"
+    dir="$(ws_lookup WS_CONFIG)/nix"
     flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
     build_info="$(
       cd "$dir";
@@ -136,12 +136,6 @@ ws_prop_nix_home_manager_fix() {
   dir="$(ws_lookup WS_CONFIG)/nix"
   flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
   ( cd "$dir";
-    nix run -v -L "${flake_out}.activationPackage" --show-trace;
+    nix run -v -L "${flake_out}" --show-trace;
   )
-}
-
-dumb_json_parse_value() {
-  local key="$1" json="$2" tmp
-  tmp="${json#*\"$key\":\"}"
-  echo "${tmp%%\"*}"
 }

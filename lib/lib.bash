@@ -64,3 +64,9 @@ load_expected() {
     error "ws: init: expected to load file $1, but no file found"
   fi
 }
+
+dumb_json_parse_value() {
+  local key="$1" json="$2" tmp
+  tmp="${json#*\"$key\":\"}"
+  echo "${tmp%%\"*}"
+}
