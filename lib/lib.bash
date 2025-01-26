@@ -65,8 +65,10 @@ load_expected() {
   fi
 }
 
-dumb_json_parse_value() {
-  local key="$1" json="$2" tmp
-  tmp="${json#*\"$key\":\"}"
-  echo "${tmp%%\"*}"
+dumb_json_parse_string_value() {
+  local key="$1" json="$2" tmp tmp2
+  after_key="${json#*\""$key"\":}"
+  value="${after_key#\"}"
+  tmp2="${value%%[\"}]*}"
+  echo "${tmp2%%\"*}"
 }

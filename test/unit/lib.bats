@@ -64,3 +64,9 @@ EOF
     assert [ "${content[1]}" == '' ]
     assert [ "${content[2]}" == '' ]
 }
+
+@test "dumb_json_parse_string_value" {
+  local tmp
+  tmp="$(dumb_json_parse_string_value foo '{"foo":"10"}')"
+  assert [ "$tmp" == "10" ]
+}
