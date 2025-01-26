@@ -65,10 +65,16 @@ load_expected() {
   fi
 }
 
+# very dumb way to parse json using bash-only
+# why? bc I want to delay requiring jq as long as possible
+# this could be done in a better way someday
+# found a posix-sh json parser on gh somewhere,
+# TODO maybe use that. but looking at the impl for that,
+# using bashisms would seemlingly be much better.
 dumb_json_parse_string_value() {
   local key="$1" json="$2" tmp tmp2
   after_key="${json#*\""$key"\":}"
   value="${after_key#\"}"
-  tmp2="${value%%[\"}]*}"
+  tmp2="${value%%[\"\}]*}"
   echo "${tmp2%%\"*}"
 }
