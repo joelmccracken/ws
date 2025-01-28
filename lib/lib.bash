@@ -78,3 +78,7 @@ dumb_json_parse_string_value() {
   tmp2="${value%%[\"\}]*}"
   echo "${tmp2%%\"*}"
 }
+
+ws_get_ts() {
+  date +"%s"
+}

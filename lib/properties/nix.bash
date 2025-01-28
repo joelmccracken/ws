@@ -115,7 +115,7 @@ ws_prop_nix_home_manager() {
       cd "$dir";
       nix build --json --dry-run  -v -L "$flake_out" --show-trace
     )"
-    out_path="$(dumb_json_parse_value "out" "$build_info")"
+    out_path="$(dumb_json_parse_string_value "out" "$build_info")"
 
     if [[ -e "$out_path" ]]; then
       echo "home manager profile flake exists"

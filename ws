@@ -20,6 +20,7 @@ ws_initial_pwd="$PWD"
 . "${ws_script_dir}/lib/lib.bash"
 . "${ws_script_dir}/lib/properties.bash"
 . "${ws_script_dir}/lib/bootstrap_doctor.bash"
+. "${ws_script_dir}/lib/secrets.bash"
 
 REPLY=() # global "out" var, hack to use return values
 ws_cli_arg_cmd=help # show help if nothing provided

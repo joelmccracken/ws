@@ -2,6 +2,7 @@
 
 . "$(ws_lookup WS_DIR)/lib/properties/dotfiles.bash"
 . "$(ws_lookup WS_DIR)/lib/properties/nix.bash"
+. "$(ws_lookup WS_DIR)/lib/properties/secrets.bash"
 
 # writing properties
 # for a given property foo, define function
