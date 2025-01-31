@@ -113,6 +113,8 @@ ws_secrets__sync_files() {
 ws_secrets__add_file() {
   local new_file="$1"
   new_file="$(realpath "$new_file")"
+
+  ws_secrets__bw_unlock
   bw_files_folder="$(ws_secrets__find_or_create_folder_by_name_returning_id "bww_files")"
   ws_secrets__bw get template item \
     | jq --arg folderId "$bw_files_folder" \
@@ -152,13 +154,30 @@ ws_secrets__time_to_resync() {
 }
 
 bitwarden_secrets_main () {
+  arg="$2";
+  shift;
+  case "$arg" in
+    (init) ws_secrets__init;;
+    (check-needs-sync) ws_secrets__time_to_resync;;
+    (sync) ws_secrets__sync_files;;
+    (add) ws_secrets__add_file "$3";;
+    (*) echo "unrecognized: $1";;
+  esac
+}
+
+ws_cli_cmds_secrets(){
   arg="$1";
   shift;
   case "$arg" in
     (init) ws_secrets__init;;
-    (check-needs-sync) ws_secrets__time_to_resync "$@";;
+    (check-needs-sync) ws_secrets__time_to_resync;;
     (sync) ws_secrets__sync_files;;
-    (add) ws_secrets__add_file "$2";;
-    (*) echo "unrecognized: $1";;
+    (add) ws_secrets__add_file "$1";;
+    ("help") ws_secrets__help "$1";;
+    (*) echo "unrecognized: $arg";;
   esac
+}
+
+ws_secrets__help() {
+  echo "TODO write this help"
 }

@@ -25,6 +25,10 @@ ws_initial_pwd="$PWD"
 REPLY=() # global "out" var, hack to use return values
 ws_cli_arg_cmd=help # show help if nothing provided
 declare -a ws_cli_raw_args
+# ws_cli_arg_subcommand_args
+# stores the remaining CLI arguments for further parsing by subcommands
+# starts with the subcommand name to avoid issues with empty arrays
+declare -a ws_cli_arg_subcommand_args
 : "${ws_cli_arg_initial_config_dir:=}"
 : "${ws_cli_arg_ws_name:=}"
 : "${ws_cli_arg_interactive:=}"
@@ -94,8 +98,10 @@ ws_cli_proc_args() {
       (-i|--interactive)
         ws_cli_arg_interactive=true;
         ;;
-      (bootstrap|doctor|sh)
+      (bootstrap|doctor|sh|secrets)
         ws_cli_arg_cmd="$current";
+        ws_cli_arg_subcommand_args=("${args[@]:i}")
+        break;
         ;;
       (*)
         error "ws: argument parsing: unknown argument '$current'";
@@ -130,10 +136,11 @@ ws_cli_main() {
   fi
 
   case "$ws_cli_arg_cmd" in
-    (bootstrap) ws_cli_cmds_bootstrap;;
-    (doctor) ws_cli_cmds_doctor;;
-    (sh) ws_cli_cmds_sh;;
-    ("help") ws_cli_cmds_help;;
+    (bootstrap) ws_cli_cmds_bootstrap "${ws_cli_arg_subcommand_args[@]}";;
+    (doctor) ws_cli_cmds_doctor "${ws_cli_arg_subcommand_args[@]}";;
+    (sh) ws_cli_cmds_sh "${ws_cli_arg_subcommand_args[@]}";;
+    (secrets) ws_cli_cmds_secrets "${ws_cli_arg_subcommand_args[@]}";;
+    ("help") ws_cli_cmds_help "${ws_cli_arg_subcommand_args[@]}";;
     (*) error "unknown command $ws_cli_arg_cmd; how did we get here?"
   esac
 }

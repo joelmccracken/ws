@@ -343,3 +343,23 @@ ws_prop_current_settings_symlink_fix() {
   ln -s "$src_settings_file" "$current_settings_file"
 }
 
+
+WS_PROP_HOMEBREW_BUNDLE_BREWFILE__default() {
+  echo -n "$(ws_lookup WS_CONFIG)/Brewfile"
+}
+: "${WS_PROP_HOMEBREW_BUNDLE_BREWFILE:=}"
+
+ws_prop_homebrew_bundle() {
+  local brewfile
+  brewfile="$(ws_lookup WS_PROP_HOMEBREW_BUNDLE_BREWFILE)"
+
+  export HOMEBREW_BUNDLE_FILE="$brewfile"
+  brew bundle check
+}
+
+ws_prop_homebrew_bundle_fix() {
+  local brewfile
+  brewfile="$(ws_lookup WS_PROP_HOMEBREW_BUNDLE_BREWFILE)"
+  export HOMEBREW_BUNDLE_FILE="$brewfile"
+  brew bundle install
+}
