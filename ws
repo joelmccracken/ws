@@ -98,7 +98,7 @@ ws_cli_proc_args() {
       (-i|--interactive)
         ws_cli_arg_interactive=true;
         ;;
-      (bootstrap|doctor|sh|secrets)
+      (bootstrap|doctor|sh|secrets|nix)
         ws_cli_arg_cmd="$current";
         ws_cli_arg_subcommand_args=("${args[@]:i}")
         break;
@@ -140,6 +140,7 @@ ws_cli_main() {
     (doctor) ws_cli_cmds_doctor "${ws_cli_arg_subcommand_args[@]}";;
     (sh) ws_cli_cmds_sh "${ws_cli_arg_subcommand_args[@]}";;
     (secrets) ws_cli_cmds_secrets "${ws_cli_arg_subcommand_args[@]}";;
+    (nix) ws_cli_cmds_nix "${ws_cli_arg_subcommand_args[@]}";;
     ("help") ws_cli_cmds_help "${ws_cli_arg_subcommand_args[@]}";;
     (*) error "unknown command $ws_cli_arg_cmd; how did we get here?"
   esac

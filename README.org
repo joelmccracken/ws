@@ -105,3 +105,12 @@ where should the settings and config file be located?
     generating default config files from code instead of
 - recently decided to move ws repo from vendor/ in workstation dir, figure that out
 - document the various properties
+- experiment with literate programming and this tool
+  - tangle end product via shell
+  - give subcommands automatic help, parsing, etc
+    - so i.e. metaprogrmaming while reading the file? like the "find all vars" thing?
+- split code into organization by features, i.e.
+  - feats/nix/{props,lib,subcmd,sets}
+  - feats/secrets/{props,lib,subcmd,sets}
+  - feats/dots/{props,lib,subcmd,sets}
+  - maybe? feats/core/{props,lib,subcmd,sets,cfg,bootstrap}

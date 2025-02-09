@@ -139,3 +139,22 @@ ws_prop_nix_home_manager_fix() {
     nix run -v -L "${flake_out}" --show-trace;
   )
 }
+
+ws_cli_cmds_nix(){
+  shift; # remove starting arg
+  arg="$1";
+  shift;
+  case "$arg" in
+    (daemon)
+      case "$1" in
+        (restart) ws_nix__restart_daemon;;
+        (*) echo "unrecognized: $1";;
+      esac ;;
+    ("help") ws_nix__help "$1";;
+    (*) echo "unrecognized: $arg";;
+  esac
+}
+
+ws_nix__help() {
+  echo "TODO write this help"
+}

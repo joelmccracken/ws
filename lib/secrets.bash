@@ -153,19 +153,8 @@ ws_secrets__time_to_resync() {
   fi
 }
 
-bitwarden_secrets_main () {
-  arg="$2";
-  shift;
-  case "$arg" in
-    (init) ws_secrets__init;;
-    (check-needs-sync) ws_secrets__time_to_resync;;
-    (sync) ws_secrets__sync_files;;
-    (add) ws_secrets__add_file "$3";;
-    (*) echo "unrecognized: $1";;
-  esac
-}
-
 ws_cli_cmds_secrets(){
+  shift; # remove starting arg
   arg="$1";
   shift;
   case "$arg" in
@@ -173,7 +162,7 @@ ws_cli_cmds_secrets(){
     (check-needs-sync) ws_secrets__time_to_resync;;
     (sync) ws_secrets__sync_files;;
     (add) ws_secrets__add_file "$1";;
-    ("help") ws_secrets__help "$1";;
+    ("help") ws_secrets__help;;
     (*) echo "unrecognized: $arg";;
   esac
 }

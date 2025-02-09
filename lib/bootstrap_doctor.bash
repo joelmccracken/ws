@@ -6,6 +6,7 @@ declare -a REPLY
 # bootstrapping and doctoring is closely related enough for now
 # decide to keep these in the same file.
 ws_cli_cmds_doctor() {
+  shift # remove useless arg
   echo "doctor!";
   run_all_props --fix false --label "doctor"
 }
