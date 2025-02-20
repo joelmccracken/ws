@@ -8,7 +8,7 @@ unset WS_DIR
 
 bash <(curl "https://raw.githubusercontent.com/joelmccracken/ws/${WS_VERSION}/ws_install.sh")
 
-cd ~/.config/workstation/vendor/ws/
+cd "$HOME/.local/share/ws/"
 
 if [ "$RUNNER_OS" == "macOS" ]; then
     WS_NAME=ci_macos

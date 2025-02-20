@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-: "${WS_DIR:=$HOME/.config/workstation/vendor/ws}"
+: "${WS_DIR:=$HOME/.local/share/ws}"
 : "${WS_VERSION:=master}"
 
 TMPINST=$(mktemp -d "${TMPDIR:-/tmp}/ws-install.XXXXXXXXX")

@@ -17,7 +17,7 @@ setup (){
 
 @test "settings sets appropriate default values" {
     assert_regex "$(ws_lookup WS_CONFIG)" .*/.config/workstation
-    assert_regex "$(ws_lookup WS_DIR)" .*/.config/workstation/vendor/ws
+    assert_regex "$(ws_lookup WS_DIR)" .*/.local/share/ws
     assert [ "$(ws_lookup WS_REPO_ORIGIN)" = 'https://github.com/joelmccracken/ws.git' ]
     assert [ "$(ws_lookup WS_VERBOSE)" = false ]
     assert [ "$(ws_lookup WS_LOG_LEVEL)" = error ]
@@ -32,7 +32,7 @@ setup (){
     . "$PROJECT_ROOT/lib/settings.bash"
 
     assert [ "$(ws_lookup WS_CONFIG)" = "$WS_CONFIG" ]
-    assert [ "$(ws_lookup WS_DIR)" = "$WS_CONFIG/vendor/ws" ]
+    assert [ "$(ws_lookup WS_DIR)" = "$HOME/.local/share/ws" ]
     assert [ "$(ws_lookup WS_REPO_ORIGIN)" = "$MY_WS_REPO_ORIGIN" ]
     assert [ "$(ws_lookup WS_VERBOSE)" = false ]
     assert [ "$(ws_lookup WS_LOG_LEVEL)" = error ]
@@ -80,7 +80,7 @@ setup (){
 #     . "$PROJECT_ROOT/lib/settings.bash"
 
 #     assert [ "$WS_CONFIG" = "$WS_CONFIG" ]
-#     assert [ "$WS_DIR" = "$WS_CONFIG/vendor/ws" ]
+#     assert [ "$WS_DIR" = "$HOME/.local/share/ws" ]
 #     assert [ "$WS_REPO_ORIGIN" = "$MY_WS_REPO_ORIGIN" ]
 #     assert [ "$WS_VERBOSE" = false ]
 #     assert [ "$WS_LOG_LEVEL" = error ]
