@@ -15,8 +15,8 @@
 # export WS_CONFIG=
 
 # location of workstation source. This is where the ws tool source code should live.
-# the default location is "$WS_CONFIG/vendor/ws"
-# (so, "$HOME/.config/workstation/vendor/ws")
+# the default location is "$HOME/.local/share/ws"
+# (so, "$HOME/.local/share/ws")
 # export WS_DIR=
 
 # Workstation name to use.

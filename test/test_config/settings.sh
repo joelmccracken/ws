@@ -1,5 +1,5 @@
 export WS_CONFIG=$HOME/.config/workstation
-export WS_DIR=$WS_CONFIG/vendor/ws
+export WS_DIR=$HOME/.local/share/ws
 
 workstation_names=(ci_macos ci_ubuntu);
 workstation_descriptions_ci_macos="profile for macos on CI"

@@ -71,7 +71,7 @@ setup (){
   ws_unset_settings
   WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONFIG/vendor/ws"
+  WS_DIR="$HOME/.local/share/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -96,7 +96,7 @@ setup (){
   ws_unset_settings
   WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONFIG/vendor/ws"
+  WS_DIR="$HOME/.local/share/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # valid scenario requires copying from where the workstation source is
@@ -139,7 +139,7 @@ setup (){
 
   WS_CONFIG="$(_mktemp "ws-fake-config")"
   set_workstation_version_last_sha
-  WS_DIR="$WS_CONFIG/vendor/ws"
+  WS_DIR="$HOME/.local/share/ws"
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # make a config repo

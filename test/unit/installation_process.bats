@@ -6,7 +6,7 @@ setup (){
 ## bats test_tags=bats:focus
 @test "the install script and then run ws bootstrap from this project checkout" {
     WS_CONFIG="$(_mktemp "ws-config-dir")"
-    WS_DIR="$WS_CONFIG/vendor/ws"
+    WS_DIR="$HOME/.local/share/ws"
 
     set_workstation_version_last_sha
 
@@ -50,7 +50,7 @@ EOF
 @test "the install script from curl/github and then run ws bootstrap" {
     WS_CONFIG="$(_mktemp "ws-config-dir")"
     ws_cfg_src="$(_mktemp "ws-config-src-dir")"
-    WS_DIR="$WS_CONFIG/vendor/ws"
+    WS_DIR="$HOME/.local/share/ws"
     set_workstation_version_last_sha
 
     do_ws_install() {

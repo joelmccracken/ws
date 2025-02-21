@@ -16,7 +16,7 @@ WS_CONFIG__default() {
   printf "%s/.config/workstation" $HOME
 }
 WS_DIR__default() {
-  echo -n "$(ws_lookup WS_CONFIG)/vendor/ws";
+  echo -n "$HOME/.local/share/ws"
 }
 WS_REPO_ORIGIN__default() {
   echo -n "https://github.com/joelmccracken/ws.git";

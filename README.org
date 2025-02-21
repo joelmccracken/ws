@@ -103,7 +103,6 @@ where should the settings and config file be located?
     - havintg just one bin would remove a lot of the unknowns with issues
   - thinking about things that work in this direction anyway, like
     generating default config files from code instead of
-- recently decided to move ws repo from vendor/ in workstation dir, figure that out
 - document the various properties
 - experiment with literate programming and this tool
   - tangle end product via shell
