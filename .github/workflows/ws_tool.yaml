@@ -3,7 +3,7 @@ name: WS Tool
 on:
   pull_request:
   push:
-    branches: main
+    branches: master
   schedule:
   - cron: '0 0 * * *'  # every day at midnight
 
