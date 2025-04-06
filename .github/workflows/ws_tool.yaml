@@ -62,6 +62,9 @@ jobs:
           ${{ toJSON(github) }}
           EOF
 
+          if [[ -z "$WS_VERSION" ]]; then
+            WS_VERSION="$GITHUB_SHA"
+          fi
           bash test/ci_full_setup.bash
         env:
           WS_VERSION: ${{ github.event.pull_request.head.sha || env.GITHUB_SHA }}
