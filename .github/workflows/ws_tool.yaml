@@ -56,6 +56,12 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || env.GITHUB_SHA }}
       - run: |
           env | sort
+
+          sleep 10
+          cat <<-EOF
+          ${{ toJSON(github) }}
+          EOF
+
           bash test/ci_full_setup.bash
         env:
           WS_VERSION: ${{ github.event.pull_request.head.sha || env.GITHUB_SHA }}
