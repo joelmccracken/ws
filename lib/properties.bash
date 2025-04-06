@@ -159,7 +159,7 @@ ws_prop_check_workstation_repo_fix() {
     git init .;
     git remote add origin "$(ws_lookup WS_REPO_ORIGIN)";
     git fetch;
-    git reset --mixed "$(ws_lookup WS_VERSION)";
+    git reset --mixed "$(ws_lookup WS_VERSION_REPO_FIX)";
   )
 }
 

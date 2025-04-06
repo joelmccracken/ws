@@ -5,6 +5,7 @@
 : "${WS_DIR:=}"
 : "${WS_REPO_ORIGIN:=}"
 : "${WS_VERSION:=}"
+: "${WS_VERSION_REPO_FIX:=}"
 
 WS_VERBOSE__default() {
   echo -n "false";
@@ -25,6 +26,10 @@ WS_VERSION__default() {
   echo -n "master";
 }
 
+WS_VERSION_REPO_FIX__default() {
+  echo -n "refs/remotes/origin/master";
+}
+
 export WS_NAME # META:workstation_setting
 export WS_VERBOSE # META:workstation_setting
 export WS_LOG_LEVEL # META:workstation_setting
@@ -32,7 +37,7 @@ export WS_DIR # META:workstation_setting
 export WS_CONFIG # META:workstation_setting
 export WS_REPO_ORIGIN # META:workstation_setting
 export WS_VERSION # META:workstation_setting
-
+export WS_VERSION_REPO_FIX # META:workstation_setting
 
 # logic for looking up values
 # there are some complex things we want to do here
