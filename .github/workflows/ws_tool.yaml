@@ -54,7 +54,9 @@ jobs:
         with:
           submodules: recursive
           ref: ${{ github.event.pull_request.head.sha || env.GITHUB_SHA }}
-      - run: bash test/ci_full_setup.bash
+      - run: |
+          env | sort
+          bash test/ci_full_setup.bash
         env:
           WS_VERSION: ${{ github.event.pull_request.head.sha || env.GITHUB_SHA }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
