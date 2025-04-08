@@ -12,6 +12,7 @@ ws_prop_bitwarden_secrets() {
 }
 
 ws_prop_bitwarden_secrets_fix() {
+  set -x
   if ws_secrets__needs_init; then
     ws_secrets__init
   fi

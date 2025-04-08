@@ -119,6 +119,7 @@ ws_cli_cmds_help() {
 
 ws_cli_main() {
   ws_cli_proc_args "$@"
+  set -x
   [ -n "$ws_cli_arg_ws_name" ] && WS_NAME="$ws_cli_arg_ws_name"
 
   if [ "$(ws_lookup WS_VERBOSE)" = "true" ]; then
