@@ -131,6 +131,10 @@ ws_prop_nix_home_manager() {
 }
 
 ws_prop_nix_home_manager_fix() {
+  ws_nix__home_manager_flake_build
+}
+
+ws_nix__home_manager_flake_build() {
   export HOME_MANAGER_BACKUP_EXT
   local flake_out dir
   dir="$(ws_lookup WS_CONFIG)/nix"
@@ -150,6 +154,12 @@ ws_cli_cmds_nix(){
         (restart) ws_nix__restart_daemon;;
         (*) echo "unrecognized: $1";;
       esac ;;
+    (home-manager)
+      arg="$1";
+      shift;
+      case "$arg" in
+        (build) ws_nix__home_manager_flake_build; return 0;;
+      esac;;
     ("help") ws_nix__help "$1";;
     (*) echo "unrecognized: $arg";;
   esac

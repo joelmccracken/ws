@@ -100,7 +100,8 @@ ws_cli_proc_args() {
         ;;
       (bootstrap|doctor|sh|secrets|nix)
         ws_cli_arg_cmd="$current";
-        ws_cli_arg_subcommand_args=("${args[@]:i}")
+        ws_cli_arg_subcommand_args=("${args[@]:i}");
+        return;
         ;;
       (*)
         error "ws: argument parsing: unknown argument '$current'";
