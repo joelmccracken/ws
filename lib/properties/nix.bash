@@ -11,13 +11,14 @@ ws_prop_nix_daemon_installed() {
 }
 
 WS_PROP_NIX_PM_VERSION__default() {
-  printf "nix-2.25.3";
+  # latest stable
+  printf "2.24.14";
 }
 : "${WS_PROP_NIX_PM_VERSION:=}"
 
 ws_prop_nix_daemon_installed_fix() {
   local nix_daemon_profile
-  sh <(curl -L https://releases.nixos.org/nix/$(ws_lookup WS_PROP_NIX_PM_VERSION)/install) --daemon;
+  sh <(curl -L https://releases.nixos.org/nix/nix-$(ws_lookup WS_PROP_NIX_PM_VERSION)/install) --daemon;
   # load the needful after installing
   nix_daemon_profile='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
   if [[ ! -e "$nix_daemon_profile" ]]; then
@@ -97,6 +98,8 @@ ws_prop_nix_global_config_fix () {
 
   # NOTE: this will be a wrinkle if I try compiling all ws code into a single file
   sudo "$(ws_lookup WS_DIR)/bin/safe-overwrite" "$new_conf" "$conf_path"
+  # must restart for config changes to take effect
+  ws_nix__restart_daemon
 }
 
 WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT__default() {
