@@ -67,7 +67,7 @@ ws_lookup() {
 
   # TODO maybe sometimes getting defaults on empty is bad?
   if [[ -z "$val" ]]; then
-    if type "${name}__default" > /dev/null; then
+    if type "${name}__default" &> /dev/null; then
       local new_val
       new_val=$(${name}__default)
       eval "$name='$new_val'"
