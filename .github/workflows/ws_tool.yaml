@@ -30,7 +30,7 @@ jobs:
         with:
           submodules: recursive
           ref: ${{ github.event.pull_request.head.ref }}
-      - run: test/bats/bin/bats test
+      - run: test/bats/bin/bats test/unit
         env:
           WS_VERSION: ${{ github.event.pull_request.head.sha }}
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}

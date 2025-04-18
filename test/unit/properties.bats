@@ -271,5 +271,5 @@ EOF
 }
 
 @test "ws_prop_nix_home_manager" {
-
+  echo not implemented yet
 }
