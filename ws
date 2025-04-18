@@ -24,16 +24,12 @@ ws_initial_pwd="$PWD"
 
 REPLY=() # global "out" var, hack to use return values
 ws_cli_arg_cmd=help # show help if nothing provided
-declare -a ws_cli_raw_args
+
 # ws_cli_arg_subcommand_args
 # stores the remaining CLI arguments for further parsing by subcommands
 # starts with the subcommand name to avoid issues with empty arrays
 declare -a ws_cli_arg_subcommand_args
-: "${ws_cli_arg_initial_config_dir:=}"
-: "${ws_cli_arg_ws_name:=}"
 : "${ws_cli_arg_interactive:=}"
-: "${ws_cli_arg_initial_config_repo:=}"
-: "${ws_cli_arg_initial_config_repo_ref:=}"
 
 ws_cli_usage_exit() {
     ws_cli_usage
@@ -64,9 +60,8 @@ ws_cli_usage() {
 }
 
 ws_cli_proc_args() {
-  ws_cli_raw_args=("$@")
   local args=("$@")
-  local i;                      #
+  local i;
   for ((i=0;i < ${#args[@]}; i++)); do
     debug "iter:$i ; current:${args[i]} ; max:${#args[@]}"
     local current="${args[i]}"
@@ -75,22 +70,6 @@ ws_cli_proc_args() {
       (-v|--verbose)
         WS_VERBOSE=true
         WS_LOG_LEVEL=info
-        ;;
-      (-n|--name)
-        ws_cli_arg_ws_name="${args[i+1]}";
-        (( i+=1 ));
-        ;;
-      (--initial-config-dir)
-        ws_cli_arg_initial_config_dir="${args[i+1]}";
-        (( i+=1 ));
-        ;;
-      (--initial-config-repo)
-        ws_cli_arg_initial_config_repo="${args[i+1]}";
-        (( i+=1 ));
-        ;;
-      (--initial-config-repo-ref)
-        ws_cli_arg_initial_config_repo_ref="${args[i+1]}";
-        (( i+=1 ));
         ;;
       (-h|--help|help)
         ws_cli_usage_exit 0;
@@ -120,16 +99,10 @@ ws_cli_cmds_help() {
 ws_cli_main() {
   set -x
   ws_cli_proc_args "$@"
-  [ -n "$ws_cli_arg_ws_name" ] && WS_NAME="$ws_cli_arg_ws_name"
 
   if [ "$(ws_lookup WS_VERBOSE)" = "true" ]; then
     set -x
   fi
-
-  # if [[ -n "$ws_cli_arg_initial_config_dir" ]]; then
-  #   load_expected "$ws_cli_arg_initial_config_dir/settings.sh"
-  #   load_expected "$ws_cli_arg_initial_config_dir/config.sh"
-  # fi
 
   if [[ -d "$(ws_lookup WS_CONFIG)" ]]; then
     load_expected "$(ws_lookup WS_CONFIG)/settings.sh"

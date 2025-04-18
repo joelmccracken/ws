@@ -18,7 +18,46 @@ ws_cli_cmds_bootstrap_setup() {
   fi
 }
 
+: "${ws_bootstrap__cli_arg_initial_config_dir:=}"
+: "${ws_bootstrap__cli_arg_ws_name:=}"
+: "${ws_bootstrap__cli_arg_initial_config_repo:=}"
+: "${ws_bootstrap__cli_arg_initial_config_repo_ref:=}"
+
+
+ws_bootstrap__cli_proc_args() {
+  shift; # remove initial "bootstrap" from front
+  local args=("$@")
+  local i;
+  for ((i=0;i < ${#args[@]}; i++)); do
+    local current="${args[i]}"
+    case "$current" in
+      (-n|--name)
+        ws_bootstrap__cli_arg_ws_name="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (--initial-config-dir)
+        ws_bootstrap__cli_arg_initial_config_dir="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (--initial-config-repo)
+        ws_bootstrap__cli_arg_initial_config_repo="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (--initial-config-repo-ref)
+        ws_bootstrap__cli_arg_initial_config_repo_ref="${args[i+1]}";
+        (( i+=1 ));
+        ;;
+      (*)
+        error "ws bootstrap: argument parsing: unknown argument '$current'";
+        exit 10;
+        ;;
+    esac;
+  done
+}
+
 ws_cli_cmds_bootstrap() {
+  ws_bootstrap__cli_proc_args "$@"
+  [ -n "$ws_bootstrap__cli_arg_ws_name" ] && WS_NAME="$ws_bootstrap__cli_arg_ws_name"
   run_all_props --fix true --label "bootstrap"
 }
 

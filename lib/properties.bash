@@ -215,7 +215,7 @@ ws_prop_config_exists() {
 ws_prop_config_exists_fix() {
   local wcd
   wcd="$(ws_lookup WS_CONFIG)"
-  if [[ -n "$ws_cli_arg_initial_config_repo" ]]; then
+  if [[ -n "$ws_bootstrap__cli_arg_initial_config_repo" ]]; then
     ws_prop_config_exists_install_from_repo
   else
     ws_prop_config_exists_install_from_directory
@@ -237,8 +237,8 @@ ws_prop_config_exists_install_from_directory() {
 
   # TODO convert cli params to ws_lookup settings
 
-  if [[ -n "$ws_cli_arg_initial_config_dir" ]]; then
-    src_dir="$ws_cli_arg_initial_config_dir";
+  if [[ -n "$ws_bootstrap__cli_arg_initial_config_dir" ]]; then
+    src_dir="$ws_bootstrap__cli_arg_initial_config_dir";
   fi
 
   # if [[ -e  "$WS_CONFIG" ]]; then
@@ -246,7 +246,7 @@ ws_prop_config_exists_install_from_directory() {
   # fi
   mkdir -p "$wcd"
 
-  # hack, because if a relative dir is used for $ws_cli_arg_initial_config_dir
+  # hack, because if a relative dir is used for $ws_bootstrap__cli_arg_initial_config_dir
   # we want it to go back...
   ( cd "$ws_initial_pwd"; cd "$src_dir";
     # not perfect, but not worth making much more complicated
@@ -269,8 +269,8 @@ ws_prop_config_exists_install_from_repo() {
   wcd="$(ws_lookup WS_CONFIG)"
 
   # TODO convert cli params to ws_lookup settings
-  if [[ -n "$ws_cli_arg_initial_config_repo_ref" ]]; then
-    ref="$ws_cli_arg_initial_config_repo_ref"
+  if [[ -n "$ws_bootstrap__cli_arg_initial_config_repo_ref" ]]; then
+    ref="$ws_bootstrap__cli_arg_initial_config_repo_ref"
   fi
   ws_tmp=
   if [[ -e  "$wcd" ]]; then
@@ -286,7 +286,7 @@ ws_prop_config_exists_install_from_repo() {
   mkdir -p "$wcd"
 
   ( cd "$wcd";
-    git clone "$ws_cli_arg_initial_config_repo" .;
+    git clone "$ws_bootstrap__cli_arg_initial_config_repo" .;
     git checkout "$ref";
     if [[ -n "$ws_tmp" ]]; then
       ( cd "$ws_tmp";

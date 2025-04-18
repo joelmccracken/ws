@@ -114,3 +114,12 @@ setup (){
 
   assert_equal "$(cat "${props_test_tmp_file}")" "0 a1 b1 b1_fix"
 }
+
+@test "parses args for initial config w a repo" {
+  ws_bootstrap__cli_proc_args bootstrap \
+    --initial-config-repo 'git@github.com:whatever/foo.git' \
+    --initial-config-repo-ref 'master'
+
+  assert_equal "$ws_bootstrap__cli_arg_initial_config_repo" 'git@github.com:whatever/foo.git'
+  assert_equal "$ws_bootstrap__cli_arg_initial_config_repo_ref" 'master'
+}

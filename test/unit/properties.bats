@@ -106,7 +106,7 @@ setup (){
   run ws_prop_config_exists
   assert_failure
 
-  ws_cli_arg_initial_config_dir="${WS_DIR}/sample_config"
+  ws_bootstrap__cli_arg_initial_config_dir="${WS_DIR}/sample_config"
 
   run ws_prop_config_exists_fix
   assert_success
@@ -114,7 +114,7 @@ setup (){
   run ws_prop_config_exists
   assert_success
 
-  ( cd "$ws_cli_arg_initial_config_dir";
+  ( cd "$ws_bootstrap__cli_arg_initial_config_dir";
     for f in *; do
       # utter insanity
       assert [ "$(cat $f)" == "$(cat "$WS_CONFIG/$f")" ]
@@ -143,10 +143,10 @@ setup (){
   . "$PROJECT_ROOT/lib/settings.bash"
 
   # make a config repo
-  ws_cli_arg_initial_config_repo="$(_mktemp "ws-fake-config-repo")"
-  ws_cli_arg_initial_config_repo_ref='some-branch'
-  ws_cli_arg_initial_config_dir=''
-  ( cd "$ws_cli_arg_initial_config_repo";
+  ws_bootstrap__cli_arg_initial_config_repo="$(_mktemp "ws-fake-config-repo")"
+  ws_bootstrap__cli_arg_initial_config_repo_ref='some-branch'
+  ws_bootstrap__cli_arg_initial_config_dir=''
+  ( cd "$ws_bootstrap__cli_arg_initial_config_repo";
     git init .;
     echo "# config stuff" > config.sh
     echo "# settings stuff" > settings.sh
