@@ -201,6 +201,10 @@ setup (){
   ws_unset_settings
   . "$PROJECT_ROOT/lib/settings.bash"
 
+  # cant run test without nix installed
+  # TODO mabye try to install nix before running
+  which nix &> /dev/null || return 0
+
   nix_config="$(_mktemp "nix-config")/nix.conf"
   cat > "$nix_config" <<-EOF || :
 	other config
