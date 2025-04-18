@@ -25,7 +25,11 @@ ws_prop_nix_daemon_installed_fix() {
     echo "nix installed, but cannot find profile file to load" 1>&2
     return 8
   fi
+
+  set +u
   . "$nix_daemon_profile";
+  set -u
+
   ws_nix__restart_daemon
 }
 
