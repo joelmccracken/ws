@@ -147,7 +147,7 @@ ws_nix__home_manager_flake_build() {
   dir="$(ws_lookup WS_CONFIG)/nix"
   flake_out="$(ws_lookup WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT)"
   ( cd "$dir";
-    nix run --log-format raw --debug -v -L --show-trace "${flake_out}" --show-trace;
+    nix --log-format raw --debug -v -L --show-trace run "${flake_out}";
   )
 }
 
