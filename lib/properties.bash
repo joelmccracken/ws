@@ -341,6 +341,7 @@ ws_prop_current_settings_symlink_fix() {
   fi
 
   ln -s "$src_settings_file" "$current_settings_file"
+  . "$current_settings_file"
 }
 
 

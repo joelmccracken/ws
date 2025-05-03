@@ -108,7 +108,7 @@ ws_prop_nix_global_config_fix () {
 
 WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT__default() {
   wsn="$(ws_lookup WS_NAME)"
-  echo -n ".#homeConfigurations.\"$wsn\".\"$(whoami)\""
+  echo -n ".#homeConfigurations.\"$(whoami)@${wsn}\".activationPackage"
 }
 export WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT
 : "${WS_PROP_NIX_HOME_MANAGER_FLAKE_OUTPUT:=}"
