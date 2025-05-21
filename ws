@@ -97,7 +97,6 @@ ws_cli_cmds_help() {
 }
 
 ws_cli_main() {
-  set -x
   ws_cli_proc_args "$@"
 
   if [ "$(ws_lookup WS_VERBOSE)" = "true" ]; then
