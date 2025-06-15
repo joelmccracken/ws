@@ -7,7 +7,6 @@ on:
   schedule:
   - cron: '0 0 * * *'  # every day at midnight
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -36,6 +35,7 @@ jobs:
           BW_CLIENTID: ${{ secrets.BW_CLIENTID }}
           BW_CLIENTSECRET: ${{ secrets.BW_CLIENTSECRET }}
           WS_BW_MASTER_PASS: ${{ secrets.WS_BW_MASTER_PASS }}
+          WS_BW_EMAIL: ${{ secrets.WS_BW_EMAIL }}
 
   full-setup:
     strategy:
