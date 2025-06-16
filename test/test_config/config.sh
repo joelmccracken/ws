@@ -13,7 +13,7 @@ workstation_props_ci_macos+=("${workstation_props__common[@]}")
 
 
 workstation_props_dotfiles__common() {
-  dotfile --ln --dot bashrc
+  ws_df_dotfile --ln --dot bashrc
 }
 
 workstation_props_dotfiles_ci_ubuntu() {

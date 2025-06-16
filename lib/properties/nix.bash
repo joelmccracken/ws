@@ -174,5 +174,5 @@ ws_cli_cmds_nix(){
 }
 
 ws_nix__help() {
-  echo "TODO write this help"
+  echo '`ws nix daemon restart` or `ws nix home-manager build`';
 }
